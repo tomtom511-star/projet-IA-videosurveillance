@@ -1,8 +1,8 @@
 
-IAsurveillance - v1 2026-04-09 8:41am
+IAsurveillance - v6 2026-04-10 10:38am
 ==============================
 
-This dataset was exported via roboflow.com on April 9, 2026 at 8:05 AM GMT
+This dataset was exported via roboflow.com on April 10, 2026 at 8:39 AM GMT
 
 Roboflow is an end-to-end computer vision platform that helps you
 * collaborate with your team on computer vision projects
@@ -17,7 +17,7 @@ visit https://github.com/roboflow/notebooks
 
 To find over 100k other datasets and pre-trained models, visit https://universe.roboflow.com
 
-The dataset includes 117 images.
+The dataset includes 224 images.
 IAsurveillance are annotated in YOLOv11 format.
 
 The following pre-processing was applied to each image:
