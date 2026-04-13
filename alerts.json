@@ -1,1 +1,9 @@
-[]
+[
+    {
+        "cam": "CAM_01",
+        "type": "CORPS",
+        "score": 0.71596759557724,
+        "time": "11:32:48",
+        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/resultats_video/alert_clips/Vole_CORPS_113246.webm"
+    }
+]

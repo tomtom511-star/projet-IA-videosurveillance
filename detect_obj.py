@@ -92,7 +92,7 @@ def is_point_in_box(point, box):
     x1, y1, x2, y2 = box
     return x1 <= px <= x2 and y1 <= py <= y2
 
-def start_alert_video(type_vol):
+def start_alert_video(type_vol, score):
     """Initialise l'enregistrement du clip d'alerte"""
     global is_recording_alert, alert_video_writer, frames_to_record_after
     
@@ -116,6 +116,7 @@ def start_alert_video(type_vol):
     data.append({
         "cam": "CAM_01",
         "type": type_vol,
+        "score": score, 
         "time": datetime.now().strftime("%H:%M:%S"),
         "video_clip": vid_path
     })
@@ -129,6 +130,8 @@ suspect_disappearance = {} # Mémoire des objets disparus sur le corps {id_artic
 last_known_articles = {} # Stocke la dernière position connue de chaque ID d'article
 object_hold_counter = {} # mémoire des objets avec compteur de frames
 active_objects = [] #mémoire des objets "pris"
+last_known_scores = {}        # score YOLO
+hold_durations = {}           # durée pendant laquelle l'objet est tenu
 
 # Boucle infinie pour lire la vidéo image par image
 while True:
@@ -154,8 +157,9 @@ while True:
         boxes = results[0].boxes.xyxy.cpu().numpy()
         clss = results[0].boxes.cls.cpu().numpy()
         ids = results[0].boxes.id.cpu().numpy().astype(int)
+        confs = results[0].boxes.conf.cpu().numpy()  #  LES SCORES
 
-        for box, cls, track_id in zip(boxes, clss, ids):
+        for box, cls, track_id, conf in zip(boxes, clss, ids, confs):
             name = model.names[int(cls)]
             center = get_center(box)
 
@@ -165,13 +169,14 @@ while True:
             elif name == "bags":
                 bags_pos.append(center)
             elif name == "article":
-                articles_pos.append((center, track_id))
+                articles_pos.append((center, track_id, conf))
                 last_known_articles[track_id] = center 
+                last_known_scores[track_id] = conf
             elif name == "person": 
                 persons_boxes.append(box)
 
     # Dessiner les résultats (lignes plus fines, texte plus petit))
-    annotated_frame = results[0].plot(line_width=2, font_size=1)
+    annotated_frame = results[0].plot(line_width=1, font_size=0.5)
 
     # On stocke la frame annotée pour que le clip montre les détections
     video_buffer.append(annotated_frame.copy()) #copy évite que le texte de l'alerte n'apparaisse "dans le passé" sur les 5s précédentes
@@ -179,12 +184,12 @@ while True:
     # Variables pour savoir si on doit déclencher la vidéo 
     trigger_alert = False
     vol_type = ""
+    alert_score = 0.0  # score réel de l'alerte
 
-    #  1. DETECTION OBJET PRIS (CONFIRMATION) 
-    current_active_ids = []
+    current_active = []  # (id, center, score)
 
     for h_center in hands_pos:
-        for (a_center, a_id) in articles_pos:
+        for (a_center, a_id, a_conf) in articles_pos:
             distance = math.sqrt((h_center[0] - a_center[0])**2 + (h_center[1] - a_center[1])**2)
 
             if distance < 80:
@@ -192,12 +197,14 @@ while True:
                 object_hold_counter[key] = object_hold_counter.get(key, 0) + 1
 
                 if object_hold_counter[key] >= FRAME_THRESHOLD:
-                    current_active_ids.append(a_id)
+                    current_active.append((a_id, a_center, a_conf))
+                    # 🔥 on accumule la durée de tenue
+                    hold_durations[a_id] = hold_durations.get(a_id, 0) + 1
                     cv2.circle(annotated_frame, a_center, 15, (0,255,0), 2)
                     cv2.putText(annotated_frame, "OBJET TENU", a_center, cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
 
     #  2. SCÉNARIO VOL DANS LE SAC 
-    for a_id in current_active_ids:
+    for (a_id, a_center, a_conf) in current_active:
         # On récupère le centre de cet article spécifique
         a_center = last_known_articles[a_id]
         for b_center in bags_pos:
@@ -206,43 +213,73 @@ while True:
                 if time.time() - last_alert_time > ALERT_COOLDOWN:
                     trigger_alert = True
                     vol_type = "SAC"
+                    alert_score = float(a_conf)
 
-    # 3. SCÉNARIO VOL CORPOREL (DISSIMULATION & GESTION ROTATION) 
-    
-    # IDs actuellement visibles
-    visible_ids = [a_id for (_, a_id) in articles_pos]
+    # SCÉNARIO VOL CORPOREL
 
-    # Si un article suspect réapparaît, on annule sa suspicion (fin du demi-tour)
-    for a_id in visible_ids:
-        if a_id in suspect_disappearance:
+    visible_ids = {a_id for (_, a_id, _) in articles_pos}
+
+    # 1. Nettoyage des objets réapparus
+    for a_id in list(suspect_disappearance.keys()):
+        if a_id in visible_ids:
             del suspect_disappearance[a_id]
 
-    # Détecter une disparition suspecte
+    # 2. Détection disparition suspecte
     for key, count in object_hold_counter.items():
         a_id = int(key.split('_')[1])
-        # Si l'objet était confirmé MAIS n'est plus visible à cette frame
-        if count >= FRAME_THRESHOLD and a_id not in visible_ids:
-            if a_id not in suspect_disappearance:
-                # Était-il sur le corps d'une personne au moment de disparaître ?
-                last_pos = last_known_articles.get(a_id)
-                if last_pos:
-                    for p_box in persons_boxes:
-                        if is_point_in_box(last_pos, p_box):
-                            suspect_disappearance[a_id] = time.time() # On lance le chrono
 
-    # Vérification du chrono (si l'objet est absent depuis > 3 sec)
-    for a_id, start_time in list(suspect_disappearance.items()):
-        if time.time() - start_time > DISAPPEARANCE_TIMEOUT:
-            if time.time() - last_alert_time > ALERT_COOLDOWN:
-                trigger_alert = True
-                vol_type = "CORPS"
-            del suspect_disappearance[a_id] # Alerte traitée
+        if count < FRAME_THRESHOLD:
+            continue
+
+        if a_id in visible_ids:
+            continue
+
+        last_pos = last_known_articles.get(a_id)
+        if not last_pos:
+            continue
+
+        # Vérifie si l’objet était sur une personne
+        was_on_person = any(is_point_in_box(last_pos, p_box) for p_box in persons_boxes)
+
+        if was_on_person and a_id not in suspect_disappearance:
+            suspect_disappearance[a_id] = {
+                "start_time": time.time(),
+                "last_score": last_known_scores.get(a_id, 0.5),
+                "hold_time": hold_durations.get(a_id, 0.0)
+            }
+
+    # 3. Validation
+    for a_id, data in list(suspect_disappearance.items()):
+
+        elapsed = time.time() - data["start_time"]
+
+        if elapsed < DISAPPEARANCE_TIMEOUT:
+            continue
+
+        if time.time() - last_alert_time < ALERT_COOLDOWN:
+            continue
+
+        yolo_score = data["last_score"]
+        hold_score = min(1.0, data["hold_time"] / 2.0)
+        time_score = min(1.0, elapsed / 5.0)
+
+        alert_score = float(
+            0.5 * yolo_score +
+            0.3 * hold_score +
+            0.2 * time_score
+        )
+
+        trigger_alert = True
+        vol_type = "CORPS"
+
+        del suspect_disappearance[a_id]
+        hold_durations.pop(a_id, None)
     
     #  LE MOTEUR D'ENREGISTREMENT VIDÉO 
     # Si on a détecté un vol et qu'on n'est pas déjà en train d'enregistrer
     if trigger_alert and not is_recording_alert:
         print(f" ALERTE DÉCLENCHÉE : Enregistrement du clip {vol_type}...")
-        start_alert_video(vol_type)
+        start_alert_video(vol_type, alert_score)
         last_alert_time = time.time()
 
         # On paramètre le texte et le chrono
