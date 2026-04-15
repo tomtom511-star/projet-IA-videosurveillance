@@ -63,6 +63,35 @@ st.markdown("""
         padding: 12px;  /* Espacement interne */
         border-radius: 10px;  /* Coins arrondis */
         margin-bottom: 10px;  /* Espace entre cartes */
+        color: #333
+    }
+    /* Bouton refresh normal */
+    .stButton > button {
+        background-color: white;
+        color: #0066b2;
+        border-radius: 8px;
+        border: none;
+    }
+
+    /* Hover inversé */
+    .stButton > button:hover {
+        background-color: #0066b2;
+        color: white;
+        border: 2px solid #0066b2;
+    }
+    /* Bouton refresh normal */
+    .st.sidebar.button > button {
+        background-color: #0066b2;
+        color: white;
+        border-radius: 8px;
+        border: none;
+    }
+
+    /* Hover inversé */
+    .st.sidebar.button > button:hover {
+        background-color: white;
+        color: #0066b2;
+        border: 2px solid #0066b2;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -72,15 +101,22 @@ st.markdown("""
 def load_alerts():
     """Charge les alertes depuis fichier JSON"""
 
-    if not os.path.exists("alerts.json"):  # Si fichier absent
-        return []  # Retourne liste vide
+    if not os.path.exists("alerts.json"):
+        return []
 
     try:
-        with open("alerts.json", "r") as f:  # Ouvre fichier lecture
-            return json.load(f)  # Convertit JSON → Python list
+        with open("alerts.json", "r") as f:
+            data = json.load(f)
+
+        # sécurité: garantir compatibilité multi-cam
+        for a in data:
+            if "cam" not in a:
+                a["cam"] = "CAM_INCONNUE"
+
+        return data
 
     except:
-        return []  # En cas d'erreur, liste vide
+        return []
 
 # SUPPRESSION D'ALERTE
 
@@ -174,26 +210,64 @@ if st.sidebar.button("🚪 Déconnexion"):
 
     st.rerun()  # Recharge app
 
-# PAGE LIVE
+
+# 📺 PAGE LIVE (MULTI CAMÉRAS PRO)
 
 if page == "📺 LIVE":
-
-    st.subheader("📡 Caméra en direct")
-
-    col1, col2 = st.columns([3, 1])  # Layout 2 colonnes
-
-    with col1:
-        st.image(
-            "https://img.freepik.com/vecteurs-libre/fond-ecran-videosurveillance-numerique-moderne_23-2148332164.jpg",
-            use_container_width=True
-        )  # Image caméra
-
-    with col2:
-        st.metric("Statut IA", "EN COURS")  # Statut IA
-        st.metric("Heure", datetime.now().strftime("%H:%M:%S"))  # Heure réelle
-
-        if st.button("🔄 Refresh"):  # Bouton refresh
+    st.subheader("🎥 Surveillance en direct")
+    # On utilise des colonnes pour économiser de l'espace
+    col_refresh, col_info = st.columns([1, 4])
+    with col_refresh:
+        if st.button("🔄 Actualiser"):
             st.rerun()
+    with col_info:
+        st.info("Note : Les flux sont optimisés pour le GPU. Si une image ne s'affiche pas, vérifiez que le script IA tourne.")
+
+    
+    # 📍 DÉFINITION DES CAMÉRAS PAR ZONES
+    
+    cameras = {
+        "🏬 Magasin central": [
+            {"id": "CAM_01", "name": "Entrée principale", "url": "http://192.168.0.97:5000/video"},
+            {"id": "CAM_02", "name": "Rayon alimentaire", "url": "http://192.168.0.97:5001/video"},
+            {"id": "CAM_03", "name": "Caisses Automatiques", "url": "http://192.168.0.97:5002/video"},
+        ],
+        "🌍 Espace culturel": [
+            {"id": "CAM_04", "name": "Zone jeux vidéo", "url": "http://192.168.0.97:5003/video"},
+            {"id": "CAM_05", "name": "Librairie", "url": "http://192.168.0.97:5004/video"},
+            {"id": "CAM_06", "name": "Caisse", "url": "http://192.168.0.97:5005/video"},
+        ],
+        "🏪 Galerie": [
+            {"id": "CAM_07", "name": "Fleuriste", "url": "http://192.168.0.97:5006/video"},
+            {"id": "CAM_08", "name": "Bijoux", "url": "http://192.168.0.97:5007/video"},
+            {"id": "CAM_09", "name": "Adopt", "url": "http://192.168.0.97:5008/video"},
+        ],
+        "🚪 Zones sécurisées": [
+            {"id": "CAM_10", "name": "Sortie secours", "url": "http://192.168.0.97:5009/video"},
+            {"id": "CAM_11", "name": "Réserve", "url": "http://192.168.0.97:5010/video"},
+            {"id": "CAM_12", "name": "Personnel", "url": "http://192.168.0.97:5011/video"},
+        
+        ]
+    }  
+    for zone, cams in cameras.items():
+        with st.expander(f"📍 {zone}", expanded=True): # Utiliser expander réduit la charge CPU si fermé
+            for i in range(0, len(cams), 2): # 2 caméras par ligne pour plus de stabilité
+                cols = st.columns(2)
+                for j in range(2):
+                    if i + j < len(cams):
+                        cam = cams[i + j]
+                        with cols[j]:
+                            # CADRE DESIGN LECLERC
+                            st.markdown(f"""
+                                <div style="background-color:#0066b2; color:white; padding:5px 10px; border-radius:10px 10px 0 0; font-weight:bold;">
+                                    🎥 {cam['name']}
+                                </div>
+                                <div style="border: 4px solid #0066b2; border-radius: 0 0 10px 10px; overflow: hidden;">
+                                    <img src="{cam['url']}" style="width: 100%; display: block;" 
+                                         onerror="this.onerror=null;this.src='https://via.placeholder.com/1280x720?text=Flux+Indisponible';">
+                                </div>
+                            """, unsafe_allow_html=True)
+                            st.caption(f"ID: {cam['id']} | Flux Temps Réel (NVDEC Accelerated)")
 
 # PAGE ALERTES
 
@@ -205,9 +279,13 @@ elif page == "🚨 ALERTES":
         st.info("Aucune alerte")  # Message info
         st.stop()  # Stop affichage
 
+    cams_available = sorted(list(set(a.get("cam", "CAM_INCONNUE") for a in alerts)))
+    cams_available.insert(0, "Toutes")
+
     # Filtres UI
     type_filter = st.selectbox("Type", ["Tous", "SAC", "CORPS"])
     time_filter = st.selectbox("Période", ["Toutes", "Dernière heure"])
+    cam_filter = st.selectbox("Caméra", cams_available)
 
     now = datetime.now()  # Heure actuelle
 
@@ -219,6 +297,9 @@ elif page == "🚨 ALERTES":
 
         if type_filter != "Tous" and alert.get("type") != type_filter:
             continue  # Skip si type différent
+
+        if cam_filter != "Toutes" and alert.get("cam") != cam_filter:
+            continue
 
         if time_filter == "Dernière heure":
             try:
@@ -238,44 +319,84 @@ elif page == "🚨 ALERTES":
 
     st.write(f"**{len(filtered)} alertes**")  # compteur
 
+
     # AFFICHAGE ALERTES
-
     for i, alert in enumerate(reversed(filtered)):
+        original_index = alerts.index(alert)
+        score_percent = int(alert.get('score', 0) * 100)
+        
+        # Choix des couleurs et du texte de statut selon les critères
+        if score_percent < 60:
+            main_color, status_text = "#FFD700", "DOUTE IA" # Jaune
+        elif score_percent < 85:
+            main_color, status_text = "#FF8C00", "CERTITUDE MOYENNE" # Orange
+        else:
+            main_color, status_text = "#FF0000", "CERTITUDE HAUTE" # Rouge
 
-        original_index = alerts.index(alert)  # index réel
+        # ON OUVRE LE CONTENEUR DE L'ALERTE (pour la marge)
+        st.markdown('<div style="margin-bottom: 25px;">', unsafe_allow_html=True)
 
+        # 1. LE HEADER DE COULEUR FUSIONNÉ
+        # Un div transparent de couleur qui contient l'info, au-dessus du bloc vidéo
         st.markdown(f"""
-        <div class="card">
-            ⚠️ <b>{alert.get('type')}</b> |
-            🕒 {alert.get('time')} |
-            🎯 {int(alert.get('score', 0) * 100)}%
-        </div>
+            <div style="
+                background-color: {main_color};
+                color: white; 
+                padding: 10px 15px; 
+                border-radius: 10px 10px 0 0; 
+                font-size: 1.1rem; 
+                font-weight: bold; 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center;
+            ">
+                <span>⚠️ ALERTE  VOL {alert.get('type')}</span>
+                <div style="color:white; font-size:1.1rem; padding: 2px 10px;">🕒 Heure : {alert.get("time")}</div>
+                <span style="background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 20px;">
+                    {status_text} | {score_percent}%
+                </span>
+            </div>
         """, unsafe_allow_html=True)
 
-        col1, col2 = st.columns([3, 1])
+        # 2. LE BLOC VIDÉO AVEC BORDURE ÉPAISSE
+        # On enferme la vidéo dans un div qui prend la couleur du score
+        with st.container():
+            # OUVERTURE DU CADRE VIDÉO
+            st.markdown(f"""
+                <div style="
+                    border: 6px solid {main_color}; 
+                    border-top: none; 
+                    border-radius: 0 0 10px 10px; 
+                    background-color: #fcfcfc;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                ">
+            """, unsafe_allow_html=True)
 
-        with col1:
-            video_path = alert.get("video_clip", "")
+            col_video, col_actions = st.columns([3, 1])
+            
+            with col_video:
+                video_path = alert.get("video_clip", "")
+                if video_path and os.path.exists(video_path):
+                    st.video(video_path)
+                else:
+                    st.warning("Flux vidéo indisponible")
 
-            if video_path and os.path.exists(video_path):
-                st.video(video_path)  # vidéo
-            else:
-                st.warning("Vidéo indisponible")
+            with col_actions:
+                st.write("---") # Séparateur
+                # Bouton suppression (avec tes keys)
+                if st.button("🗑️ Supprimer", key=f"del_{i}"):
+                    delete_alert(original_index, video_path)
 
-        with col2:
-
-            # bouton suppression
-            if st.button("🗑️ Supprimer", key=f"del_{i}"):
-                delete_alert(original_index, video_path)
-
-            # téléchargement vidéo
-            if video_path and os.path.exists(video_path):
-                with open(video_path, "rb") as f:
-                    st.download_button(
-                        "📥 Télécharger",
-                        f,
-                        file_name=f"alert_{alert['time']}.webm"
-                    )
+                # Bouton téléchargement (avec tes keys)
+                if video_path and os.path.exists(video_path):
+                    with open(video_path, "rb") as f:
+                        st.download_button(
+                            "📥 Télécharger",
+                            f,
+                            file_name=f"alert_{alert['time']}.mp4",
+                            key=f"dl_{i}"
+                        )
+                        #L'argument key permet de donner un "nom de famille" unique à chaque bouton pour que Streamlit puisse les différencier.
 
 # RGPD
 st.markdown("""

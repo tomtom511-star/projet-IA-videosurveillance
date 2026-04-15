@@ -3,14 +3,29 @@ import cv2 #openCV gère la caméra et vidéos
 import os  # permet de gérer les dossiers
 import math # permet de calculer les distances
 import json # permet de sauvegarder les alertes
+import numpy as np
+import subprocess
 from datetime import datetime
 import time
 import torch # pour forcer l'utilisation du GPU
 from collections import deque # Pour le buffer circulaire
 
+# AJOUT : streaming live (sans stockage disque)
+from flask import Flask, Response
+import threading
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["YOLO_VERBOSE"] = "False"
+app = Flask(__name__)
+
+print("CUDA available:", torch.cuda.is_available())
+print("GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU")
+output_frame = None
+frame_lock = threading.Lock()
+
 # CONFIGURATION GPU & MODÈLE 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model = YOLO("runs/detect/essai_surveillance_v113/weights/best.pt").to(device) 
+model = YOLO("runs/detect/essai_surveillance_v113/weights/best.pt") 
+model.to('cuda')
 
 # VARIABLES DE GESTION DES ALERTES 
 last_alert_time = 0
@@ -27,31 +42,32 @@ DISPLAY_TEXT_DURATION = 4.0 # Le texte restera affiché 4 secondes à l'écran
 BEFORE_ALERT_SECS = 5
 AFTER_ALERT_SECS = 5
 is_recording_alert = False
-alert_video_writer = None
+alert_ffmpeg_process = None # REMPLACE alert_video_writer pour le GPU
 frames_to_record_after = 0
-# Le buffer stockera les images brutes ou annotées selon ton choix
 video_buffer = None
 
-cap = cv2.VideoCapture("vidéos/test3.mp4")  #ouvre une vidéo 
+# Connexion au flux RTSP de la caméra
+rtsp_url = "rtsp://leclerc:LecOli%2545@10.21.9.21:554/cam/realmonitor?channel=1&subtype=1"
 
-# récupère infos vidéo (largeur, hauteur, FPS)
-fps = cap.get(cv2.CAP_PROP_FPS)
-
-# sécurité : si FPS est invalide
-fps = fps if fps > 1 else 30
-
-
-width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+# --- VERSION STABLE POUR QUADRO P2200 ---
+width, height, fps = 704, 576, 12  # BIEN VERIFIER CES VALEURS
+command = [
+    'ffmpeg',
+    '-rtsp_transport', 'tcp',
+    '-i', rtsp_url,
+    '-vf', f'scale={width}:{height}',
+    '-f', 'image2pipe',
+    '-pix_fmt', 'bgr24',
+    '-vcodec', 'rawvideo', '-'
+]
+pipe_in = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=10**8)
 
 # Initialisation du buffer (5 secondes * FPS)
 video_buffer = deque(maxlen=int(BEFORE_ALERT_SECS * fps))
 
-# crée dossier sortie
-output_dir = "resultats_video"
-alert_vid_dir = os.path.join(output_dir, "alert_clips")
-os.makedirs(output_dir, exist_ok=True)
-os.makedirs(alert_vid_dir, exist_ok=True) # On s'assure que le dossier des clips existe
+# Dossier uniquement pour les clips d'alerte
+alert_vid_dir = "alert_clips"
+os.makedirs(alert_vid_dir, exist_ok=True)
 
 # fichier JSON pour communiquer avec l'interface
 ALERT_FILE = "alerts.json"
@@ -61,25 +77,7 @@ if not os.path.exists(ALERT_FILE):
     with open(ALERT_FILE, "w") as f:
         json.dump([], f)
 
-# codec plus compatible (IMPORTANT)
-fourcc = cv2.VideoWriter_fourcc(*"VP80") # On utilise VP80 (WebM), c'est l'alternative qui marche partout sur internet
-
-# Génère un horodatage (ex: 20231027_143005)
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-# Nom du fichier avec le timestamp
-video_name = f"analyse_vol_{timestamp}.webm"
-output_path = os.path.join(output_dir, video_name)
-
-# Création du writer avec le nouveau chemin
-out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
-
-# vérifie que le writer fonctionne
-if not out.isOpened():
-    print(" Erreur: VideoWriter ne s'est pas ouvert")
-
-cv2.namedWindow("YOLO Detection", cv2.WINDOW_NORMAL)#crée une fenêtre redimensionnable
-cv2.resizeWindow("YOLO Detection", 1280, 720) # défini une taille initiale
+cv2.namedWindow("YOLO Detection", cv2.WINDOW_NORMAL)
 
 def get_center(box):
     """Calcule le point central d'un rectangle (x1, y1, x2, y2)"""
@@ -92,20 +90,53 @@ def is_point_in_box(point, box):
     x1, y1, x2, y2 = box
     return x1 <= px <= x2 and y1 <= py <= y2
 
+# diffusion live en mémoire (aucun fichier)
+def generate_stream():
+    global output_frame
+    while True:
+        time.sleep(0.1)  # Limite à ~10 images par seconde pour soulager Firefox et le CPU
+        with frame_lock:
+            if output_frame is None:
+                continue
+            frame = output_frame.copy()
+        _, buffer = cv2.imencode('.jpg', frame)
+        frame_bytes = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b' \r\n')
+
+@app.route('/video')
+def video():
+    return Response(
+        generate_stream(),
+        mimetype='multipart/x-mixed-replace; boundary=frame'
+    )
+
+def start_server():
+    app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+
+threading.Thread(target=start_server, daemon=True).start()
+
+# --- BLOC GPU : ENCODAGE MATÉRIEL (NVENC) ---
 def start_alert_video(type_vol, score):
-    """Initialise l'enregistrement du clip d'alerte"""
-    global is_recording_alert, alert_video_writer, frames_to_record_after
+    """Initialise l'enregistrement du clip d'alerte via le GPU"""
+    global is_recording_alert, alert_ffmpeg_process, frames_to_record_after
     
     timestamp = datetime.now().strftime("%H%M%S")
-    vid_name = f"Vole_{type_vol}_{timestamp}.webm"
-    vid_path = os.path.abspath(os.path.join(alert_vid_dir, vid_name)) # Chemin complet
+    vid_name = f"Vole_{type_vol}_{timestamp}.mp4"
+    vid_path = os.path.abspath(os.path.join(alert_vid_dir, vid_name))
     
-    # Création du writer pour le clip
-    alert_video_writer = cv2.VideoWriter(vid_path, fourcc, fps, (width, height))
+    # Commande FFmpeg pour utiliser NVENC (encodeur NVIDIA)
+    # Cela libère 100% de la charge CPU lors de l'enregistrement
+    cmd_out = [
+        'ffmpeg', '-y', '-f', 'rawvideo', '-vcodec', 'rawvideo',
+        '-s', f'{width}x{height}', '-pix_fmt', 'bgr24', '-r', str(fps),
+        '-i', '-', '-vcodec', 'h264_nvenc', '-preset', 'fast', '-b:v', '2M', vid_path
+    ]
+    alert_ffmpeg_process = subprocess.Popen(cmd_out, stdin=subprocess.PIPE)
     
     # 1. On écrit tout ce qu'il y a dans le buffer (les 5s passées)
     for f in video_buffer:
-        alert_video_writer.write(f)
+        alert_ffmpeg_process.stdin.write(f.tobytes())
         
     # 2. On prépare l'enregistrement des 5s futures
     is_recording_alert = True
@@ -124,29 +155,50 @@ def start_alert_video(type_vol, score):
     
     return vid_path
 
+# Mémoire (Tes variables d'origine)
+suspect_disappearance = {} 
+last_known_articles = {} 
+object_hold_counter = {} 
+active_objects = [] 
+last_known_scores = {}        
+hold_durations = {}    
 
-#Mémoire
-suspect_disappearance = {} # Mémoire des objets disparus sur le corps {id_article: timestamp}
-last_known_articles = {} # Stocke la dernière position connue de chaque ID d'article
-object_hold_counter = {} # mémoire des objets avec compteur de frames
-active_objects = [] #mémoire des objets "pris"
-last_known_scores = {}        # score YOLO
-hold_durations = {}           # durée pendant laquelle l'objet est tenu
+# --- CONFIG CAPTURE PHOTOS ---
+PHOTO_DIR = "frame_video"
+os.makedirs(PHOTO_DIR, exist_ok=True)
+PHOTO_INTERVAL = 4  # Secondes entre chaque photo
+last_photo_time = time.time()
 
 # Boucle infinie pour lire la vidéo image par image
 while True:
-    # Lire une frame (image) de la vidéo
-    ret, frame = cap.read()
+    # --- LECTURE VIA LE PIPE GPU ---
+    raw_frame = pipe_in.stdout.read(width * height * 3)
+    if not raw_frame:
+        print("Erreur flux... Reconnexion")
+        pipe_in = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=10**8)
+        continue
+    
+    frame = np.frombuffer(raw_frame, np.uint8).reshape((height, width, 3))
 
-    # Si on arrive à la fin de la vidéo → arrêter
-    if not ret:
-        break
+    # SAUVEGARDE PHOTO CHRONO 
+    now = time.time()
+    if now - last_photo_time >= PHOTO_INTERVAL:
+        img_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        photo_path = os.path.join(PHOTO_DIR, f"photo_{img_ts}.jpg")
+        cv2.imwrite(photo_path, frame) # Sauvegarde l'image BRUTE
+        print(f"📸 [ARCHIVE] Image sauvegardée : {photo_path}")
+        last_photo_time = now
 
-    # Utilisation de .track() au lieu de .predict()
-    # persist=True permet de garder les mêmes IDs entre les images
-    results = model.track(frame, persist=True, tracker="botsort.yaml")
+    # Utilisation de .track() au GPU
+    results = model.track(
+        frame,
+        persist=True,
+        tracker="bytetrack.yaml",
+        device=0,
+        half=True,
+        verbose=False
+    )
 
-    # Listes pour stocker les positions
     hands_pos = []
     bags_pos = []
     articles_pos = []
@@ -157,13 +209,12 @@ while True:
         boxes = results[0].boxes.xyxy.cpu().numpy()
         clss = results[0].boxes.cls.cpu().numpy()
         ids = results[0].boxes.id.cpu().numpy().astype(int)
-        confs = results[0].boxes.conf.cpu().numpy()  #  LES SCORES
+        confs = results[0].boxes.conf.cpu().numpy()
 
         for box, cls, track_id, conf in zip(boxes, clss, ids, confs):
             name = model.names[int(cls)]
             center = get_center(box)
 
-            # On stocke les centres des mains, sacs et  articles
             if name == "hands":
                 hands_pos.append(center)
             elif name == "bags":
@@ -175,19 +226,26 @@ while True:
             elif name == "person": 
                 persons_boxes.append(box)
 
-    # Dessiner les résultats (lignes plus fines, texte plus petit))
-    annotated_frame = results[0].plot(line_width=1, font_size=0.5)
+    # Dessiner les résultats
+    if results and len(results) > 0:
+        annotated_frame = results[0].plot(line_width=1, font_size=0.5)
+    else:
+        annotated_frame = frame.copy()
 
-    # On stocke la frame annotée pour que le clip montre les détections
-    video_buffer.append(annotated_frame.copy()) #copy évite que le texte de l'alerte n'apparaisse "dans le passé" sur les 5s précédentes
+    # mise à jour stream live
+    with frame_lock:
+        output_frame = annotated_frame.copy()
 
-    # Variables pour savoir si on doit déclencher la vidéo 
+    # On stocke dans le buffer
+    video_buffer.append(annotated_frame)
+
+    # Logique d'alerte (Tes variables)
     trigger_alert = False
     vol_type = ""
-    alert_score = 0.0  # score réel de l'alerte
+    alert_score = 0.0 
+    current_active = [] 
 
-    current_active = []  # (id, center, score)
-
+    # --- SCÉNARIO 1 : OBJETS TENUS ---
     for h_center in hands_pos:
         for (a_center, a_id, a_conf) in articles_pos:
             distance = math.sqrt((h_center[0] - a_center[0])**2 + (h_center[1] - a_center[1])**2)
@@ -198,14 +256,12 @@ while True:
 
                 if object_hold_counter[key] >= FRAME_THRESHOLD:
                     current_active.append((a_id, a_center, a_conf))
-                    # 🔥 on accumule la durée de tenue
                     hold_durations[a_id] = hold_durations.get(a_id, 0) + 1
                     cv2.circle(annotated_frame, a_center, 15, (0,255,0), 2)
                     cv2.putText(annotated_frame, "OBJET TENU", a_center, cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
 
-    #  2. SCÉNARIO VOL DANS LE SAC 
+    # --- SCÉNARIO 2 : VOL DANS LE SAC ---
     for (a_id, a_center, a_conf) in current_active:
-        # On récupère le centre de cet article spécifique
         a_center = last_known_articles[a_id]
         for b_center in bags_pos:
             dist_sac = math.sqrt((a_center[0] - b_center[0])**2 + (a_center[1] - b_center[1])**2)
@@ -215,32 +271,22 @@ while True:
                     vol_type = "SAC"
                     alert_score = float(a_conf)
 
-    # SCÉNARIO VOL CORPOREL
-
+    # --- SCÉNARIO 3 : VOL CORPOREL ---
     visible_ids = {a_id for (_, a_id, _) in articles_pos}
 
-    # 1. Nettoyage des objets réapparus
     for a_id in list(suspect_disappearance.keys()):
         if a_id in visible_ids:
             del suspect_disappearance[a_id]
 
-    # 2. Détection disparition suspecte
     for key, count in object_hold_counter.items():
         a_id = int(key.split('_')[1])
-
-        if count < FRAME_THRESHOLD:
-            continue
-
-        if a_id in visible_ids:
-            continue
+        if count < FRAME_THRESHOLD: continue
+        if a_id in visible_ids: continue
 
         last_pos = last_known_articles.get(a_id)
-        if not last_pos:
-            continue
+        if not last_pos: continue
 
-        # Vérifie si l’objet était sur une personne
         was_on_person = any(is_point_in_box(last_pos, p_box) for p_box in persons_boxes)
-
         if was_on_person and a_id not in suspect_disappearance:
             suspect_disappearance[a_id] = {
                 "start_time": time.time(),
@@ -248,93 +294,51 @@ while True:
                 "hold_time": hold_durations.get(a_id, 0.0)
             }
 
-    # 3. Validation
     for a_id, data in list(suspect_disappearance.items()):
-
         elapsed = time.time() - data["start_time"]
-
-        if elapsed < DISAPPEARANCE_TIMEOUT:
-            continue
-
-        if time.time() - last_alert_time < ALERT_COOLDOWN:
-            continue
+        if elapsed < DISAPPEARANCE_TIMEOUT: continue
+        if time.time() - last_alert_time < ALERT_COOLDOWN: continue
 
         yolo_score = data["last_score"]
         hold_score = min(1.0, data["hold_time"] / 2.0)
         time_score = min(1.0, elapsed / 5.0)
 
-        alert_score = float(
-            0.5 * yolo_score +
-            0.3 * hold_score +
-            0.2 * time_score
-        )
-
+        alert_score = float(0.5 * yolo_score + 0.3 * hold_score + 0.2 * time_score)
         trigger_alert = True
         vol_type = "CORPS"
-
         del suspect_disappearance[a_id]
         hold_durations.pop(a_id, None)
     
-    #  LE MOTEUR D'ENREGISTREMENT VIDÉO 
-    # Si on a détecté un vol et qu'on n'est pas déjà en train d'enregistrer
+    # --- ENREGISTREMENT ---
     if trigger_alert and not is_recording_alert:
         print(f" ALERTE DÉCLENCHÉE : Enregistrement du clip {vol_type}...")
         start_alert_video(vol_type, alert_score)
         last_alert_time = time.time()
-
-        # On paramètre le texte et le chrono
         alert_text_to_show = f" ALERTE : VOL {vol_type} DETECTE "
         alert_text_timer = time.time() + DISPLAY_TEXT_DURATION
     
-    # Si le chrono tourne, on affiche le message au centre
     if time.time() < alert_text_timer:
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        scale = 0.8
-        thickness = 2
-        color = (0, 0, 255) # Rouge
-        
-        # Calcul pour centrer le texte
-        text_size = cv2.getTextSize(alert_text_to_show, font, scale, thickness)[0]
-        text_x = (width - text_size[0]) // 2  # Milieu horizontal
-        text_y = 100 # Position verticale (en haut)
-        
-        # Optionnel : Ajouter un petit rectangle noir derrière pour la lisibilité
-        cv2.rectangle(annotated_frame, (text_x - 10, text_y - 40), 
-                      (text_x + text_size[0] + 10, text_y + 10), (0,0,0), -1)
-        
-        cv2.putText(annotated_frame, alert_text_to_show, (text_x, text_y), 
-                    font, scale, color, thickness)
-        
+        text_size = cv2.getTextSize(alert_text_to_show, cv2.FONT_HERSHEY_SIMPLEX, 0.8, 2)[0]
+        text_x = (width - text_size[0]) // 2
+        cv2.rectangle(annotated_frame, (text_x - 10, 60), (text_x + text_size[0] + 10, 110), (0,0,0), -1)
+        cv2.putText(annotated_frame, alert_text_to_show, (text_x, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
 
-    # Si un enregistrement est en cours, on écrit la frame et on décompte
     if is_recording_alert:
-        alert_video_writer.write(annotated_frame)
+        # On écrit les octets bruts directement dans le pipe FFmpeg
+        alert_ffmpeg_process.stdin.write(annotated_frame.tobytes())
         frames_to_record_after -= 1
         
-        # Quand on a fini de filmer les 5 secondes du futur
         if frames_to_record_after <= 0:
             is_recording_alert = False
-            alert_video_writer.release() # On ferme proprement le fichier 
-            alert_video_writer = None
-            print(" Fin de l'enregistrement du clip. Vidéo sauvegardée !")
+            alert_ffmpeg_process.stdin.close()
+            alert_ffmpeg_process.wait()
+            alert_ffmpeg_process = None
+            print(" Fin de l'enregistrement du clip GPU.")
 
-    # Reset des compteurs si l'objet n'est plus tenu
     object_hold_counter = {k: v-1 for k, v in object_hold_counter.items() if v > 1}
 
-    # AFFICHAGE
-
     cv2.imshow("YOLO Detection", annotated_frame)
-
-    # Sauvegarde vidéo
-    out.write(annotated_frame)
-
-    # Quitter avec "q"
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# Libérations
-cap.release()
-out.release()
-if alert_video_writer is not None:
-    alert_video_writer.release() # Sécurité si on coupe pendant une alerte
 cv2.destroyAllWindows()
