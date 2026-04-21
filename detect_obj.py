@@ -1,5 +1,5 @@
-from ultralytics import YOLO #charge YOLO le modèle IA
-import cv2 #openCV gère la caméra et vidéos
+from ultralytics import YOLO # charge YOLO le modèle IA
+import cv2 # openCV gère la caméra et vidéos
 import os  # permet de gérer les dossiers
 import math # permet de calculer les distances
 import json # permet de sauvegarder les alertes
@@ -23,27 +23,35 @@ print("GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "C
 output_frame = None
 frame_lock = threading.Lock()
 
-# CONFIGURATION GPU & MODÈLE 
-model = YOLO("runs/detect/essai_surveillance_v113/weights/best.pt") 
-model.to('cuda')
+# ==========================================
+# CONFIGURATION GPU & MODÈLES (L'ARCHITECTURE DOUBLE)
+# ==========================================
+# MODÈLE 1 : LE RADAR (Cherche uniquement les personnes dans le magasin)
+model_radar = YOLO("runs/detect/radar_global_v1/weights/best.pt") 
+model_radar.to('cuda')
+
+# MODÈLE 2 : LE SPÉCIALISTE (Cherche les mains, sacs et articles sur les personnes zoomées)
+model_specialist = YOLO("runs/detect/radar_specialiste_v1/weights/best.pt") 
+model_specialist.to('cuda')
 
 # VARIABLES DE GESTION DES ALERTES 
-last_alert_time = 0
-ALERT_COOLDOWN = 12 # On passe à 12s (10s de clip + 2s de marge)
-DISAPPEARANCE_TIMEOUT = 3.0 # Délai de 3 secondes pour ignorer un demi-tour
-FRAME_THRESHOLD = 4
+last_alert_time = 0  # timestamp de la dernière alerte
+ALERT_COOLDOWN = 20 # temps minimum entre 2 alertes (évite spam)
+DISAPPEARANCE_TIMEOUT = 12.0 # temps avant de considérer un objet "disparu"
+FRAME_THRESHOLD = 8 # nombre de frames pour valider un objet tenu
 
-#  TIMER POUR L'AFFICHAGE DU TEXTE
+# TIMER POUR L'AFFICHAGE DU TEXTE
 alert_text_to_show = ""
 alert_text_timer = 0
 DISPLAY_TEXT_DURATION = 4.0 # Le texte restera affiché 4 secondes à l'écran
 
 # GESTION DES CLIPS VIDÉO 
-BEFORE_ALERT_SECS = 5
-AFTER_ALERT_SECS = 5
+BEFORE_ALERT_SECS = 5  # secondes AVANT alerte
+AFTER_ALERT_SECS = 5   # secondes APRÈS alerte
 is_recording_alert = False
-alert_ffmpeg_process = None # REMPLACE alert_video_writer pour le GPU
+alert_ffmpeg_process = None
 frames_to_record_after = 0
+# Buffer circulaire → garde les dernières frames
 video_buffer = None
 
 # Connexion au flux RTSP de la caméra
@@ -90,19 +98,57 @@ def is_point_in_box(point, box):
     x1, y1, x2, y2 = box
     return x1 <= px <= x2 and y1 <= py <= y2
 
+# ==========================================
+# MINI-TRACKER SPATIAL (NOUVEAU)
+# ==========================================
+# YOLO ne peut pas tracker des objets qui sont dans des "crops" (découpes) différents.
+# Ce mini-tracker donne un ID unique aux articles en fonction de leur position (distance) 
+# d'une image à l'autre pour que le calcul des vols continue de fonctionner.
+next_article_id = 0
+active_article_tracks = {} 
+
+def track_articles_custom(current_articles_centers, max_distance=60):
+    global next_article_id, active_article_tracks
+    new_tracks = {}
+    tracked_articles = [] 
+
+    for (center, conf) in current_articles_centers:
+        best_id = None
+        best_dist = max_distance
+        for a_id, last_center in active_article_tracks.items():
+            dist = math.hypot(center[0]-last_center[0], center[1]-last_center[1])
+            if dist < best_dist:
+                best_dist = dist
+                best_id = a_id
+
+        if best_id is not None:
+            new_tracks[best_id] = center
+            tracked_articles.append((center, best_id, conf))
+            del active_article_tracks[best_id] 
+        else:
+            new_tracks[next_article_id] = center
+            tracked_articles.append((center, next_article_id, conf))
+            next_article_id += 1
+
+    active_article_tracks = new_tracks
+    return tracked_articles
+
+# ==========================================
+# SERVEUR FLASK STREAMING
+# ==========================================
 # diffusion live en mémoire (aucun fichier)
 def generate_stream():
     global output_frame
     while True:
-        time.sleep(0.1)  # Limite à ~10 images par seconde pour soulager Firefox et le CPU
+        time.sleep(0.04)  # Limite à ~10 images par seconde pour soulager Firefox et le CPU
         with frame_lock:
             if output_frame is None:
                 continue
-            frame = output_frame.copy()
-        _, buffer = cv2.imencode('.jpg', frame)
-        frame_bytes = buffer.tobytes()
+            # On encode en qualité JPG moyenne (80) pour alléger le réseau
+            _, buffer = cv2.imencode('.jpg', output_frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b' \r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
 
 @app.route('/video')
 def video():
@@ -155,19 +201,13 @@ def start_alert_video(type_vol, score):
     
     return vid_path
 
-# Mémoire (Tes variables d'origine)
+# Mémoire (Tes variables d'origine pour la logique d'alerte)
 suspect_disappearance = {} 
 last_known_articles = {} 
 object_hold_counter = {} 
-active_objects = [] 
 last_known_scores = {}        
-hold_durations = {}    
-
-# --- CONFIG CAPTURE PHOTOS ---
-PHOTO_DIR = "frame_video"
-os.makedirs(PHOTO_DIR, exist_ok=True)
-PHOTO_INTERVAL = 4  # Secondes entre chaque photo
-last_photo_time = time.time()
+hold_durations = {}  
+last_known_person_boxes = {}  
 
 # Boucle infinie pour lire la vidéo image par image
 while True:
@@ -179,65 +219,95 @@ while True:
         continue
     
     frame = np.frombuffer(raw_frame, np.uint8).reshape((height, width, 3))
+    annotated_frame = frame.copy() # L'image sur laquelle on va dessiner
 
-    # SAUVEGARDE PHOTO CHRONO 
-    now = time.time()
-    if now - last_photo_time >= PHOTO_INTERVAL:
-        img_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        photo_path = os.path.join(PHOTO_DIR, f"photo_{img_ts}.jpg")
-        cv2.imwrite(photo_path, frame) # Sauvegarde l'image BRUTE
-        print(f"📸 [ARCHIVE] Image sauvegardée : {photo_path}")
-        last_photo_time = now
-
-    # Utilisation de .track() au GPU
-    results = model.track(
-        frame,
-        persist=True,
-        tracker="bytetrack.yaml",
-        device=0,
-        half=True,
-        verbose=False
-    )
-
+    # ==========================================
+    # ÉTAPE 1 : LE RADAR (DÉTECTION DES PERSONNES)
+    # ==========================================
+    # On cherche d'abord les personnes sur l'image globale et on les track
+    results_radar = model_radar.track(frame, persist=True, tracker="bytetrack.yaml", verbose=False)
+    
     hands_pos = []
     bags_pos = []
-    articles_pos = []
+    raw_articles_pos = [] 
     persons_boxes = []
 
-    # Vérifier si des objets sont détectés
-    if results and results[0].boxes is not None and results[0].boxes.id is not None:
-        boxes = results[0].boxes.xyxy.cpu().numpy()
-        clss = results[0].boxes.cls.cpu().numpy()
-        ids = results[0].boxes.id.cpu().numpy().astype(int)
-        confs = results[0].boxes.conf.cpu().numpy()
-
-        for box, cls, track_id, conf in zip(boxes, clss, ids, confs):
-            name = model.names[int(cls)]
-            center = get_center(box)
-
-            if name == "hands":
-                hands_pos.append(center)
-            elif name == "bags":
-                bags_pos.append(center)
-            elif name == "article":
-                articles_pos.append((center, track_id, conf))
-                last_known_articles[track_id] = center 
-                last_known_scores[track_id] = conf
-            elif name == "person": 
+    if results_radar and results_radar[0].boxes is not None:
+        r_boxes = results_radar[0].boxes.xyxy.cpu().numpy()
+        r_clss = results_radar[0].boxes.cls.cpu().numpy()
+        r_ids = results_radar[0].boxes.id.cpu().numpy().astype(int) if results_radar[0].boxes.id is not None else []
+        
+        for i, (box, cls) in enumerate(zip(r_boxes, r_clss)):
+            name = model_radar.names[int(cls)]
+            
+            if name == "person":
                 persons_boxes.append(box)
+                # On sauvegarde la boîte pour l'analyse anatomique
+                if i < len(r_ids):
+                    last_known_person_boxes[r_ids[i]] = box
+                
+                x1, y1, x2, y2 = map(int, box)
+                cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), (255, 0, 0), 1)
+                
+                # ==========================================
+                # ÉTAPE 2 : LA DÉCOUPE (CROP)
+                # ==========================================
+                # On découpe l'image globale autour de la personne (avec une marge de 20px)
+                padding = 20
+                x1_pad = max(0, x1 - padding)
+                y1_pad = max(0, y1 - padding)
+                x2_pad = min(width, x2 + padding)
+                y2_pad = min(height, y2 + padding)
+                
+                crop = frame[y1_pad:y2_pad, x1_pad:x2_pad]
+                if crop.size == 0: continue
+                
+                # ==========================================
+                # ÉTAPE 3 : LE SPÉCIALISTE (ANALYSE DU CROP)
+                # ==========================================
+                # On envoie le petit bout d'image (le crop) au Modèle 2
+                results_spec = model_specialist.predict(crop, verbose=False, conf=0.20)
+                
+                if results_spec and results_spec[0].boxes is not None:
+                    s_boxes = results_spec[0].boxes.xyxy.cpu().numpy()
+                    s_clss = results_spec[0].boxes.cls.cpu().numpy()
+                    s_confs = results_spec[0].boxes.conf.cpu().numpy()
+                    
+                    for s_box, s_cls, s_conf in zip(s_boxes, s_clss, s_confs):
+                        s_name = model_specialist.names[int(s_cls)]
+                        
+                        # ==========================================
+                        # ÉTAPE 4 : REMAPPING (RECALCUL DES COORDONNÉES)
+                        # ==========================================
+                        # Les coordonnées du Spécialiste partent de zéro (coin du crop).
+                        # Il faut les additionner à la position du crop (x1_pad, y1_pad) 
+                        # pour les replacer sur l'image globale de la caméra.
+                        g_x1 = int(s_box[0] + x1_pad)
+                        g_y1 = int(s_box[1] + y1_pad)
+                        g_x2 = int(s_box[2] + x1_pad)
+                        g_y2 = int(s_box[3] + y1_pad)
+                        g_center = get_center([g_x1, g_y1, g_x2, g_y2])
+                        
+                        if s_name == "hands" and s_conf>0.5:
+                            hands_pos.append(g_center)
+                            cv2.rectangle(annotated_frame, (g_x1, g_y1), (g_x2, g_y2), (0, 255, 255), 1) # Main = Jaune
+                            
+                        elif s_name == "bags" and s_conf>0.25:
+                            bags_pos.append(g_center)
+                            cv2.rectangle(annotated_frame, (g_x1, g_y1), (g_x2, g_y2), (0, 165, 255), 2) # Sac = Orange
+                            
+                        elif s_name == "article" and s_conf>0.22:
+                            raw_articles_pos.append((g_center, s_conf))
+                            cv2.rectangle(annotated_frame, (g_x1, g_y1), (g_x2, g_y2), (255, 0, 255), 2) # Article = Violet
 
-    # Dessiner les résultats
-    if results and len(results) > 0:
-        annotated_frame = results[0].plot(line_width=1, font_size=0.5)
-    else:
-        annotated_frame = frame.copy()
-
-    # mise à jour stream live
-    with frame_lock:
-        output_frame = annotated_frame.copy()
-
-    # On stocke dans le buffer
-    video_buffer.append(annotated_frame)
+    # ÉTAPE 5 : ASSIGNATION DES IDs AUX ARTICLES 
+    # On passe les articles détectés dans le mini-tracker pour suivre leurs déplacements
+    articles_pos = track_articles_custom(raw_articles_pos)
+    
+    for (a_center, a_id, a_conf) in articles_pos:
+        last_known_articles[a_id] = a_center 
+        last_known_scores[a_id] = a_conf
+        cv2.putText(annotated_frame, f"ID:{a_id}", (a_center[0]-10, a_center[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,255), 1)
 
     # Logique d'alerte (Tes variables)
     trigger_alert = False
@@ -245,69 +315,98 @@ while True:
     alert_score = 0.0 
     current_active = [] 
 
-    # --- SCÉNARIO 1 : OBJETS TENUS ---
-    for h_center in hands_pos:
+    # --- SCÉNARIO 1 : OBJETS TENUS (VERSION SIMPLIFIÉE) ---
+    for p_id, p_box in last_known_person_boxes.items():
         for (a_center, a_id, a_conf) in articles_pos:
-            distance = math.sqrt((h_center[0] - a_center[0])**2 + (h_center[1] - a_center[1])**2)
-
-            if distance < 80:
+            # Si l'article est dans la boîte de la personne, il est "TENU"
+            if is_point_in_box(a_center, p_box):
                 key = f"article_{a_id}"
                 object_hold_counter[key] = object_hold_counter.get(key, 0) + 1
-
+                
+                # On considère l'objet tenu sans condition de "main"
                 if object_hold_counter[key] >= FRAME_THRESHOLD:
                     current_active.append((a_id, a_center, a_conf))
                     hold_durations[a_id] = hold_durations.get(a_id, 0) + 1
-                    cv2.circle(annotated_frame, a_center, 15, (0,255,0), 2)
-                    cv2.putText(annotated_frame, "OBJET TENU", a_center, cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
+                    
+                    # Affichage visuel pour debug
+                    cv2.circle(annotated_frame, a_center, 15, (0, 255, 0), 2)
+                    cv2.putText(annotated_frame, "TENU", (a_center[0]+15, a_center[1]), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
 
     # --- SCÉNARIO 2 : VOL DANS LE SAC ---
     for (a_id, a_center, a_conf) in current_active:
         a_center = last_known_articles[a_id]
         for b_center in bags_pos:
-            dist_sac = math.sqrt((a_center[0] - b_center[0])**2 + (a_center[1] - b_center[1])**2)
-            if dist_sac < 100:
+            dist_sac = math.hypot(a_center[0] - b_center[0], a_center[1] - b_center[1])
+            if dist_sac < 35:
                 if time.time() - last_alert_time > ALERT_COOLDOWN:
                     trigger_alert = True
                     vol_type = "SAC"
                     alert_score = float(a_conf)
 
-    # --- SCÉNARIO 3 : VOL CORPOREL ---
+
+    # --- SCÉNARIO 3 : VOL CORPOREL (LOGIQUE ANATOMIQUE RÉALISTE) ---
     visible_ids = {a_id for (_, a_id, _) in articles_pos}
 
+    # 1. On nettoie les suspects qui réapparaissent
     for a_id in list(suspect_disappearance.keys()):
         if a_id in visible_ids:
             del suspect_disappearance[a_id]
 
+    # 2. On analyse les disparitions
     for key, count in object_hold_counter.items():
         a_id = int(key.split('_')[1])
-        if count < FRAME_THRESHOLD: continue
-        if a_id in visible_ids: continue
+        if count < FRAME_THRESHOLD or a_id in visible_ids: continue
 
         last_pos = last_known_articles.get(a_id)
         if not last_pos: continue
 
-        was_on_person = any(is_point_in_box(last_pos, p_box) for p_box in persons_boxes)
-        if was_on_person and a_id not in suspect_disappearance:
+        # Filtre Bord écran (On ignore si le client sort de l'image)
+        margin = 40
+        if last_pos[0] < margin or last_pos[0] > (width - margin) or \
+           last_pos[1] < margin or last_pos[1] > (height - margin):
+            continue
+
+        # FILTRE ANATOMIQUE (Bras levé / Rayon)
+        is_suspect_zone = False
+        target_p_id = None
+        
+        for p_id, p_box in last_known_person_boxes.items():
+            if is_point_in_box(last_pos, p_box):
+                p_h = p_box[3] - p_box[1]
+                rel_y = (last_pos[1] - p_box[1]) / p_h if p_h > 0 else 0.5
+                
+                # On ne suspecte que la zone Milieu (Torse/Poches)
+                if 0.35 <= rel_y <= 0.85:
+                    is_suspect_zone = True
+                    target_p_id = p_id
+                break
+
+        if is_suspect_zone and a_id not in suspect_disappearance:
             suspect_disappearance[a_id] = {
                 "start_time": time.time(),
                 "last_score": last_known_scores.get(a_id, 0.5),
-                "hold_time": hold_durations.get(a_id, 0.0)
+                "hold_time": hold_durations.get(a_id, 0.0),
+                "p_id": target_p_id
             }
 
+    # 3. Validation après patience (10 secondes)
     for a_id, data in list(suspect_disappearance.items()):
         elapsed = time.time() - data["start_time"]
-        if elapsed < DISAPPEARANCE_TIMEOUT: continue
-        if time.time() - last_alert_time < ALERT_COOLDOWN: continue
+        if elapsed < 10.0: continue 
+        
+        if time.time() - last_alert_time > ALERT_COOLDOWN:
+            # Score basé sur le temps tenu et la confiance IA
+            hold_score = min(1.0, data["hold_time"] / 20.0)
+            if hold_score < 0.3: # Si trop peu tenu, c'est une erreur de détection
+                del suspect_disappearance[a_id]
+                continue
 
-        yolo_score = data["last_score"]
-        hold_score = min(1.0, data["hold_time"] / 2.0)
-        time_score = min(1.0, elapsed / 5.0)
-
-        alert_score = float(0.5 * yolo_score + 0.3 * hold_score + 0.2 * time_score)
-        trigger_alert = True
-        vol_type = "CORPS"
-        del suspect_disappearance[a_id]
-        hold_durations.pop(a_id, None)
+            alert_score = float(0.4 * data["last_score"] + 0.6 * hold_score)
+            trigger_alert = True
+            vol_type = "CORPS"
+            del suspect_disappearance[a_id]
+            hold_durations.pop(a_id, None)
     
     # --- ENREGISTREMENT ---
     if trigger_alert and not is_recording_alert:
@@ -323,22 +422,36 @@ while True:
         cv2.rectangle(annotated_frame, (text_x - 10, 60), (text_x + text_size[0] + 10, 110), (0,0,0), -1)
         cv2.putText(annotated_frame, alert_text_to_show, (text_x, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
 
+
+    # 1. Mise à jour du flux Live pour Streamlit (Maintenant que TOUT est dessiné)
+    with frame_lock:
+        output_frame = annotated_frame.copy()
+    # 2. Stockage dans le buffer pour FFmpeg (Vidéo avec dessins)
+    video_buffer.append(annotated_frame)
+
     if is_recording_alert:
-        # On écrit les octets bruts directement dans le pipe FFmpeg
-        alert_ffmpeg_process.stdin.write(annotated_frame.tobytes())
-        frames_to_record_after -= 1
-        
-        if frames_to_record_after <= 0:
+        try: # Try/Except pour éviter que FFmpeg fasse planter la boucle
+            alert_ffmpeg_process.stdin.write(annotated_frame.tobytes())
+            frames_to_record_after -= 1
+            
+            if frames_to_record_after <= 0:
+                is_recording_alert = False
+                alert_ffmpeg_process.stdin.close()
+                alert_ffmpeg_process.wait()
+                alert_ffmpeg_process = None
+                print(" Fin de l'enregistrement du clip GPU.")
+        except:
             is_recording_alert = False
-            alert_ffmpeg_process.stdin.close()
-            alert_ffmpeg_process.wait()
-            alert_ffmpeg_process = None
-            print(" Fin de l'enregistrement du clip GPU.")
 
     object_hold_counter = {k: v-1 for k, v in object_hold_counter.items() if v > 1}
 
-    cv2.imshow("YOLO Detection", annotated_frame)
+    # Pour éviter le freeze "Ne répond pas", on commente cv2.imshow
+    # cv2.imshow("YOLO Detection", annotated_frame)
+
+    # Empêche le système de croire que le script est planté
+    cv2.waitKey(1)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
+pipe_in.terminate() # Ferme proprement la connexion à la caméra
 cv2.destroyAllWindows()

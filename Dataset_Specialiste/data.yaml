@@ -1,0 +1,9 @@
+path: /home/surveillance-ia/projet-IA-videosurveillance/Dataset_Specialiste
+train: images/train
+val: images/val
+test:
+
+names:
+  0: article
+  1: bags
+  2: hands
