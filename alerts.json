@@ -9,41 +9,6 @@
     {
         "cam": "CAM_01",
         "type": "CORPS",
-        "score": 0.8085991144180298,
-        "time": "15:33:12",
-        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_153312.mp4"
-    },
-    {
-        "cam": "CAM_01",
-        "type": "CORPS",
-        "score": 0.615856409072876,
-        "time": "15:33:45",
-        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_153345.mp4"
-    },
-    {
-        "cam": "CAM_01",
-        "type": "CORPS",
-        "score": 0.8403245806694031,
-        "time": "15:33:58",
-        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_153358.mp4"
-    },
-    {
-        "cam": "CAM_01",
-        "type": "SAC",
-        "score": 0.3709985315799713,
-        "time": "15:59:32",
-        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_SAC_155931.mp4"
-    },
-    {
-        "cam": "CAM_01",
-        "type": "CORPS",
-        "score": 0.8510650396347046,
-        "time": "15:59:44",
-        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_155944.mp4"
-    },
-    {
-        "cam": "CAM_01",
-        "type": "CORPS",
         "score": 0.2978667616844177,
         "time": "15:59:56",
         "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_155956.mp4"
@@ -54,27 +19,6 @@
         "score": 0.366696834564209,
         "time": "16:42:57",
         "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_164257.mp4"
-    },
-    {
-        "cam": "CAM_01",
-        "type": "CORPS",
-        "score": 0.2779609262943268,
-        "time": "16:43:09",
-        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_164309.mp4"
-    },
-    {
-        "cam": "CAM_01",
-        "type": "CORPS",
-        "score": 0.5707998275756836,
-        "time": "16:43:22",
-        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_164322.mp4"
-    },
-    {
-        "cam": "CAM_01",
-        "type": "CORPS",
-        "score": 0.4100598990917206,
-        "time": "16:43:34",
-        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_164334.mp4"
     },
     {
         "cam": "CAM_01",
@@ -89,13 +33,5 @@
         "score": 0.6600747108459473,
         "time": "16:58:54",
         "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_165854.mp4"
-    },
-    {
-        "cam": "CAM_01",
-        "type": "CORPS",
-        "score": 0.839393138885498,
-        "time": "09:09:55",
-        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_090955.mp4",
-        "video_raw": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/RAW_CORPS_090955.mp4"
     }
 ]

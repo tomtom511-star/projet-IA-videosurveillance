@@ -28,7 +28,7 @@ st.set_page_config(
     page_icon="🛡️"  # Icône
 )
 
-# STYLE CSS GLOBAL
+# STYLE CSS GLOBAL (MIS À JOUR AVEC DE BEAUX BOUTONS)
 st.markdown("""
 <style>
     .stApp { background-color: white !important; color: #0066b2 !important; }
@@ -65,33 +65,33 @@ st.markdown("""
         margin-bottom: 10px;  /* Espace entre cartes */
         color: #333
     }
-    /* Bouton refresh normal */
-    .stButton > button {
-        background-color: white;
-        color: #0066b2;
-        border-radius: 8px;
-        border: none;
+    
+    /* NOUVEAU DESIGN DES BOUTONS (PLUS BEAUX) */
+    div[data-testid="stButton"] > button {
+        background-color: white !important;
+        color: #0066b2 !important;
+        border: 2px solid #0066b2 !important;
+        border-radius: 8px !important;
+        font-weight: bold !important;
+        transition: all 0.2s ease-in-out !important;
     }
 
-    /* Hover inversé */
-    .stButton > button:hover {
-        background-color: #0066b2;
-        color: white;
-        border: 2px solid #0066b2;
-    }
-    /* Bouton refresh normal */
-    .st.sidebar.button > button {
-        background-color: #0066b2;
-        color: white;
-        border-radius: 8px;
-        border: none;
+    div[data-testid="stButton"] > button:hover {
+        background-color: #0066b2 !important;
+        color: white !important;
+        transform: scale(1.02) !important;
     }
 
-    /* Hover inversé */
-    .st.sidebar.button > button:hover {
-        background-color: white;
-        color: #0066b2;
-        border: 2px solid #0066b2;
+    /* Boutons dans la sidebar (inversés pour coller au fond bleu) */
+    [data-testid="stSidebar"] div[data-testid="stButton"] > button {
+        background-color: #0066b2 !important;
+        color: white !important;
+        border: 2px solid white !important;
+    }
+
+    [data-testid="stSidebar"] div[data-testid="stButton"] > button:hover {
+        background-color: white !important;
+        color: #0066b2 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -120,14 +120,22 @@ def load_alerts():
 
 # SUPPRESSION D'ALERTE
 
-def delete_alert(index_to_remove, video_path):
-    """Supprime alerte + vidéo associée"""
+def delete_alert(index_to_remove, video_path, raw_path=None):
+    """Supprime alerte + vidéos associées (IA et RAW)"""
 
-    if video_path and os.path.exists(video_path):  # Vérifie vidéo existe
+    # Suppression de la vidéo IA
+    if video_path and os.path.exists(video_path):  
         try:
-            os.remove(video_path)  # Supprime fichier vidéo
+            os.remove(video_path)  
         except:
-            pass  # Ignore erreur suppression
+            pass  
+
+    # Suppression de la vidéo RAW sans IA si elle existe
+    if raw_path and os.path.exists(raw_path):
+        try:
+            os.remove(raw_path)
+        except:
+            pass
 
     alerts = load_alerts()  # Recharge toutes alertes
 
@@ -249,6 +257,50 @@ if page == "📺 LIVE":
         
         ]
     }  
+
+    # --- INJECTION JAVASCRIPT POUR LE PLEIN ÉCRAN ET LES FLÈCHES ---
+    # Récupération de l'ordre linéaire de toutes les URLS pour la navigation au clavier
+    all_cam_urls = []
+    for zone, cams in cameras.items():
+        for cam in cams:
+            all_cam_urls.append(cam["url"])
+    
+    js_urls_array = "[" + ",".join([f"'{url}'" for url in all_cam_urls]) + "]"
+
+    # Astuce pour injecter du Javascript natif via le onerror d'une fausse image (car Streamlit bloque les balises <script>)
+    st.markdown(f"""
+        <img src="dummy" style="display:none;" onerror="
+            window.camUrls = {js_urls_array};
+            
+            // Fonction pour gérer les flèches du clavier en plein écran
+            window.handleKey = function(e, imgElem) {{
+                if(e.key === 'ArrowRight') {{
+                    let idx = parseInt(imgElem.getAttribute('data-index'));
+                    idx = (idx + 1) % window.camUrls.length;
+                    imgElem.setAttribute('data-index', idx);
+                    imgElem.src = window.camUrls[idx];
+                }}
+                else if(e.key === 'ArrowLeft') {{
+                    let idx = parseInt(imgElem.getAttribute('data-index'));
+                    idx = (idx - 1 + window.camUrls.length) % window.camUrls.length;
+                    imgElem.setAttribute('data-index', idx);
+                    imgElem.src = window.camUrls[idx];
+                }}
+            }};
+            
+            // Fonction pour lancer le plein écran
+            window.openFS = function(id) {{
+                let img = document.getElementById(id);
+                if(img.requestFullscreen) img.requestFullscreen();
+                else if(img.webkitRequestFullscreen) img.webkitRequestFullscreen();
+                else if(img.msRequestFullscreen) img.msRequestFullscreen();
+                // On met le focus sur l'image pour que les évènements claviers soient captés tout de suite
+                setTimeout(() => img.focus(), 200); 
+            }};
+        ">
+    """, unsafe_allow_html=True)
+    # -------------------------------------------------------------
+
     for zone, cams in cameras.items():
         with st.expander(f"📍 {zone}", expanded=True): # Utiliser expander réduit la charge CPU si fermé
             for i in range(0, len(cams), 2): # 2 caméras par ligne pour plus de stabilité
@@ -256,14 +308,18 @@ if page == "📺 LIVE":
                 for j in range(2):
                     if i + j < len(cams):
                         cam = cams[i + j]
+                        global_cam_index = all_cam_urls.index(cam["url"]) # Index global pour le JS
                         with cols[j]:
-                            # CADRE DESIGN LECLERC
+                            # CADRE DESIGN LECLERC (Avec bouton plein écran intégré)
                             st.markdown(f"""
-                                <div style="background-color:#0066b2; color:white; padding:5px 10px; border-radius:10px 10px 0 0; font-weight:bold;">
-                                    🎥 {cam['name']}
+                                <div style="background-color:#0066b2; color:white; padding:5px 10px; border-radius:10px 10px 0 0; font-weight:bold; display: flex; justify-content: space-between; align-items: center;">
+                                    <span>🎥 {cam['name']}</span>
+                                    <button onclick="window.openFS('img_{cam['id']}')" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2rem; margin:0; padding:0;" title="Plein écran">⛶</button>
                                 </div>
-                                <div style="border: 4px solid #0066b2; border-radius: 0 0 10px 10px; overflow: hidden;">
-                                    <img src="{cam['url']}" style="width: 100%; display: block;" 
+                                <div style="border: 4px solid #0066b2; border-radius: 0 0 10px 10px; overflow: hidden; background-color: #000;">
+                                    <img id="img_{cam['id']}" data-index="{global_cam_index}" src="{cam['url']}" tabindex="0"
+                                         onkeydown="window.handleKey(event, this)"
+                                         style="width: 100%; display: block; outline: none; aspect-ratio: 16/9; object-fit: contain;" 
                                          onerror="this.onerror=null;this.src='https://via.placeholder.com/1280x720?text=Flux+Indisponible';">
                                 </div>
                             """, unsafe_allow_html=True)
@@ -333,10 +389,22 @@ elif page == "🚨 ALERTES":
         else:
             main_color, status_text = "#FF0000", "CERTITUDE HAUTE" # Rouge
 
+        # EXTRACTION DE LA DATE
+        # Si la date n'est pas dans le JSON, on regarde la date de modification du fichier mp4
+        vid_clip = alert.get("video_clip", "")
+        vid_raw = alert.get("video_raw", "")
+        
+        alert_date_str = "Date inconnue"
+        if "date" in alert:
+            alert_date_str = alert["date"]
+        elif vid_clip and os.path.exists(vid_clip):
+            timestamp_creation = os.path.getmtime(vid_clip)
+            alert_date_str = datetime.fromtimestamp(timestamp_creation).strftime("%d/%m/%Y")
+
         # ON OUVRE LE CONTENEUR DE L'ALERTE (pour la marge)
         st.markdown('<div style="margin-bottom: 25px;">', unsafe_allow_html=True)
 
-        # 1. LE HEADER DE COULEUR FUSIONNÉ
+        # 1. LE HEADER DE COULEUR FUSIONNÉ (Ajout de la date)
         # Un div transparent de couleur qui contient l'info, au-dessus du bloc vidéo
         st.markdown(f"""
             <div style="
@@ -350,8 +418,8 @@ elif page == "🚨 ALERTES":
                 justify-content: space-between; 
                 align-items: center;
             ">
-                <span>⚠️ ALERTE  VOL {alert.get('type')}</span>
-                <div style="color:white; font-size:1.1rem; padding: 2px 10px;">🕒 Heure : {alert.get("time")}</div>
+                <span>⚠️ ALERTE VOL {alert.get('type')}</span>
+                <div style="color:white; font-size:1.1rem; padding: 2px 10px;">📅 {alert_date_str} - 🕒 {alert.get("time")}</div>
                 <span style="background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 20px;">
                     {status_text} | {score_percent}%
                 </span>
@@ -361,7 +429,6 @@ elif page == "🚨 ALERTES":
         # 2. LE BLOC VIDÉO AVEC BORDURE ÉPAISSE
         # On enferme la vidéo dans un div qui prend la couleur du score
         with st.container():
-            # OUVERTURE DU CADRE VIDÉO
             st.markdown(f"""
                 <div style="
                     border: 6px solid {main_color}; 
@@ -374,29 +441,48 @@ elif page == "🚨 ALERTES":
 
             col_video, col_actions = st.columns([3, 1])
             
+            # GESTION DU TOGGLE IA / RAW DANS LE SESSION_STATE
+            toggle_key = f"toggle_raw_{i}"
+            if toggle_key not in st.session_state:
+                st.session_state[toggle_key] = False # Par défaut: Vue IA
+
+            is_raw_view = st.session_state[toggle_key]
+            
+            # Si le mode raw est actif et que la vidéo existe, on la prend, sinon on rabat sur clip
+            active_video_path = vid_raw if (is_raw_view and vid_raw and os.path.exists(vid_raw)) else vid_clip
+
             with col_video:
-                video_path = alert.get("video_clip", "")
-                if video_path and os.path.exists(video_path):
-                    st.video(video_path)
+                if active_video_path and os.path.exists(active_video_path):
+                    st.video(active_video_path)
                 else:
-                    st.warning("Flux vidéo indisponible")
+                    st.warning("Flux vidéo indisponible sur le disque")
 
             with col_actions:
+                st.write("") # Marge
+                
+                # NOUVEAU BOUTON : Toggle Vue IA / Vue Nette
+                btn_text = "👁️ Vue IA (Active)" if not is_raw_view else "📹 Vue Nette (Active)"
+                if st.button(btn_text, key=f"btn_toggle_{i}", use_container_width=True):
+                    st.session_state[toggle_key] = not is_raw_view
+                    st.rerun()
+                
                 st.write("---") # Séparateur
-                # Bouton suppression (avec tes keys)
-                if st.button("🗑️ Supprimer", key=f"del_{i}"):
-                    delete_alert(original_index, video_path)
 
-                # Bouton téléchargement (avec tes keys)
-                if video_path and os.path.exists(video_path):
-                    with open(video_path, "rb") as f:
+                # Bouton suppression (Modifié pour supprimer IA + RAW)
+                if st.button("🗑️ Supprimer", key=f"del_{i}", use_container_width=True):
+                    delete_alert(original_index, vid_clip, vid_raw)
+
+                # Bouton téléchargement (Télécharge la vidéo affichée à l'écran : IA ou RAW)
+                if active_video_path and os.path.exists(active_video_path):
+                    with open(active_video_path, "rb") as f:
+                        file_suffix = "RAW" if is_raw_view else "IA"
                         st.download_button(
                             "📥 Télécharger",
                             f,
-                            file_name=f"alert_{alert['time']}.mp4",
-                            key=f"dl_{i}"
+                            file_name=f"alert_{file_suffix}_{alert['time'].replace(':', '')}.mp4",
+                            key=f"dl_{i}",
+                            use_container_width=True
                         )
-                        #L'argument key permet de donner un "nom de famille" unique à chaque bouton pour que Streamlit puisse les différencier.
 
 # RGPD
 st.markdown("""
