@@ -1,52 +1,55 @@
-from ultralytics import YOLO
 import cv2
 import os
-import torch
 from datetime import datetime
 
-# --- CONFIGURATION GPU ---
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model = YOLO("runs/detect/train/weights/best.pt").to(device)
-
-# --- CONFIGURATION DU DOSSIER DE CAPTURE ---
-# On crée le dossier frame_video s'il n'existe pas
+# --- CONFIGURATION DU DOSSIER DE SORTIE ---
+# Dossier où les images (frames) seront enregistrées
 output_frames_dir = "frame_video"
+
+# Crée le dossier s'il n'existe pas déjà
 os.makedirs(output_frames_dir, exist_ok=True)
 
-cap = cv2.VideoCapture("vidéos/test4.mp4")
+# --- OUVERTURE DE LA VIDÉO ---
+# Remplace par le chemin de ta vidéo
+video_path = "vidéos/test4.mp4"
+cap = cv2.VideoCapture(video_path)
 
-# Compteur pour nommer les images
-frame_count = 0
+# Vérifie que la vidéo s'est bien ouverte
+if not cap.isOpened():
+    print("Erreur : impossible d'ouvrir la vidéo.")
+    exit()
+
+# --- VARIABLES ---
+frame_count = 0  # Compteur de frames
 timestamp_session = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+# --- BOUCLE DE LECTURE VIDÉO ---
 while True:
-    ret, frame = cap.read() # Image originale
-    if not ret: break
+    # Lecture d'une frame
+    ret, frame = cap.read()
 
-    frame_count += 1
-
-    # --- SAUVEGARDE DANS "frame_video" ---
-    # On enregistre une image toutes les 30 frames (environ 1 seconde)
-    if frame_count % 60 == 0:
-        # Nom de l'image : frame_SESSION_NUMERO.jpg
-        img_name = f"frame_{timestamp_session}_{frame_count}.jpg"
-        save_path = os.path.join(output_frames_dir, img_name)
-        
-        # Sauvegarde de l'image BRUTE (sans dessins YOLO)
-        cv2.imwrite(save_path, frame)
-        print(f"Image sauvegardée : {img_name}")
-
-    # --- ANALYSE IA (Juste pour l'affichage) ---
-    results = model.track(frame, persist=True, tracker="bytetrack.yaml", imgsz=640)
-    
-    # On récupère l'image avec les boîtes pour la montrer à l'écran
-    annotated_frame = results[0].plot()
-
-    # Affichage
-    cv2.imshow("Capture et Detection", annotated_frame)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    # Si la vidéo est terminée, on sort de la boucle
+    if not ret:
         break
 
+    # Incrément du compteur de frames
+    frame_count += 1
+
+    # --- SAUVEGARDE DES FRAMES ---
+    # Ici : on sauvegarde 1 frame toutes les 60 frames (~2 secondes si 30 fps)
+    if frame_count % 60 == 0:
+
+        # Nom du fichier image
+        img_name = f"frame_{timestamp_session}_{frame_count}.jpg"
+
+        # Chemin complet de sauvegarde
+        save_path = os.path.join(output_frames_dir, img_name)
+
+        # Sauvegarde de l'image
+        cv2.imwrite(save_path, frame)
+
+        print(f"Frame sauvegardée : {img_name}")
+
+# --- LIBÉRATION DES RESSOURCES ---
 cap.release()
-cv2.destroyAllWindows()
+print("Extraction terminée.")

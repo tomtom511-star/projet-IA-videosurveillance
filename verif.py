@@ -4,8 +4,8 @@ from pathlib import Path
 
 # 1. Choisir une image et son label au hasard (ou une spécifique)
 # On prend la première image du dossier pour tester
-image_folder = Path('Dataset_Specialiste/images')
-label_folder = Path('Dataset_Specialiste/labels')
+image_folder = Path('Dataset_Specialiste_v2/images')
+label_folder = Path('Dataset_Specialiste_v2/labels')
 
 # On cherche une image qui a un label non vide pour que ce soit intéressant
 img_list = list(image_folder.glob('*.jpg'))

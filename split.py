@@ -3,8 +3,8 @@ import random
 import shutil
 
 # Chemins
-image_dir = "Dataset_Specialiste/images"
-label_dir = "Dataset_Specialiste/labels"
+image_dir = "Dataset_Specialiste_v2/images"
+label_dir = "Dataset_Specialiste_v2/labels"
 
 # Liste tous les fichiers images
 images = [f for f in os.listdir(image_dir) if f.endswith('.jpg')]

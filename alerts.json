@@ -89,5 +89,13 @@
         "score": 0.6600747108459473,
         "time": "16:58:54",
         "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_165854.mp4"
+    },
+    {
+        "cam": "CAM_01",
+        "type": "CORPS",
+        "score": 0.839393138885498,
+        "time": "09:09:55",
+        "video_clip": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/Vole_CORPS_090955.mp4",
+        "video_raw": "/home/surveillance-ia/projet-IA-videosurveillance/alert_clips/RAW_CORPS_090955.mp4"
     }
 ]
