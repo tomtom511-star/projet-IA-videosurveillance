@@ -3,6 +3,7 @@ import json  # Lecture / écriture JSON (alertes)
 import os  # Gestion fichiers système
 from datetime import datetime, timedelta  # Gestion des heures
 from streamlit_cookies_manager import EncryptedCookieManager  # Cookies persistants sécurisés
+import requests
 
 # IDENTIFIANTS ADMIN (À PROTÉGER EN PRODUCTION)
 
@@ -28,7 +29,7 @@ st.set_page_config(
     page_icon="🛡️"  # Icône
 )
 
-# STYLE CSS GLOBAL (MIS À JOUR AVEC DE BEAUX BOUTONS)
+# STYLE CSS GLOBAL (MIS À JOUR POUR LE HOVER SIDEBAR ET L'ESPACEMENT)
 st.markdown("""
 <style>
     .stApp { background-color: white !important; color: #0066b2 !important; }
@@ -66,7 +67,7 @@ st.markdown("""
         color: #333
     }
     
-    /* NOUVEAU DESIGN DES BOUTONS (PLUS BEAUX) */
+    /* DESIGN DES BOUTONS */
     div[data-testid="stButton"] > button {
         background-color: white !important;
         color: #0066b2 !important;
@@ -76,24 +77,67 @@ st.markdown("""
         transition: all 0.2s ease-in-out !important;
     }
 
-    div[data-testid="stButton"] > button:hover {
+    div[data-testid="stButton"] > button:hover,
+    div[data-testid="stButton"] > button:hover * {
+        background-color: #0066b2 !important;
+        color: white !important;
+        transform: scale(1.02) !important;
+    }
+    
+    div[data-testid="stDownloadButton"] > button {
+        background-color: white !important;
+        color: #0066b2 !important;
+        border: 2px solid #0066b2 !important;
+        border-radius: 8px !important;
+        font-weight: bold !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+
+    div[data-testid="stDownloadButton"] > button:hover,
+    div[data-testid="stDownloadButton"] > button:hover * {
         background-color: #0066b2 !important;
         color: white !important;
         transform: scale(1.02) !important;
     }
 
-    /* Boutons dans la sidebar (inversés pour coller au fond bleu) */
+    /* BOUTONS DANS LA SIDEBAR (CORRECTION DU BLANC SUR BLANC) */
     [data-testid="stSidebar"] div[data-testid="stButton"] > button {
         background-color: #0066b2 !important;
         color: white !important;
         border: 2px solid white !important;
     }
 
-    [data-testid="stSidebar"] div[data-testid="stButton"] > button:hover {
+    [data-testid="stSidebar"] div[data-testid="stButton"] > button:hover,
+    [data-testid="stSidebar"] div[data-testid="stButton"] > button:hover * {
         background-color: white !important;
+        color: #0066b2 !important;  /* Forcer le texte en bleu au survol */
+    }
+    /* CIBLE EXACTE DU HEADER EXPANDER */
+    div[data-testid="stExpander"] > details > summary {
+        background-color: #f39200 !important; /* ORANGE */
+        color: #0066b2 !important; /* BLEU */
+        border-radius: 10px !important;
+        padding: 10px 15px !important;
+        font-weight: bold !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+
+    /* TEXTE À L'INTÉRIEUR */
+    div[data-testid="stExpander"] > details > summary * {
         color: #0066b2 !important;
     }
+
+    /* HOVER */
+    div[data-testid="stExpander"] > details > summary:hover {
+        background-color: #0066b2 !important; /* BLEU */
+    }
+
+    /* TEXTE HOVER */
+    div[data-testid="stExpander"] > details > summary:hover * {
+        color: white !important;
+    }
 </style>
+            
 """, unsafe_allow_html=True)
 
 # CHARGEMENT DES ALERTES
@@ -258,7 +302,7 @@ if page == "📺 LIVE":
         ]
     }  
 
-    # --- INJECTION JAVASCRIPT POUR LE PLEIN ÉCRAN ET LES FLÈCHES ---
+    # --- CORRECTION DE L'INJECTION JAVASCRIPT ---
     # Récupération de l'ordre linéaire de toutes les URLS pour la navigation au clavier
     all_cam_urls = []
     for zone, cams in cameras.items():
@@ -267,38 +311,31 @@ if page == "📺 LIVE":
     
     js_urls_array = "[" + ",".join([f"'{url}'" for url in all_cam_urls]) + "]"
 
-    # Astuce pour injecter du Javascript natif via le onerror d'une fausse image (car Streamlit bloque les balises <script>)
-    st.markdown(f"""
-        <img src="dummy" style="display:none;" onerror="
-            window.camUrls = {js_urls_array};
-            
-            // Fonction pour gérer les flèches du clavier en plein écran
-            window.handleKey = function(e, imgElem) {{
-                if(e.key === 'ArrowRight') {{
-                    let idx = parseInt(imgElem.getAttribute('data-index'));
-                    idx = (idx + 1) % window.camUrls.length;
-                    imgElem.setAttribute('data-index', idx);
-                    imgElem.src = window.camUrls[idx];
-                }}
-                else if(e.key === 'ArrowLeft') {{
-                    let idx = parseInt(imgElem.getAttribute('data-index'));
-                    idx = (idx - 1 + window.camUrls.length) % window.camUrls.length;
-                    imgElem.setAttribute('data-index', idx);
-                    imgElem.src = window.camUrls[idx];
-                }}
-            }};
-            
-            // Fonction pour lancer le plein écran
-            window.openFS = function(id) {{
-                let img = document.getElementById(id);
-                if(img.requestFullscreen) img.requestFullscreen();
-                else if(img.webkitRequestFullscreen) img.webkitRequestFullscreen();
-                else if(img.msRequestFullscreen) img.msRequestFullscreen();
-                // On met le focus sur l'image pour que les évènements claviers soient captés tout de suite
-                setTimeout(() => img.focus(), 200); 
-            }};
-        ">
-    """, unsafe_allow_html=True)
+    # Code Javascript sur UNE SEULE LIGNE (minifié) pour éviter que Streamlit l'affiche comme du Markdown
+    js_code = (
+        "window.camUrls=" + js_urls_array + ";"
+        "window.handleKey=function(e,imgElem){"
+        "if(e.key==='ArrowRight'){"
+        "let idx=parseInt(imgElem.getAttribute('data-index'));idx=(idx+1)%window.camUrls.length;"
+        "imgElem.setAttribute('data-index',idx);imgElem.src=window.camUrls[idx];"
+        "}else if(e.key==='ArrowLeft'){"
+        "let idx=parseInt(imgElem.getAttribute('data-index'));idx=(idx-1+window.camUrls.length)%window.camUrls.length;"
+        "imgElem.setAttribute('data-index',idx);imgElem.src=window.camUrls[idx];"
+        "}"
+        "};"
+        
+        # FIX FULLSCREEN
+        "window.openFS=function(id){"
+        "let el=document.getElementById('container_'+id);"
+        "if(!el)return;"
+        "if(el.requestFullscreen)el.requestFullscreen();"
+        "else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();"
+        "else if(el.msRequestFullscreen)el.msRequestFullscreen();"
+        "};"
+    )
+
+    # Injection sans sauts de ligne
+    st.markdown(f'<img src="dummy" style="display:none;" onerror="{js_code}">', unsafe_allow_html=True)
     # -------------------------------------------------------------
 
     for zone, cams in cameras.items():
@@ -310,20 +347,36 @@ if page == "📺 LIVE":
                         cam = cams[i + j]
                         global_cam_index = all_cam_urls.index(cam["url"]) # Index global pour le JS
                         with cols[j]:
-                            # CADRE DESIGN LECLERC (Avec bouton plein écran intégré)
+                            # On simplifie le HTML pour ne garder que le Fullscreen
                             st.markdown(f"""
-                                <div style="background-color:#0066b2; color:white; padding:5px 10px; border-radius:10px 10px 0 0; font-weight:bold; display: flex; justify-content: space-between; align-items: center;">
-                                    <span>🎥 {cam['name']}</span>
-                                    <button onclick="window.openFS('img_{cam['id']}')" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2rem; margin:0; padding:0;" title="Plein écran">⛶</button>
-                                </div>
-                                <div style="border: 4px solid #0066b2; border-radius: 0 0 10px 10px; overflow: hidden; background-color: #000;">
-                                    <img id="img_{cam['id']}" data-index="{global_cam_index}" src="{cam['url']}" tabindex="0"
-                                         onkeydown="window.handleKey(event, this)"
-                                         style="width: 100%; display: block; outline: none; aspect-ratio: 16/9; object-fit: contain;" 
-                                         onerror="this.onerror=null;this.src='https://via.placeholder.com/1280x720?text=Flux+Indisponible';">
+                                <div id="container_img_{cam['id']}">
+                                    <div style="background-color:#0066b2; color:#f39200; padding:5px 10px; border-radius:10px 10px 0 0; font-weight:bold; display: flex; justify-content: space-between; align-items: center;">
+                                        <span>🎥 {cam['name']}</span>
+                                        <button onclick="window.openFS('img_{cam['id']}')" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2rem;">⛶</button>
+                                    </div>
+                                    <div style="border: 4px solid #0066b2; border-radius: 0 0 10px 10px; overflow: hidden; background-color: #000;">
+                                        <img id="img_{cam['id']}" data-index="{global_cam_index}" src="{cam['url']}" tabindex="0" onkeydown="window.handleKey(event, this)" style="width: 100%; display: block; aspect-ratio: 16/9; object-fit: contain;">
+                                    </div>
                                 </div>
                             """, unsafe_allow_html=True)
-                            st.caption(f"ID: {cam['id']} | Flux Temps Réel (NVDEC Accelerated)")
+                            st.caption(f"ID: {cam['id']} | Flux Temps Réel")
+
+                            # 👉 BOUTON PYTHON (backend)
+                            if st.button(f"📸 Prendre une capture {cam['id']}", key=f"snap_{cam['id']}"):
+                                try:
+                                    response = requests.post(
+                                        "http://192.168.0.97:5000/snapshot",
+                                        json={"cam_id": cam["id"]},
+                                        timeout=2
+                                    )
+
+                                    if response.status_code == 200:
+                                        st.success(f"Capture enregistrée 📸 ({cam['id']})")
+                                    else:
+                                        st.error("Erreur snapshot")
+
+                                except Exception as e:
+                                    st.error(f"Erreur connexion caméra : {e}")
 
 # PAGE ALERTES
 
@@ -375,7 +428,6 @@ elif page == "🚨 ALERTES":
 
     st.write(f"**{len(filtered)} alertes**")  # compteur
 
-
     # AFFICHAGE ALERTES
     for i, alert in enumerate(reversed(filtered)):
         original_index = alerts.index(alert)
@@ -405,7 +457,6 @@ elif page == "🚨 ALERTES":
         st.markdown('<div style="margin-bottom: 25px;">', unsafe_allow_html=True)
 
         # 1. LE HEADER DE COULEUR FUSIONNÉ (Ajout de la date)
-        # Un div transparent de couleur qui contient l'info, au-dessus du bloc vidéo
         st.markdown(f"""
             <div style="
                 background-color: {main_color};
@@ -427,7 +478,6 @@ elif page == "🚨 ALERTES":
         """, unsafe_allow_html=True)
 
         # 2. LE BLOC VIDÉO AVEC BORDURE ÉPAISSE
-        # On enferme la vidéo dans un div qui prend la couleur du score
         with st.container():
             st.markdown(f"""
                 <div style="
@@ -458,15 +508,14 @@ elif page == "🚨 ALERTES":
                     st.warning("Flux vidéo indisponible sur le disque")
 
             with col_actions:
-                st.write("") # Marge
+                # Espace initial pour centrer les boutons par rapport à la vidéo
+                st.markdown('<div style="margin-top: 15px;"></div>', unsafe_allow_html=True)
                 
-                # NOUVEAU BOUTON : Toggle Vue IA / Vue Nette
-                btn_text = "👁️ Vue IA (Active)" if not is_raw_view else "📹 Vue Nette (Active)"
+                # BOUTON : Toggle Vue IA / Vue Nette
+                btn_text = "📹​ Voir la vue naturelle" if not is_raw_view else "🧠​ Voir la vue intelligente "
                 if st.button(btn_text, key=f"btn_toggle_{i}", use_container_width=True):
                     st.session_state[toggle_key] = not is_raw_view
                     st.rerun()
-                
-                st.write("---") # Séparateur
 
                 # Bouton suppression (Modifié pour supprimer IA + RAW)
                 if st.button("🗑️ Supprimer", key=f"del_{i}", use_container_width=True):

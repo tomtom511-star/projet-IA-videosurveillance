@@ -9,6 +9,7 @@ from datetime import datetime
 import time
 import torch # pour forcer l'utilisation du GPU
 from collections import deque # Pour le buffer circulaire
+from flask import request, jsonify
 
 #streaming live (sans stockage disque)
 from flask import Flask, Response
@@ -21,6 +22,7 @@ app = Flask(__name__)
 print("CUDA available:", torch.cuda.is_available())
 print("GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU")
 output_frame = None
+raw_frame = None
 frame_lock = threading.Lock()
 
 # ==========================================
@@ -164,13 +166,39 @@ def video():
         generate_stream(),
         mimetype='multipart/x-mixed-replace; boundary=frame'
     )
+@app.route('/snapshot', methods=['POST'])
+def take_snapshot():
+    global raw_frame
+
+    # 1. Récupérer les infos envoyées par le dashboard
+    data = request.get_json()
+    cam_id = data.get('cam_id', 'unknown')
+    
+    # 2. Vérifier si on a une image en mémoire
+    with frame_lock:
+        if output_frame is None:
+            return jsonify({"status": "error", "message": "Pas d'image disponible"}), 500
+        frame_to_save = raw_frame.copy()
+
+    # 3. Créer le dossier snapshots s'il n'existe pas
+    if not os.path.exists("snapshots"):
+        os.makedirs("snapshots")
+
+    # 4. Enregistrer l'image
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    file_name = f"CLEAN_{cam_id}_{timestamp}.jpg"
+    file_path = os.path.join("snapshots", file_name)
+
+    cv2.imwrite(file_path, frame_to_save)
+    print(f"📸 Snapshot enregistré : {file_path}")
+    return jsonify({"status": "success", "file": file_path}), 200
 
 def start_server():
     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
 
 threading.Thread(target=start_server, daemon=True).start()
 
-def zoom_tracking(frame, box, zoom_factor=1.3):
+def zoom_tracking(frame, box):
     global smooth_center
 
     h, w = frame.shape[:2]
@@ -187,8 +215,10 @@ def zoom_tracking(frame, box, zoom_factor=1.3):
     bw = (x2 - x1)
     bh = (y2 - y1)
 
-    new_w = int(bw * zoom_factor)
-    new_h = int(bh * zoom_factor)
+    margin = 80  # ← ajuste ici (pixels)
+
+    new_w = bw + margin
+    new_h = bh + margin
 
     # clamp
     new_w = min(new_w, w)
@@ -273,13 +303,13 @@ person_tracking = {} # Dictionnaire pour traquer le temps de présence
 # Boucle infinie pour lire la vidéo image par image
 while True:
     # --- LECTURE VIA LE PIPE GPU ---
-    raw_frame = pipe_in.stdout.read(width * height * 3)
-    if not raw_frame:
+    pipe_data = pipe_in.stdout.read(width * height * 3)
+    if not pipe_data:
         print("Erreur flux... Reconnexion")
         pipe_in = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=10**8)
         continue
     
-    frame = np.frombuffer(raw_frame, np.uint8).reshape((height, width, 3))
+    frame = np.frombuffer(pipe_data, np.uint8).reshape((height, width, 3))
     clean_frame = frame.copy()
     annotated_frame = frame.copy() # L'image sur laquelle on va dessiner
     current_time = time.time()
@@ -608,6 +638,7 @@ while True:
     # 1. Mise à jour du flux Live pour Streamlit (Maintenant que TOUT est dessiné)
     with frame_lock:
         output_frame = annotated_frame.copy()
+        raw_frame = frame.copy() # Image PROPRE (pour le snapshot)
     # 2. Stockage dans le buffer pour FFmpeg (Vidéo avec dessins)
     video_buffer.append(annotated_frame)
     video_buffer_raw.append(clean_frame.copy())
