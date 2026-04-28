@@ -251,7 +251,7 @@ st.sidebar.title("📊 Menu")  # Titre sidebar
 
 st.sidebar.metric("Alertes", len(alerts))  # Nombre alertes
 
-page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES"])  # Navigation
+page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES", "📘 GUIDE D'AMÉLIORATION"])  # Navigation
 
 # DÉCONNEXION
 
@@ -279,10 +279,10 @@ if page == "📺 LIVE":
     # 📍 DÉFINITION DES CAMÉRAS PAR ZONES
     
     cameras = {
-        "🏬 Magasin central": [
-            {"id": "CAM_01", "name": "Entrée principale", "url": "http://192.168.0.97:5000/video"},
-            {"id": "CAM_02", "name": "Rayon alimentaire", "url": "http://192.168.0.97:5001/video"},
-            {"id": "CAM_03", "name": "Caisses Automatiques", "url": "http://192.168.0.97:5002/video"},
+        "🍾 Alcool": [
+            {"id": "CAM_01", "name": "🥃​ Rayon alcool fort", "url": "http://192.168.0.97:5000/video/CAM_01"},
+            {"id": "CAM_02", "name": "🍷 Vins", "url": "http://192.168.0.97:5000/video/CAM_02"},
+            {"id": "CAM_03", "name": "🥂 Champagnes", "url": "http://192.168.0.97:5002/video/CAM_03"},
         ],
         "🌍 Espace culturel": [
             {"id": "CAM_04", "name": "Zone jeux vidéo", "url": "http://192.168.0.97:5003/video"},
@@ -532,6 +532,220 @@ elif page == "🚨 ALERTES":
                             key=f"dl_{i}",
                             use_container_width=True
                         )
+
+elif page == "📘 GUIDE D'AMÉLIORATION":
+
+    st.markdown(
+        '<div class="header"><h1>🔄 Guide d\'amélioration continue</h1></div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown("""
+    <style>
+    .step-card {
+        background: white;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+        border-left: 6px solid #0066b2;
+    }
+
+    .step-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #0066b2;
+        margin-bottom: 10px;
+    }
+
+    .step-sub {
+        font-size: 1.05rem;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .code-box {
+        background: #f4f4f4;
+        padding: 10px;
+        border-radius: 8px;
+        font-family: monospace;
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+
+    .warning {
+        color: #d00000;
+        font-weight: bold;
+    }
+
+    .badge {
+        display:inline-block;
+        background:#f39200;
+        color:white;
+        padding:3px 8px;
+        border-radius:8px;
+        font-size:0.8rem;
+        margin-left:5px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # =========================
+    # ÉTAPE 1
+    # =========================
+    st.markdown(
+        '<div class="step-card">'
+            '<div class="step-title">🧪 ÉTAPE 1 : Identification et Extraction</div>'
+
+            '<div class="step-sub">'
+                '<b>Repérage :</b> On analyse les vidéos dans <code>alert_clips/</code><br>'
+                '<b>Récupération :</b> <code>alert_clips/raw/</code>'
+            '</div>'
+
+            '<div class="step-sub">'
+                'Extraction :'
+                '<ul>'
+                    '<li>1 image / seconde</li>'
+                    '<li>uniquement les erreurs visibles</li>'
+                '</ul>'
+            '</div>'
+
+            '<div class="step-sub">'
+                'Script utilisé : <b>frame.py</b><br>'
+                '<span class="warning">ATTENTION :</span> bien changer la ligne 14 par le bon chemin de la vidéo'
+            '</div>'
+
+            '<div class="code-box">python3 frame.py</div>'
+        '</div>',
+    unsafe_allow_html=True
+    )
+
+    # =========================
+    # ÉTAPE 2
+    # =========================
+    st.markdown(
+        '<div class="step-card">'
+            '<div class="step-title">🧠 ÉTAPE 2 : Mise à jour Dataset Global (Radar)</div>'
+
+            '<div class="step-sub">'
+            'Upload des images sur <b>Roboflow Global</b>'
+            '</div>'
+
+            '<ul>'
+                '<li><b>Upload :</b> Envoi ces images dans ton projet Roboflow Global </li>'
+                '<li><b>Correction :</b> Corrige ou ajoute les labels (ID 3 pour la personne, et les autres pour les mains/sacs/articles)</li>'
+                '<li><b>Génération :</b> Créé une Nouvelle Version sur Roboflow. Garde tes paramètres d\'augmentation (Blur, Noise, Light) pour que le modèle reste robuste</li>'
+                '<li><b>Export :</b> Télécharge le nouveau data.yaml et les images et renomme le Data_global_vX avec X la version du dataset</li>'
+                '<li><b>Transport :</b> Déplace le dans le dossier du projet</li>'
+            '</ul>'
+        '</div>',
+    unsafe_allow_html=True)
+
+    # =========================
+    # ÉTAPE 3
+    # =========================
+    st.markdown(
+        '<div class="step-card">'
+            '<div class="step-title">🔧 ÉTAPE 3 : Radar Global</div>'
+
+            '<div class="step-sub">'
+            'Aucun besoin d\'amélioration actuellement<br>'
+            '<b>Les personnes sont suffisamment bien détectées</b>'
+            '</div>'
+        '</div>', 
+    unsafe_allow_html=True)
+
+    # =========================
+    # ÉTAPE 4
+    # =========================
+    st.markdown(
+        '<div class="step-card">'
+            '<div class="step-title">✂️ ÉTAPE 4 : Préparation du Spécialiste</div>'
+
+            '<div class="step-sub">'
+            'Relancer le script de découpe sur tes nouvelles images en adaptant le script <b>decoupe.py </b>:'
+            'Il faut changer les ligne 6 et 7 en ajoutant les version (ex: Data_global_vX ou bien Dataset_specialiste_vX)'
+            'On lance '
+            '</div>'
+            '<div class="code-box">python3 decoupe.py</div>'
+
+            '<div class="step-sub">'
+            'Sur vs code, sur le dossier créé par le script de découpe on fait clic droit new file : data.yaml => ici c\'est le meme que la version du radar spécialiste antérieur (sauf si ajout ou suppression de classes) donc on copie colle.'
+            '<br>'
+            '<span class="warning">ATTENTION :</span> vérifier chemin ligne 1'
+            '</div>'
+
+            '<div class="step-sub">'
+            'Pour tester que cela fonctionne on lance le script verif.py'
+            '<br>'
+            '<span class="warning">ATTENTION :</span> changer les lignes 7 et 8'
+            '</div>'
+            '<div class="code-box">python3 verif.py</div>'
+
+            '<div class="step-sub">'
+            'Ensuite va dans le dossier du modèle spécialiste:'
+            '</div>'
+            '<div class="code-box">cd Dataset_Specialiste_vX</div>'
+
+            '<div class="step-sub">'
+            'Puis on crée les dossiers pour séparer les données (valid et train):'
+            '</div>'
+            '<div class="code-box">mkdir -p images/train images/val labels/train labels/val</div>'
+
+            '<div class="step-sub">'
+            'Split : Lancement du script de séparation pour isoler 80% pour le train et 20% pour le valid:'
+            '<br>'
+            '<span class="warning">ATTENTION :</span> Faire gaffe aux lignes 6 et 7 avec le chemin'
+            '</div>'
+            '<div class="code-box">python3 split.py</div>'
+        '</div>',
+     unsafe_allow_html=True)
+
+    # =========================
+    # ÉTAPE 5
+    # =========================
+    st.markdown(
+        '<div class="step-card">'
+            '<div class="step-title">🚀 ÉTAPE 5 : Ré-entraînement du Spécialiste</div>'
+
+            '<div class="code-box">'
+            'yolo task=detect mode=train model=runs/detect/radar_specialiste_v(X-1)/weights/best.pt data=Dataset_Specialiste_vX/data.yaml epochs=200 patience=50 imgsz=640 batch=-1 mosaic=1.0 mixup=0.2 cos_lr=True close_mosaic=10 name=specialiste_final_vX'
+            '</div>'
+
+            '<div class="step-sub">'
+            '<b>best.pt</b> <span class="badge">MEILLEUR</span><br>'
+            'C\'est la version qui a eu les meilleurs scores de précision lors des tests de validation.'
+            'Pour le Fine-Tuning. C\'est le cerveau le plus "brillant" que l\'on a produit. C\'est la base pour devenir encore meilleur.'
+            '</div>'
+
+            '<div class="step-sub">'
+            '<b>last.pt</b> <span class="badge">REPRISE</span><br>'
+            'C\'est l\'image exacte du modèle à la toute dernière époque de l\'entraînement.'
+            'Pour la reprise après crash. Si l\'entraînement a duré 20h et que le PC a planté, on reprend le last.pt pour finir les époques restantes.'
+            '</div>'
+        '</div>',
+    unsafe_allow_html=True)
+
+    # =========================
+    # ÉTAPE 6
+    # =========================
+    st.markdown(
+        '<div class="step-card">'
+            '<div class="step-title">🔄 ÉTAPE 6 : Mise à jour detect_obj.py</div>'
+
+            '<div class="step-sub">'
+            'Remplacer simplement dans le script detect_obj.py:'
+            '<ul>'
+                '<li>model_radar</li>'
+                '<li>model_specialiste</li>'
+            '</ul>'
+            '</div>'
+
+            '<div class="step-sub">'
+            '→ vers les nouveaux <b>best.pt</b>'
+            '</div>'
+        '</div>', 
+    unsafe_allow_html=True)
 
 # RGPD
 st.markdown("""

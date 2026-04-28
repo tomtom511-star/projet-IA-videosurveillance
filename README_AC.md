@@ -21,7 +21,7 @@ On lance dans le terminal : `python3 frame.py`
 
 Upload Roboflow Global.
 
-Upload : Tu envoies ces images dans ton projet Roboflow Global.
+Upload : Envoi ces images dans ton projet Roboflow Global.
 Correction : Corrige ou ajoute les labels (ID 3 pour la personne, et les autres pour les mains/sacs/articles).
 Génération : Créer une Nouvelle Version sur Roboflow. Garde tes paramètres d'augmentation (Blur, Noise, Light) pour que le modèle reste robuste.
 Export : Télécharge le nouveau data.yaml et les images et renomme le Data_global_vX avec X la version du dataset 
@@ -54,7 +54,7 @@ Puis on crée les dossiers pour séparer les données (valid et train):
 `mkdir -p images/train images/val labels/train labels/val`
 
 Split : Lancement du script de séparation pour isoler 80% des images pour le train et 20% pour le valid:
-ATTENTION: Faire gaffe au ligne 6 et 7 avec le chemin
+ATTENTION: Faire gaffe aux lignes 6 et 7 avec le chemin
 `python3 split.py`
 
 
