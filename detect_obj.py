@@ -50,6 +50,53 @@
 ║    Après une reconnexion FFmpeg, la queue pouvait contenir une frame    ║
 ║    de l'ancienne session. Fix : on vide la queue à chaque reconnexion.  ║
 ║                                                                          ║
+║  CORRECTIFS v3 (freeze sur ALERTE résolu) :                             ║
+║  ──────────────────────────────────────────                              ║
+║  BUG A — subprocess.Popen sans commande (crash silencieux) :            ║
+║    L'appel Popen pour le son d'alerte avait sa commande commentée mais  ║
+║    l'appel lui-même restait actif → TypeError immédiate → le worker     ║
+║    crashait silencieusement à chaque alerte. Fix : supprimer l'appel    ║
+║    Popen ou le protéger dans un try/except dédié.                       ║
+║                                                                          ║
+║  BUG B — stdin.write() bloquant dans la boucle principale :             ║
+║    L'écriture des frames vers FFmpeg d'enregistrement se faisait        ║
+║    de manière synchrone dans le thread du worker. Si le processus       ║
+║    FFmpeg lag ou plante, l'écriture pouvait bloquer indéfiniment         ║
+║    → freeze de toute la caméra. Fix : wraper chaque write() dans        ║
+║    un try/except avec fermeture propre en cas d'erreur.                 ║
+║                                                                          ║
+║  BUG C — proc.wait() sans timeout à la fin du clip :                    ║
+║    proc.wait() sans timeout → si FFmpeg d'enregistrement ne se          ║
+║    termine pas, le worker est bloqué définitivement. Fix : utiliser     ║
+║    proc.wait(timeout=5) avec fallback proc.kill().                      ║
+║                                                                          ║
+║  CORRECTIFS v4 (crash BrokenPipeError sur alerte CORPS résolu) :       ║
+║  ──────────────────────────────────────────────────────────────         ║
+║  BUG D — BrokenPipeError lors de l'écriture du buffer pré-alerte :     ║
+║    Dans _start_alert_video(), les boucles qui vidaient le buffer        ║
+║    circulaire dans stdin de FFmpeg n'étaient pas protégées par          ║
+║    try/except. Or Popen() est asynchrone : FFmpeg démarre en arrière-  ║
+║    plan, et son pipeline NVENC peut ne pas être encore prêt à           ║
+║    recevoir des données (surtout sur les alertes CORPS déclenchées      ║
+║    très rapidement après la disparition d'un suspect). Résultat :       ║
+║    BrokenPipeError → exception non catchée → crash du worker →         ║
+║    freeze total de la caméra. Fix : chaque boucle d'écriture du         ║
+║    buffer est maintenant isolée dans son propre try/except avec         ║
+║    kill() propre du processus FFmpeg défaillant. L'enregistrement       ║
+║    des 5s APRÈS l'alerte continue normalement via run() (BUG B).        ║
+║                                                                          ║
+║  CORRECTIFS v5 (clips vides / BrokenPipe résolu définitivement) :      ║
+║  ─────────────────────────────────────────────────────────────────      ║
+║  BUG E — Clips vides malgré le try/except du BUG D :                   ║
+║    Même avec le try/except, NVENC mettait 200-500ms à s'initialiser.   ║
+║    Le premier write() arrivait trop tôt → BrokenPipe → les deux        ║
+║    processus FFmpeg étaient tués → clips vides côté interface web.      ║
+║    Fix : on prend un snapshot du buffer AU MOMENT de l'alerte, puis    ║
+║    on l'écrit dans un thread dédié qui attend 500ms que NVENC soit      ║
+║    prêt. Un verrou (_record_stdin_lock) empêche l'écriture simultanée  ║
+║    entre ce thread et run() (qui écrit les frames post-alerte).         ║
+║    Résultat : 5s avant + 5s après l'alerte garanties, sans corruption. ║
+║                                                                          ║
 ║  POUR AJOUTER UNE CAMÉRA : ajouter une entrée dans la liste CAMERAS     ║
 ╚══════════════════════════════════════════════════════════════════════════╝
 """
@@ -87,27 +134,59 @@ os.environ["YOLO_VERBOSE"] = "False"
 # Pour ajouter une caméra, copier/coller un bloc et changer cam_id + rtsp_url.
 CAMERAS = [
     {
-        "cam_id":   "CAM_01",           # Identifiant unique (utilisé dans les alertes et URLs)
+        "cam_id":   "CAM_21",           # Identifiant unique (utilisé dans les alertes et URLs)
         "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.21:554/cam/realmonitor?channel=1&subtype=1",
         "width":    704,                # Largeur en pixels (doit correspondre au flux réel)
         "height":   576,                # Hauteur en pixels (doit correspondre au flux réel)
         "fps":      12,                 # FPS réel du flux caméra — BIEN VÉRIFIER CETTE VALEUR
     },
-    # Décommentez et adaptez pour ajouter d'autres caméras :
     {
-        "cam_id":   "CAM_02",
+        "cam_id": "CAM_22",
         "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.22:554/cam/realmonitor?channel=1&subtype=1",
-        "width":    704,
-        "height":   576,
-        "fps":      12,
+        "width": 704,
+        "height": 576,
+        "fps": 12,
+        },
+    {
+        "cam_id": "CAM_23",
+        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.23:554/cam/realmonitor?channel=1&subtype=1",
+        "width": 704,
+        "height": 576,
+        "fps": 12,
     },
     {
-        "cam_id":   "CAM_03",
-        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.23:554/cam/realmonitor?channel=1&subtype=1",
-        "width":    704,
-        "height":   576,
-        "fps":      12,
+        "cam_id": "CAM_45",
+        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.45:554/cam/realmonitor?channel=1&subtype=1",
+        "width": 704,
+        "height": 576,
+        "fps": 12,
     },
+    {
+        "cam_id": "CAM_46",
+        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.46:554/cam/realmonitor?channel=1&subtype=1",
+        "width": 704,
+        "height": 576,
+        "fps": 12,
+    },
+    {
+        "cam_id": "CAM_47",
+        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.47:554/cam/realmonitor?channel=1&subtype=1",
+        "width": 704,
+        "height": 576,
+        "fps": 12,
+    },
+    {
+        "cam_id": "CAM_49",
+        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.49:554/cam/realmonitor?channel=1&subtype=1",
+        "width": 704,
+        "height": 576,
+        "fps": 12,
+    },
+
+
+    # Décommentez et adaptez pour ajouter d'autres caméras :
+
+
 ]
 
 
@@ -124,7 +203,7 @@ DISPLAY_TEXT_DURATION = 4.0   # Le texte d'alerte reste affiché 4 secondes
 
 # Durées du clip vidéo enregistré lors d'une alerte
 BEFORE_ALERT_SECS = 5         # Secondes AVANT l'alerte (grâce au buffer circulaire)
-AFTER_ALERT_SECS  = 5         # Secondes APRÈS l'alerte (enregistrement en direct)
+AFTER_ALERT_SECS  = 8         # Secondes APRÈS l'alerte (enregistrement en direct)
 
 # Tolérance du mini-tracker : nombre de frames pendant lesquelles un article
 # peut disparaître (occlusion, raté YOLO) avant d'être définitivement perdu.
@@ -297,25 +376,7 @@ def is_point_in_box(point, box):
 
 
 def read_exactly(pipe, n_bytes):
-    """
-    ╔══════════════════════════════════════════════════════════════════╗
-    ║  LECTURE EXACTE DE n_bytes OCTETS DEPUIS UN PIPE                ║
-    ╠══════════════════════════════════════════════════════════════════╣
-    ║                                                                  ║
-    ║  PROBLÈME :                                                      ║
-    ║  pipe.read(n) sur un pipe OS ne garantit PAS de retourner       ║
-    ║  exactement n octets. Il retourne dès qu'il y a QUELQUE CHOSE   ║
-    ║  de disponible dans le buffer kernel.                            ║
-    ║                                                                  ║
-    ║  SOLUTION :                                                      ║
-    ║  Lire en boucle et accumuler les chunks jusqu'à avoir           ║
-    ║  exactement le nombre d'octets voulu.                           ║
-    ║                                                                  ║
-    ║  Retourne :                                                      ║
-    ║    - bytes de taille exactement n_bytes si tout va bien         ║
-    ║    - None si le pipe est fermé (flux vraiment coupé)            ║
-    ╚══════════════════════════════════════════════════════════════════╝
-    """
+
     buf = bytearray()
     while len(buf) < n_bytes:
         remaining = n_bytes - len(buf)
@@ -331,35 +392,7 @@ def read_exactly(pipe, n_bytes):
 
 
 def drain_stderr(process, cam_id: str, stop_event: threading.Event):
-    """
-    ╔══════════════════════════════════════════════════════════════════╗
-    ║  CORRECTIF BUG 1 — DRAINAGE CONTINU DE STDERR                  ║
-    ╠══════════════════════════════════════════════════════════════════╣
-    ║                                                                  ║
-    ║  PROBLÈME :                                                      ║
-    ║  FFmpeg écrit ses logs (warnings, stats, erreurs) sur stderr.   ║
-    ║  Si on utilise stderr=subprocess.PIPE sans JAMAIS lire ce pipe, ║
-    ║  le buffer OS (~64 Ko sur Linux) se remplit en quelques minutes. ║
-    ║  Quand le buffer est plein, FFmpeg se bloque en écriture sur    ║
-    ║  stderr. Comme stdout et stderr partagent le même process,      ║
-    ║  FFmpeg arrête d'écrire sur stdout aussi → FREEZE TOTAL.        ║
-    ║                                                                  ║
-    ║  SYMPTÔME OBSERVÉ :                                              ║
-    ║  Tout fonctionne ~2 minutes, puis le flux se fige sans erreur   ║
-    ║  Python visible. Flask répond toujours 200 mais plus de frames. ║
-    ║                                                                  ║
-    ║  SOLUTION :                                                      ║
-    ║  Ce thread tourne en parallèle et lit stderr en continu,        ║
-    ║  vidant le buffer OS avant qu'il ne se remplisse.               ║
-    ║  On n'affiche que les lignes contenant "error" pour ne pas      ║
-    ║  polluer la console avec les stats FFmpeg normales.             ║
-    ║                                                                  ║
-    ║  ALTERNATIVE PLUS SIMPLE : stderr=subprocess.DEVNULL            ║
-    ║  Utiliser DEVNULL si vous ne voulez pas voir les erreurs FFmpeg.║
-    ║  Ce thread est préférable car il permet de logger les vraies    ║
-    ║  erreurs réseau/codec sans bloquer le flux vidéo.               ║
-    ╚══════════════════════════════════════════════════════════════════╝
-    """
+
     try:
         for line in process.stderr:
             if stop_event.is_set():
@@ -419,6 +452,8 @@ class FFmpegReader:
 
         # Référence au processus FFmpeg en cours (pour pouvoir le tuer si besoin)
         self._process = None
+        # Flag : True quand le watchdog a détecté un freeze (aucune frame depuis Ns)
+        self.is_reconnecting = False
 
         # ── CORRECTIF BUG 2 ──
         # bufsize doit être PLUS GRAND que frame_size pour que le BufferedReader
@@ -430,20 +465,22 @@ class FFmpegReader:
         self._bufsize = self.frame_size * 10
 
     def _start_ffmpeg(self):
+        # NOTE OPTIONS FFMPEG : -stimeout et -rw_timeout ne sont pas reconnus
+        # sur FFmpeg 6.x Ubuntu. Seul -timeout est supporté sur cette version.
         return subprocess.Popen(
             [
                 "ffmpeg",
-                "-loglevel",       "error",          # N'affiche que les erreurs réelles
-                "-rtsp_transport", "tcp",             # TCP plus fiable qu'UDP pour RTSP longue durée
-                # Timeouts réseau explicites pour éviter un blocage silencieux
-                # si la caméra ne répond plus sans fermer la connexion TCP
-                "-timeout",        "5000000",         # Timeout de connexion RTSP : 5 secondes (en µs)
-                "-i",              self.rtsp_url,     # URL du flux RTSP
+                "-loglevel",       "warning",         # N'affiche que les warnings et erreurs réelles
+                "-rtsp_flags", "prefer_tcp",
+                "-rtsp_transport", "tcp",              # TCP plus fiable qu'UDP pour RTSP longue durée
+                "-timeout",        "10000000",          # Timeout connexion : 5s (en µs) — reconnu sur FFmpeg 6.x
+                "-max_delay",      "500000",     # 0.5s max de delay avant abandon du paquet
+                "-i",              self.rtsp_url,      # URL du flux RTSP
                 "-vf",             f"scale={self.width}:{self.height}",  # Redimensionnement
-                "-f",              "image2pipe",      # Sortie sous forme de flux d'images
-                "-pix_fmt",        "bgr24",           # Format compatible OpenCV (Blue Green Red)
-                "-vcodec",         "rawvideo",        # Pixels bruts, sans compression
-                "-",                                  # Sortie sur stdout
+                "-f",              "image2pipe",       # Sortie sous forme de flux d'images
+                "-pix_fmt",        "bgr24",            # Format compatible OpenCV (Blue Green Red)
+                "-vcodec",         "rawvideo",         # Pixels bruts, sans compression
+                "-",                                   # Sortie sur stdout
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,    # PIPE et non DEVNULL : on veut pouvoir lire les erreurs
@@ -455,9 +492,71 @@ class FFmpegReader:
         Boucle principale du thread de lecture.
         Tourne indéfiniment, relance FFmpeg automatiquement en cas d'échec.
         """
+        import select
+
         while not self._stop_event.is_set():
             print(f"[{self.cam_id}] Connexion au flux RTSP...")
             self._process = self._start_ffmpeg()
+
+            # ── WATCHDOG ─────────────────────────────────────────────────────
+            # PROBLÈME OBSERVÉ (via tcpdump) :
+            # La caméra Dahua arrête d'envoyer des frames pendant ~20s
+            # (micro-freeze firmware). FFmpeg interprète ce silence comme
+            # une connexion morte et envoie un TEARDOWN RTSP après ~20s,
+            # provoquant une reconnexion de 20-30s.
+            #
+            # SOLUTION :
+            # Ce watchdog surveille l'arrivée des frames toutes les 3s.
+            # Si aucune frame n'arrive depuis 15s, il tue FFmpeg proactivement
+            # AVANT qu'il n'envoie son TEARDOWN (~20s).
+            #
+            # POURQUOI ÇA FONCTIONNAIT PAS AVANT (read_exactly bloquant) :
+            # read_exactly() appelle pipe.read() qui est BLOQUANT : quand la
+            # caméra freeze, pipe.read() attend indéfiniment sans rendre la main.
+            # Le watchdog tuait bien FFmpeg, mais trop tard — FFmpeg avait déjà
+            # eu le temps d'envoyer son TEARDOWN.
+            #
+            # FIX : on utilise select.select() avec un timeout de 2s avant chaque
+            # read(). Si stdout n'a pas de données disponibles dans ce délai,
+            # on vérifie si le watchdog a demandé l'arrêt. Ainsi read_exactly()
+            # n'est plus jamais bloqué plus de 2s, et le watchdog peut agir
+            # dès que la caméra freeze.
+            #
+            # POURQUOI last_frame_time EST UNE LISTE :
+            # En Python, une variable simple (int, float) capturée dans une
+            # closure est en lecture seule depuis la fonction imbriquée.
+            # Une liste est un objet mutable → last_frame_time[0] = ... fonctionne
+            # depuis le watchdog ET depuis la boucle de lecture.
+            #
+            # POURQUOI LES ARGUMENTS SONT PASSÉS EXPLICITEMENT AU WATCHDOG :
+            # Sans ça, Python capture les variables par RÉFÉRENCE (pas par valeur).
+            # À la reconnexion suivante, de nouveaux last_frame_time et stop_watchdog
+            # sont créés, mais le vieux watchdog encore actif pointerait vers les
+            # nouvelles variables → il tuerait le nouveau FFmpeg par erreur.
+            # En passant les variables en arguments par défaut, chaque watchdog
+            # est lié à SA propre session FFmpeg, indépendamment des suivantes.
+            last_frame_time = [time.time()]
+            stop_watchdog   = threading.Event()
+        
+            def watchdog(last_frame_time=last_frame_time, stop_watchdog=stop_watchdog):
+                while not stop_watchdog.is_set():
+                    time.sleep(1)   # vérifie toutes les 3 secondes
+                    if stop_watchdog.is_set():
+                        break
+                    if time.time() - last_frame_time[0] > 5:
+                        print(f"[{self.cam_id}] Watchdog : aucune frame depuis 5s, relance FFmpeg")
+                        self.is_reconnecting = True 
+                        try:
+                            self._process.kill()
+                        except Exception:
+                            pass
+                        return   # le thread watchdog se termine proprement
+
+            threading.Thread(
+                target=watchdog,
+                daemon=True,
+                name=f"{self.cam_id}_watchdog",
+            ).start()
 
             # ── CORRECTIF BUG 1 ──
             # Lance immédiatement le thread de drainage stderr pour ce nouveau processus.
@@ -483,6 +582,21 @@ class FFmpegReader:
             try:
                 while not self._stop_event.is_set():
                     # ─────────────────────────────────────────────────────
+                    # LECTURE AVEC TIMEOUT VIA select() — CORRECTIF WATCHDOG
+                    # ─────────────────────────────────────────────────────
+                    # select.select() attend que stdout ait des données disponibles,
+                    # avec un timeout de 2s. Si rien n'arrive dans ce délai,
+                    # on reboucle pour vérifier _stop_event et laisser le watchdog
+                    # agir s'il a tué FFmpeg. Sans ce mécanisme, pipe.read()
+                    # bloquerait indéfiniment et le watchdog ne pourrait jamais
+                    # interrompre la lecture à temps.
+                    ready = select.select([self._process.stdout], [], [], 2.0)[0]
+                    if not ready:
+                        # Pas de données depuis 2s — on reboucle simplement.
+                        # Le watchdog se chargera de tuer FFmpeg si nécessaire.
+                        continue
+
+                    # ─────────────────────────────────────────────────────
                     # LECTURE EXACTE DE frame_size OCTETS
                     # ─────────────────────────────────────────────────────
                     # On utilise read_exactly() et non pipe.read() directement.
@@ -496,6 +610,12 @@ class FFmpegReader:
                         print(f"[{self.cam_id}] ⚠️ Flux interrompu (pipe fermé par FFmpeg)")
                         break
 
+                    # ── MISE À JOUR DU WATCHDOG ───────────────────────────
+                    # Chaque frame reçue réinitialise le compteur du watchdog.
+                    # Sans cette ligne, le watchdog tuerait FFmpeg même quand
+                    # tout fonctionne normalement.
+                    last_frame_time[0] = time.time()
+                    self.is_reconnecting = False 
                     # ─────────────────────────────────────────────────────
                     # MISE À JOUR DE LA QUEUE (FRAME LA PLUS RÉCENTE)
                     # ─────────────────────────────────────────────────────
@@ -513,6 +633,13 @@ class FFmpegReader:
                 print(f"[{self.cam_id}] 💥 Exception dans FFmpegReader : {e}")
 
             finally:
+                # ── ARRÊT DU WATCHDOG EN PREMIER ─────────────────────────
+                # CRUCIAL : on arrête le watchdog AVANT de tuer FFmpeg.
+                # Sans ça, le watchdog pourrait détecter l'absence de frames
+                # (causée par notre propre kill) et tenter de tuer le PROCHAIN
+                # processus FFmpeg lancé par la reconnexion suivante.
+                stop_watchdog.set()
+
                 # Nettoyage propre du processus FFmpeg avant toute reconnexion
                 try:
                     self._process.kill()
@@ -573,6 +700,21 @@ class CameraWorker:
         self.height         = height
         self.fps            = fps
         self.frames_processed = 0
+
+        # ── CORRECTIF BUG E — Verrou d'écriture stdin FFmpeg ────────────────
+        # Ce verrou protège les écritures vers les processus FFmpeg
+        # d'enregistrement (alert_ffmpeg_process et raw_ffmpeg_process).
+        #
+        # POURQUOI CE VERROU EST NÉCESSAIRE :
+        # Quand une alerte se déclenche, deux threads écrivent dans le même
+        # stdin FFmpeg en même temps :
+        #   - Le thread pre_alert_writer (écrit le buffer des 5s AVANT l'alerte)
+        #   - La boucle principale run() (écrit les frames des 5s APRÈS l'alerte)
+        # Sans verrou, ces deux écritures simultanées corrompent le flux vidéo
+        # (données mélangées) et peuvent faire crasher FFmpeg.
+        # Avec ce verrou, un seul thread écrit à la fois : l'autre attend.
+        self._record_stdin_lock = threading.Lock()
+        self._pre_alert_done = threading.Event()
 
         # ------------------------------------------------------------------
         # MINI-TRACKER SPATIAL D'ARTICLES
@@ -707,9 +849,19 @@ class CameraWorker:
 
         FONCTIONNEMENT :
           1. Lance deux processus FFmpeg en écriture (annoté + brut)
-          2. Vide immédiatement le buffer circulaire (5s AVANT l'alerte)
-          3. Les frames APRÈS l'alerte seront envoyées dans run()
-          4. Met à jour alerts.json pour l'interface web
+          2. Prend un snapshot immédiat du buffer circulaire (5s AVANT l'alerte)
+          3. Lance un thread dédié qui écrit ce snapshot après 500ms
+             (le temps que NVENC s'initialise) — CORRECTIF BUG E
+          4. Les frames APRÈS l'alerte seront envoyées dans run()
+          5. Met à jour alerts.json pour l'interface web
+
+        POURQUOI UN THREAD DÉDIÉ POUR LE BUFFER PRÉ-ALERTE (CORRECTIF BUG E) :
+          Popen() est asynchrone : FFmpeg démarre en arrière-plan.
+          NVENC (encodeur GPU) peut prendre 200-500ms à s'initialiser.
+          Si on écrit immédiatement, on obtient BrokenPipeError → clips vides.
+          Solution : snapshot du buffer MAINTENANT (les 5s sont capturées),
+          puis écriture dans un thread séparé après sleep(0.5).
+          Un verrou (_record_stdin_lock) empêche run() d'écrire en même temps.
         """
         timestamp = datetime.now().strftime("%H%M%S")
 
@@ -730,7 +882,7 @@ class CameraWorker:
                 "-r",       str(self.fps),
                 "-i",       "-",
                 "-vcodec",  "h264_nvenc",
-                "-preset",  "fast",
+                "-preset",  "p1",
                 "-b:v",     "1M",
                 path,
             ]
@@ -738,19 +890,81 @@ class CameraWorker:
         # stderr=DEVNULL pour les processus d'écriture : on n'a pas besoin de
         # leurs logs et on ne veut surtout pas qu'ils bloquent sur stderr.
         self.alert_ffmpeg_process = subprocess.Popen(
-            get_cmd(vid_path), stdin=subprocess.PIPE, stderr=subprocess.DEVNULL
+            get_cmd(vid_path), stdin=subprocess.PIPE, stderr=None
         )
         self.raw_ffmpeg_process = subprocess.Popen(
-            get_cmd(raw_path), stdin=subprocess.PIPE, stderr=subprocess.DEVNULL
+            get_cmd(raw_path), stdin=subprocess.PIPE, stderr=None
         )
 
-        self._active_record_procs.extend([self.alert_ffmpeg_process, self.raw_ffmpeg_process])
+        # ── CORRECTIF BUG E — Snapshot immédiat du buffer pré-alerte ────────
+        # On capture le contenu du buffer MAINTENANT, avant qu'il continue
+        # de se remplir avec de nouvelles frames. Cela garantit qu'on a bien
+        # les 5 secondes AVANT l'alerte, même si l'écriture est retardée.
+        buffer_snapshot     = list(self.video_buffer)
+        buffer_raw_snapshot = list(self.video_buffer_raw)
 
-        # Vide le buffer circulaire → 5 secondes AVANT l'alerte
-        for f in self.video_buffer:
-            self.alert_ffmpeg_process.stdin.write(f.tobytes())
-        for f in self.video_buffer_raw:
-            self.raw_ffmpeg_process.stdin.write(f.tobytes())
+        # Purge des processus terminés pour éviter l'accumulation en session 24/7
+        self._active_record_procs = [
+            p for p in self._active_record_procs
+            if p is not None and p.poll() is None   # poll() == None → encore vivant
+        ]
+        for p in [self.alert_ffmpeg_process, self.raw_ffmpeg_process]:
+            if p is not None:
+                self._active_record_procs.append(p)
+
+        # ── CORRECTIF BUG E — Thread dédié pour l'écriture du buffer ────────
+        # Ce thread écrit les 5s pré-alerte EN ARRIÈRE-PLAN pendant que
+        # la boucle principale run() continue de tourner normalement.
+        #
+        # FONCTIONNEMENT :
+        #   1. sleep(0.5) → laisse NVENC s'initialiser (évite le BrokenPipe)
+        #   2. with _record_stdin_lock → empêche run() d'écrire en même temps
+        #   3. Écrit le snapshot annoté puis le snapshot brut
+        #   4. En cas d'erreur, tue proprement le processus défaillant
+        #
+        # Une fois ce thread terminé, run() prend le relais et écrit
+        # les 5s APRÈS l'alerte (protégé par le même verrou).
+        def write_pre_alert_buffer():
+            # 1s au lieu de 0.5s : NVENC peut prendre jusqu'à 800ms sur certaines
+            # configs. Mieux vaut attendre un peu plus que d'avoir un BrokenPipe.
+            time.sleep(0.2)
+
+            with self._record_stdin_lock:
+                try:
+                    for f in buffer_snapshot:
+                        if self.alert_ffmpeg_process and self.alert_ffmpeg_process.stdin:
+                            self.alert_ffmpeg_process.stdin.write(f.tobytes())
+                except Exception as e:
+                    print(f"[{self.cam_id}] ⚠️ Erreur écriture buffer annoté (pré-alerte) : {e}")
+                    try:
+                        self.alert_ffmpeg_process.kill()
+                    except Exception:
+                        pass
+                    self.alert_ffmpeg_process = None
+
+                try:
+                    for f in buffer_raw_snapshot:
+                        if self.raw_ffmpeg_process and self.raw_ffmpeg_process.stdin:
+                            self.raw_ffmpeg_process.stdin.write(f.tobytes())
+                except Exception as e:
+                    print(f"[{self.cam_id}] ⚠️ Erreur écriture buffer brut (pré-alerte) : {e}")
+                    try:
+                        self.raw_ffmpeg_process.kill()
+                    except Exception:
+                        pass
+                    self.raw_ffmpeg_process = None
+
+            # Signale à run() que le buffer pré-alerte est entièrement écrit.
+            # run() peut maintenant commencer à écrire les frames post-alerte.
+            self._pre_alert_done.set()
+
+        self._pre_alert_done.clear()
+
+        threading.Thread(
+            target=write_pre_alert_buffer,
+            daemon=True,
+            name=f"{self.cam_id}_pre_alert_writer",
+        ).start()
 
         self.is_recording_alert     = True
         self.frames_to_record_after = int(AFTER_ALERT_SECS * self.fps)
@@ -799,7 +1013,7 @@ class CameraWorker:
 
         FONCTIONNEMENT :
           1. Calcule le centre lissé de la boîte (anti-tremblement)
-          2. Crée une zone de crop avec marge de 80px
+          2. Crée une zone de crop avec marge de 120px
           3. Redimensionne ce crop à la taille de la frame complète
         """
         h, w = frame.shape[:2]
@@ -811,7 +1025,7 @@ class CameraWorker:
 
         bw     = (x2 - x1)
         bh     = (y2 - y1)
-        margin = 80
+        margin = 120
 
         new_w = min(bw + margin, w)
         new_h = min(bh + margin, h)
@@ -871,10 +1085,45 @@ class CameraWorker:
             # ==========================================
             raw_bytes = reader.get_frame(timeout=2.0)
             if raw_bytes is None:
-                continue
+                # ── OVERLAY RECONNEXION SANS FRAME ──
+                # Pas de nouvelle frame : le flux est coupé ou le watchdog a tué FFmpeg.
+                # On récupère la dernière frame connue et on affiche l'overlay dessus.
+                if reader.is_reconnecting:
+                    with frame_lock:
+                        last_frame = output_frames.get(self.cam_id)
+                    if last_frame is not None:
+                        overlay = cv2.GaussianBlur(last_frame, (31, 31), 0)
 
+                        band_y1 = self.height // 2 - 45
+                        band_y2 = self.height // 2 + 45
+                        roi = overlay[band_y1:band_y2, 0:self.width]
+                        black_band = np.zeros_like(roi)
+                        overlay[band_y1:band_y2, 0:self.width] = cv2.addWeighted(roi, 0.35, black_band, 0.65, 0)
+
+                        msg1 = "  Perte de la connexion RTSP"
+                        font = cv2.FONT_HERSHEY_SIMPLEX
+                        sz1  = cv2.getTextSize(msg1, font, 0.75, 2)[0]
+                        cv2.putText(overlay, msg1,
+                                    ((self.width - sz1[0]) // 2, self.height // 2 - 8),
+                                    font, 0.75, (0, 200, 255), 2, cv2.LINE_AA)
+
+                        if int(time.time() * 1.5) % 2 == 0:
+                            msg2 = "Reconnexion en cours..."
+                            sz2  = cv2.getTextSize(msg2, font, 0.55, 1)[0]
+                            cv2.putText(overlay, msg2,
+                                        ((self.width - sz2[0]) // 2, self.height // 2 + 30),
+                                        font, 0.55, (255, 255, 255), 1, cv2.LINE_AA)
+
+                        with frame_lock:
+                            output_frames[self.cam_id] = overlay
+                continue
             # Conversion : octets bruts → image numpy 3D (height × width × 3 canaux BGR)
-            frame           = np.frombuffer(raw_bytes, np.uint8).reshape((self.height, self.width, 3))
+            
+            try:
+                frame = np.frombuffer(raw_bytes, np.uint8).reshape((self.height, self.width, 3))
+            except Exception as e:
+                print(f"[{self.cam_id}] ⚠️ Frame corrompue ignorée ({len(raw_bytes)} octets) : {e}")
+                continue
             clean_frame     = frame.copy()
             annotated_frame = frame.copy()
             current_time    = time.time()
@@ -910,7 +1159,7 @@ class CameraWorker:
                 for i, (box, cls, conf) in enumerate(zip(r_boxes, r_clss, r_confs)):
                     name = model_radar.names[int(cls)]
 
-                    if name == "person" and  conf > 0.5:
+                    if name == "person" and conf > 0.5:
                         persons_boxes.append(box)
                         x1, y1, x2, y2 = map(int, box)
                         is_loitering  = False
@@ -988,12 +1237,12 @@ class CameraWorker:
                                     hands_pos.append(g_center)
                                     cv2.rectangle(annotated_frame, (g_x1, g_y1), (g_x2, g_y2), (0, 255, 255), 1)
 
-                                # Sac : Rouge — seuil moyen (0.22)
+                                # Sac : Rouge — seuil moyen (0.40)
                                 elif s_name == "bags" and s_conf > 0.40:
                                     bags_pos.append(g_center)
                                     cv2.rectangle(annotated_frame, (g_x1, g_y1), (g_x2, g_y2), (0, 0, 255), 2)
 
-                                # Article de magasin : Violet — seuil bas (0.20)
+                                # Article de magasin : Violet — seuil bas (0.22)
                                 elif s_name == "article" and s_conf > 0.22:
                                     raw_articles_pos.append((g_center, s_conf))
                                     cv2.rectangle(annotated_frame, (g_x1, g_y1), (g_x2, g_y2), (255, 0, 255), 2)
@@ -1009,6 +1258,36 @@ class CameraWorker:
                 self.last_known_person_boxes.pop(pid, None)
                 self.person_last_seen.pop(pid, None)
                 self.person_tracking.pop(pid, None)
+
+            # ==========================================
+            # NETTOYAGE DES ARTICLES DISPARUS
+            # ==========================================
+            # ── CORRECTIFS BUG F et BUG I ──
+            #
+            # BUG F : last_known_articles et last_known_scores ne sont jamais
+            # nettoyés. Chaque nouvel article reçoit un ID auto-incrémenté unique
+            # → sur une session 24/7, des milliers d'entrées mortes s'accumulent.
+            #
+            # BUG I : object_hold_counter conserve aussi les clés d'articles dont
+            # le compteur reste ≥ 2 mais qui ont définitivement quitté le champ.
+            # La décrémentation en fin de boucle finit par les éliminer, MAIS
+            # seulement si l'objet a été vu régulièrement. Un article disparu d'un
+            # coup (sorti du champ sans re-détection) reste bloqué avec v=8 ou plus.
+            #
+            # SOLUTION commune : si un article_id n'est plus dans active_article_tracks
+            # (le mini-tracker l'a définitivement perdu après TRACKER_MISS_TOLERANCE
+            # frames sans détection), on nettoie toutes ses entrées dans les dicts.
+            # On préserve ceux qui sont encore dans suspect_disappearance car la
+            # logique de vol a encore besoin de leur historique.
+            active_ids  = set(self.active_article_tracks.keys())
+            suspect_ids = set(self.suspect_disappearance.keys())
+            for a_id in list(self.last_known_articles.keys()):
+                if a_id not in active_ids and a_id not in suspect_ids:
+                    self.last_known_articles.pop(a_id, None)
+                    self.last_known_scores.pop(a_id, None)
+                    self.hold_durations.pop(a_id, None)
+                    # Nettoyage de la clé correspondante dans object_hold_counter
+                    self.object_hold_counter.pop(f"article_{a_id}", None)
 
             # ==========================================
             # ÉTAPE 5 : ASSIGNATION DES IDs AUX ARTICLES
@@ -1054,7 +1333,7 @@ class CameraWorker:
             # SCÉNARIO 2 : VOL DANS LE SAC
             # ──────────────────────────────────────────
             for (a_id, a_center, a_conf) in current_active:
-                a_center = self.last_known_articles[a_id]
+                a_center = self.last_known_articles.get(a_id, a_center)
                 for b_center in bags_pos:
                     dist_sac = math.hypot(a_center[0] - b_center[0], a_center[1] - b_center[1])
                     if dist_sac < 35:
@@ -1167,11 +1446,17 @@ class CameraWorker:
             if trigger_alert and not self.is_recording_alert:
                 self.zoom_target_id = target_p_id
 
-                subprocess.Popen(
-                    #["paplay", "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                )
+                # Fix : l'appel est supprimé. Pour réactiver le son d'alerte, décommentez
+                # le bloc ci-dessous EN INCLUANT la commande (première ligne) :
+                #
+                # try:
+                #     subprocess.Popen(
+                #         ["paplay", "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"],
+                #         stdout=subprocess.DEVNULL,
+                #         stderr=subprocess.DEVNULL,
+                #     )
+                # except Exception as e:
+                #     print(f"[{self.cam_id}] ⚠️ Son d'alerte non disponible : {e}")
 
                 print(f"[{self.cam_id}] 🚨 ALERTE : VOL {vol_type} (score={alert_score:.2f})")
                 self._start_alert_video(vol_type, alert_score)
@@ -1219,32 +1504,91 @@ class CameraWorker:
                 )
 
             # ==========================================
+            # OVERLAY "RECONNEXION EN COURS" (WATCHDOG)
+            # ==========================================
+            # Si le watchdog a détecté un freeze RTSP, on floute la dernière frame
+            # et on affiche un message d'avertissement par-dessus.
+            # L'overlay est retiré automatiquement dès que le flux reprend.
+            if reader.is_reconnecting:
+                overlay = cv2.GaussianBlur(annotated_frame, (31, 31), 0)
+
+                # Bande semi-transparente au centre pour améliorer la lisibilité
+                band_y1, band_y2 = self.height // 2 - 45, self.height // 2 + 45
+                roi = overlay[band_y1:band_y2, 0:self.width]
+                black_band = np.zeros_like(roi)
+                overlay[band_y1:band_y2, 0:self.width] = cv2.addWeighted(roi, 0.35, black_band, 0.65, 0)
+
+                # Ligne 1 : icône + message principal
+                msg1      = "  Perte de la connexion RTSP"
+                font      = cv2.FONT_HERSHEY_SIMPLEX
+                sz1       = cv2.getTextSize(msg1, font, 0.75, 2)[0]
+                x1_txt    = (self.width - sz1[0]) // 2
+                cv2.putText(overlay, msg1, (x1_txt, self.height // 2 - 8),
+                            font, 0.75, (0, 200, 255), 2, cv2.LINE_AA)
+
+                # Ligne 2 : sous-message clignotant
+                if int(time.time() * 1.5) % 2 == 0:
+                    msg2   = "Reconnexion en cours..."
+                    sz2    = cv2.getTextSize(msg2, font, 0.55, 1)[0]
+                    x2_txt = (self.width - sz2[0]) // 2
+                    cv2.putText(overlay, msg2, (x2_txt, self.height // 2 + 30),
+                                font, 0.55, (255, 255, 255), 1, cv2.LINE_AA)
+
+                annotated_frame = overlay
+            # ==========================================
             # PUBLICATION DE LA FRAME POUR FLASK
             # ==========================================
+            # ── OPTIMISATION MÉMOIRE ──
+            # On copie annotated_frame et clean_frame pour Flask (nécessaire : Flask
+            # lit ces dicts depuis un autre thread, la copie garantit la thread-safety).
+            # En revanche, video_buffer.append(annotated_frame) N'A PAS BESOIN de copie
+            # supplémentaire : annotated_frame est un NOUVEL objet créé à chaque itération
+            # (via frame.copy() en début de boucle). La deque stocke la référence à cet
+            # objet, qui ne sera plus modifié une fois la boucle passée à l'itération suivante.
             with frame_lock:
                 output_frames[self.cam_id] = annotated_frame.copy()
                 raw_frames[self.cam_id]    = clean_frame.copy()
 
+            # Ajout direct dans les buffers circulaires (pas de .copy() redondant)
             self.video_buffer.append(annotated_frame)
-            self.video_buffer_raw.append(clean_frame.copy())
+            self.video_buffer_raw.append(clean_frame)
 
-            frame_to_record     = annotated_frame.copy()
-            frame_raw_to_record = clean_frame.copy()
+            # ── COPIES LAZY POUR L'ENREGISTREMENT ──
+            # frame_to_record et frame_raw_to_record ne sont construits QUE si un
+            # enregistrement est actif ou si on a un zoom à appliquer.
+            # Avant ce correctif, ces 2 copies étaient faites à CHAQUE frame même
+            # sans alerte → 84 MB/s de RAM churn inutile avec 3 caméras à 12 FPS.
+            frame_to_record     = None
+            frame_raw_to_record = None
 
-            if self.zoom_target_id in self.last_known_person_boxes:
-                box                 = self.last_known_person_boxes[self.zoom_target_id]
-                frame_to_record     = self._zoom_tracking(frame_to_record, box)
-                frame_raw_to_record = self._zoom_tracking(frame_raw_to_record, box)
+            if self.is_recording_alert or self.zoom_target_id in self.last_known_person_boxes:
+                frame_to_record     = annotated_frame.copy()
+                frame_raw_to_record = clean_frame.copy()
+
+                if self.zoom_target_id in self.last_known_person_boxes:
+                    box                 = self.last_known_person_boxes[self.zoom_target_id]
+                    frame_to_record     = self._zoom_tracking(frame_to_record, box)
+                    frame_raw_to_record = self._zoom_tracking(frame_raw_to_record, box)
 
             # ==========================================
             # ÉCRITURE DES FRAMES DANS LE CLIP D'ALERTE
             # ==========================================
             if self.is_recording_alert:
+        
+                if hasattr(self, '_pre_alert_done') and not self._pre_alert_done.is_set():
+                    self._pre_alert_done.wait(timeout=2.0)
+
+                if frame_to_record is None:
+                    frame_to_record     = annotated_frame.copy()
+                    frame_raw_to_record = clean_frame.copy()
+
                 try:
-                    if self.alert_ffmpeg_process and self.alert_ffmpeg_process.stdin:
-                        self.alert_ffmpeg_process.stdin.write(frame_to_record.tobytes())
-                    if self.raw_ffmpeg_process and self.raw_ffmpeg_process.stdin:
-                        self.raw_ffmpeg_process.stdin.write(frame_raw_to_record.tobytes())
+                    with self._record_stdin_lock:
+                        # Écriture protégée par le verrou : une seule écriture à la fois
+                        if self.alert_ffmpeg_process and self.alert_ffmpeg_process.stdin:
+                            self.alert_ffmpeg_process.stdin.write(frame_to_record.tobytes())
+                        if self.raw_ffmpeg_process and self.raw_ffmpeg_process.stdin:
+                            self.raw_ffmpeg_process.stdin.write(frame_raw_to_record.tobytes())
 
                     self.frames_to_record_after -= 1
 
@@ -1253,11 +1597,15 @@ class CameraWorker:
                         self.zoom_target_id     = None
                         self.smooth_center      = None
 
+                    
                         for proc in [self.alert_ffmpeg_process, self.raw_ffmpeg_process]:
                             if proc:
                                 try:
                                     proc.stdin.close()
-                                    proc.wait()
+                                    proc.wait(timeout=5)   # ← timeout ajouté (était sans limite)
+                                except subprocess.TimeoutExpired:
+                                    print(f"[{self.cam_id}] ⚠️ FFmpeg enregistrement trop lent, kill forcé.")
+                                    proc.kill()
                                 except Exception:
                                     pass
 
@@ -1266,8 +1614,16 @@ class CameraWorker:
                         print(f"[{self.cam_id}] ✅ Clip enregistré.")
 
                 except Exception as e:
+                    # ── CORRECTIF BUG B (suite) ──
+                    # En cas d'erreur d'écriture (pipe cassé, processus mort, etc.),
+                    # on stoppe proprement l'enregistrement SANS crasher le worker.
+                    # La caméra continue d'analyser et de streamer normalement.
                     print(f"[{self.cam_id}] ❌ Erreur enregistrement : {e}")
-                    self.is_recording_alert = False
+                    self.is_recording_alert   = False
+                    self.zoom_target_id       = None
+                    self.smooth_center        = None
+                    self.alert_ffmpeg_process = None
+                    self.raw_ffmpeg_process   = None
 
             # ==========================================
             # DÉCRÉMENTATION DES COMPTEURS "TENU"

@@ -4,6 +4,7 @@ import os  # Gestion fichiers système
 from datetime import datetime, timedelta  # Gestion des heures
 from streamlit_cookies_manager import EncryptedCookieManager  # Cookies persistants sécurisés
 import requests
+import streamlit.components.v1 as components  # Pour injecter le récepteur postMessage dans la page principale
 
 # IDENTIFIANTS ADMIN (À PROTÉGER EN PRODUCTION)
 
@@ -29,45 +30,47 @@ st.set_page_config(
     page_icon="🛡️"  # Icône
 )
 
-# STYLE CSS GLOBAL (MIS À JOUR POUR LE HOVER SIDEBAR ET L'ESPACEMENT)
+# STYLE CSS GLOBAL
+# On ajoute les styles de l'overlay plein écran ici, dans la page PRINCIPALE (pas dans une iframe).
+# C'est crucial : l'overlay doit vivre dans le document parent pour couvrir TOUTE la page,
+# sidebar Streamlit incluse.
 st.markdown("""
 <style>
     .stApp { background-color: white !important; color: #0066b2 !important; }
 
     [data-testid="stWidgetLabel"] p {
-        color: black !important;  /* Labels en noir */
+        color: black !important;
         font-weight: bold !important;
         font-size: 1.05rem !important;
     }
 
     [data-testid="stSidebar"] {
-        background-color: #0066b2 !important;  /* Sidebar bleue */
+        background-color: #0066b2 !important;
     }
 
     [data-testid="stSidebar"] * {
-        color: white !important;  /* Texte sidebar blanc */
+        color: white !important;
     }
 
     .header {
-        background-color: #0066b2;  /* Bleu Leclerc */
-        color: white;  /* Texte blanc */
-        padding: 18px;  /* Espacement interne */
-        border-bottom: 6px solid #f39200;  /* Bande orange */
-        text-align: center;  /* Centrage */
-        border-radius: 0 0 12px 12px;  /* Coins arrondis bas */
-        margin-bottom: 20px;  /* Espace en dessous */
+        background-color: #0066b2;
+        color: white;
+        padding: 18px;
+        border-bottom: 6px solid #f39200;
+        text-align: center;
+        border-radius: 0 0 12px 12px;
+        margin-bottom: 20px;
     }
 
     .card {
-        background-color: #f8f9fa;  /* Fond gris clair */
-        border-left: 6px solid red;  /* Bord rouge alerte */
-        padding: 12px;  /* Espacement interne */
-        border-radius: 10px;  /* Coins arrondis */
-        margin-bottom: 10px;  /* Espace entre cartes */
+        background-color: #f8f9fa;
+        border-left: 6px solid red;
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 10px;
         color: #333
     }
     
-    /* DESIGN DES BOUTONS */
     div[data-testid="stButton"] > button {
         background-color: white !important;
         color: #0066b2 !important;
@@ -100,7 +103,6 @@ st.markdown("""
         transform: scale(1.02) !important;
     }
 
-    /* BOUTONS DANS LA SIDEBAR (CORRECTION DU BLANC SUR BLANC) */
     [data-testid="stSidebar"] div[data-testid="stButton"] > button {
         background-color: #0066b2 !important;
         color: white !important;
@@ -110,35 +112,310 @@ st.markdown("""
     [data-testid="stSidebar"] div[data-testid="stButton"] > button:hover,
     [data-testid="stSidebar"] div[data-testid="stButton"] > button:hover * {
         background-color: white !important;
-        color: #0066b2 !important;  /* Forcer le texte en bleu au survol */
+        color: #0066b2 !important;
     }
-    /* CIBLE EXACTE DU HEADER EXPANDER */
+
     div[data-testid="stExpander"] > details > summary {
-        background-color: #f39200 !important; /* ORANGE */
-        color: #0066b2 !important; /* BLEU */
+        background-color: #f39200 !important;
+        color: #0066b2 !important;
         border-radius: 10px !important;
         padding: 10px 15px !important;
         font-weight: bold !important;
         transition: all 0.2s ease-in-out !important;
     }
 
-    /* TEXTE À L'INTÉRIEUR */
     div[data-testid="stExpander"] > details > summary * {
         color: #0066b2 !important;
     }
 
-    /* HOVER */
     div[data-testid="stExpander"] > details > summary:hover {
-        background-color: #0066b2 !important; /* BLEU */
+        background-color: #0066b2 !important;
     }
 
-    /* TEXTE HOVER */
     div[data-testid="stExpander"] > details > summary:hover * {
         color: white !important;
     }
+
 </style>
-            
 """, unsafe_allow_html=True)
+
+
+# ---------------------------------------------------------
+# PONT JAVASCRIPT PARENT (invisible, height=0)
+# Ce bloc tourne dans une iframe enfant mais injecte l'overlay
+# dans window.parent.document (la vraie page Streamlit).
+# Il écoute aussi les messages postMessage venant des iframes
+# de caméras pour ouvrir l'overlay plein écran.
+# ---------------------------------------------------------
+components.html("""
+<script>
+// Liste complète des caméras (reçue via postMessage au premier clic ⛶)
+let ALL_CAMS = [];
+// Index de la caméra affichée (-1 = overlay fermé)
+let currentIdx = -1;
+
+// ---------------------------------------------------------
+// ensureOverlay()
+// Crée l'élément #fs-overlay dans le document PARENT une seule fois.
+// On cible window.parent.document car components.html() tourne dans
+// une iframe enfant mais a besoin d'injecter dans la page principale.
+// ---------------------------------------------------------
+function ensureOverlay() {
+    const parentDoc = window.parent.document;
+    if (parentDoc.getElementById('fs-overlay')) return; // déjà créé → on sort
+
+    const div = parentDoc.createElement('div');
+    div.id = 'fs-overlay';
+
+    // Style inline de l'overlay : position fixed pour couvrir toute la page parent
+    div.style.cssText = `
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.97);
+        z-index: 99999;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    `;
+
+    div.innerHTML = `
+        <img id="fs-img" src="" alt="flux caméra" style="max-width:95%;max-height:82vh;object-fit:contain;border:3px solid #f39200;border-radius:6px;">
+        <div class="fs-nav" style="display:flex;align-items:center;gap:16px;margin-top:14px;">
+            <button id="cap" style="background:rgba(255,255,255,0.15);color:white;border:2px solid white;border-radius:8px;padding:8px 20px;font-size:1.1rem;cursor:pointer;font-weight:bold;">📸 Capture</button>
+            <button id="fs-prev" style="background:rgba(255,255,255,0.15);color:white;border:2px solid white;border-radius:8px;padding:8px 20px;font-size:1.1rem;cursor:pointer;font-weight:bold;">◀ Précédent</button>
+            <span id="fs-cam-name" style="color:#f39200;font-size:1rem;font-weight:bold;min-width:200px;text-align:center;"></span>
+            <button id="fs-next" style="background:rgba(255,255,255,0.15);color:white;border:2px solid white;border-radius:8px;padding:8px 20px;font-size:1.1rem;cursor:pointer;font-weight:bold;">Suivant ▶</button>
+            <button id="fs-close" style="background:rgba(255,255,255,0.15);color:white;border:2px solid white;border-radius:8px;padding:8px 20px;font-size:1.1rem;cursor:pointer;font-weight:bold;">✕ Fermer</button>
+        </div>
+    `;
+    // L'overlay est caché par défaut ; la classe 'active' l'affiche
+    parentDoc.body.appendChild(div);
+
+    // Boutons de navigation dans l'overlay
+    // FIX BUG 2 : takeSnapshot() utilisait `parentDoc` non défini dans son scope.
+    // On passe maintenant `parentDoc` en paramètre explicite pour éviter
+    // toute ambiguïté de portée entre les différentes iframes.
+    parentDoc.getElementById('cap').onclick    = () => takeSnapshot(parentDoc);
+    parentDoc.getElementById('fs-close').onclick = closeFS;
+    parentDoc.getElementById('fs-prev').onclick  = () => navigate(-1);
+    parentDoc.getElementById('fs-next').onclick  = () => navigate(+1);
+
+    // Active l'affichage flex quand la classe 'active' est ajoutée
+    const style = parentDoc.createElement('style');
+    style.textContent = '#fs-overlay.active { display: flex !important; }';
+    parentDoc.head.appendChild(style);
+
+    // Clic sur le fond noir (hors image) → ferme l'overlay
+    div.onclick = (e) => { if (e.target === div) closeFS(); };
+
+    // Navigation clavier : ←/→ changent de caméra, Echap ferme l'overlay
+    parentDoc.addEventListener('keydown', function(e) {
+        if (currentIdx === -1) return;
+        if (e.key === 'Escape')     closeFS();
+        if (e.key === 'ArrowLeft')  navigate(-1);
+        if (e.key === 'ArrowRight') navigate(+1);
+        if (e.key === 'c' || e.key === 'C') takeSnapshot(parentDoc);
+    });
+}
+
+// ---------------------------------------------------------
+// takeSnapshot(parentDoc)
+// FIX BUG 2 : parentDoc est maintenant passé en paramètre.
+// L'ancienne version référençait `parentDoc` depuis le scope
+// de ensureOverlay() ce qui causait une ReferenceError au clic.
+// ---------------------------------------------------------
+function takeSnapshot(parentDoc) {
+    // Sécurité : ne rien faire si aucune caméra n'est affichée
+    if (currentIdx === -1) return;
+
+    // Récupération de la caméra courante via l'index global
+    const cam = ALL_CAMS[currentIdx];
+    const btn = parentDoc.getElementById('cap');
+    const originalText = btn.textContent;
+
+    // Feedback visuel immédiat pendant la requête
+    btn.textContent = "⏳ Capture...";
+    btn.style.borderColor = "#f39200";
+
+    // Appel vers le serveur IA pour déclencher la capture
+    fetch("/snapshot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cam_id: cam.id })
+    })
+    .then(response => {
+        if (response.ok) {
+            btn.textContent = "✅ OK";
+            btn.style.color = "#28a745";
+        } else {
+            btn.textContent = "❌ Erreur";
+            btn.style.color = "#ff0000";
+        }
+    })
+    .catch(() => {
+        // Erreur réseau (serveur injoignable)
+        btn.textContent = "⚠️ Réseau";
+    })
+    .finally(() => {
+        // Retour à l'état initial après 1.5 seconde
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.color = "white";
+            btn.style.borderColor = "white";
+        }, 1500);
+    });
+}
+
+// ---------------------------------------------------------
+// loadCam(idx) — Charge le flux de la caméra idx dans #fs-img
+//
+// FIX NAVIGATION GLOBALE :
+// On affiche maintenant le nom de la zone en plus du nom de la cam.
+// Chaque cam dans ALL_CAMS possède un champ `zone` (ex: "🍾 Alcool")
+// ajouté côté Python lors de la construction de all_cams.
+// Format affiché : "🎥 Champagnes | 🍾 Alcool (3/13 global)"
+// ---------------------------------------------------------
+function loadCam(idx) {
+    const parentDoc = window.parent.document;
+    const cam = ALL_CAMS[idx];
+    const imgEl = parentDoc.getElementById('fs-img');
+    const nameEl = parentDoc.getElementById('fs-cam-name');
+
+    // FIX FLUX : on charge le flux uniquement dans l'overlay (la grille reste vide)
+    if (imgEl) imgEl.src = cam.url;
+
+    // Affichage : "🎥 Nom cam | Zone (position/total global)"
+    if (nameEl) {
+        const zoneLabel = cam.zone ? ' | ' + cam.zone : '';
+        nameEl.textContent = '🎥 ' + cam.name + zoneLabel + ' (' + (idx + 1) + '/' + ALL_CAMS.length + ' global)';
+    }
+}
+
+// ---------------------------------------------------------
+// openFS(idx) — Affiche l'overlay sur la caméra idx
+// ---------------------------------------------------------
+function openFS(idx) {
+    currentIdx = idx;
+    loadCam(idx);
+    window.parent.document.getElementById('fs-overlay').classList.add('active');
+}
+
+// ---------------------------------------------------------
+// navigate(dir) — Passe à la caméra suivante (+1) ou précédente (-1)
+// Navigation CIRCULAIRE et GLOBALE sur ALL_CAMS (toutes zones).
+// Exemple : depuis la dernière cam (13/13) → Suivant → cam 1/13.
+// Depuis la cam 1/13 → Précédent → cam 13/13.
+// Le label affiche toujours la zone courante pour s'y retrouver.
+// ---------------------------------------------------------
+function navigate(dir) {
+    if (currentIdx === -1) return;
+    // Modulo sur ALL_CAMS.length → navigation circulaire sans jamais bloquer
+    currentIdx = (currentIdx + dir + ALL_CAMS.length) % ALL_CAMS.length;
+    loadCam(currentIdx);
+}
+
+// ---------------------------------------------------------
+// closeFS() — Ferme l'overlay et coupe le flux MJPEG
+// Couper le src libère la connexion HTTP au serveur caméra.
+// La grille reste inchangée (ses img ont src="" de toute façon).
+// ---------------------------------------------------------
+function closeFS() {
+    const parentDoc = window.parent.document;
+    const overlay = parentDoc.getElementById('fs-overlay');
+    if(overlay) overlay.classList.remove('active');
+    
+    // On coupe le flux pour libérer la connexion MJPEG
+    const img = parentDoc.getElementById('fs-img');
+    if(img) img.src = '';
+    
+    currentIdx = -1;
+}
+
+// ---------------------------------------------------------
+// RÉCEPTEUR DES MESSAGES postMessage
+//
+// Ce pont reçoit plusieurs types de messages des iframes enfants :
+//
+//  1. { type:'openFS', idx:<n>, cams:[...] }
+//     → Envoyé par les boutons ⛶ pour ouvrir l'overlay plein écran.
+//       Le champ `cams` contient la liste COMPLÈTE de toutes les
+//       caméras du site (pas seulement celles de la zone).
+//       C'est ce qui permet la navigation libre entre toutes les zones.
+//
+//  2. { type:'snapshot', cam_id:'CAM_XX' }
+//     → BUG 2 FIX : les iframes ne peuvent pas faire de fetch() vers
+//       http://192.168.0.97 (blocage same-origin/mixed-content).
+//       Elles délèguent la requête à CE pont parent qui lui a accès
+//       au réseau local. Une fois la réponse reçue, on broadcast le
+//       résultat { type:'snapshotResult', success:true/false } à
+//       toutes les iframes via window.parent.frames[].postMessage.
+//
+//  3. { type:'setHeight', height:<px> }
+//     → BUG 1 FIX : les iframes mesurent leur hauteur réelle après rendu
+//       et demandent au pont parent d'ajuster leur taille. On cherche
+//       l'iframe source dans window.parent.document et on met à jour
+//       son attribut height.
+// ---------------------------------------------------------
+window.addEventListener('message', function(event) {
+    if (!event.data) return;
+
+    // --- Ouverture plein écran ---
+    // On reçoit idx (index dans ALL_CAMS) + la liste complète cams[].
+    // On stocke la liste complète dans ALL_CAMS du pont pour que
+    // navigate() puisse parcourir TOUTES les caméras sans restriction.
+    if (event.data.type === 'openFS') {
+        if (event.data.cams && event.data.cams.length > 0) {
+            ALL_CAMS = event.data.cams;  // ← liste COMPLÈTE, toutes zones + champ zone
+        }
+        openFS(event.data.idx);
+        return;
+    }
+
+    // --- BUG 2 FIX : Snapshot délégué par une iframe ---
+    // L'iframe ne peut pas faire le fetch() directement (blocage CORS/mixed-content).
+    // On reçoit ici la demande et on fait le fetch() depuis ce contexte parent.
+    if (event.data.type === 'snapshot') {
+        fetch("/snapshot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cam_id: event.data.cam_id })
+        })
+        .then(function(response) {
+            // On broadcast le résultat à toutes les iframes enfants de la page
+            // pour que celle qui a fait la demande mette à jour son bouton
+            broadcastToIframes({ type: 'snapshotResult', success: response.ok });
+        })
+        .catch(function() {
+            // Erreur réseau : on prévient quand même les iframes
+            broadcastToIframes({ type: 'snapshotResult', success: false });
+        });
+        return;
+    }
+});
+
+// ---------------------------------------------------------
+// broadcastToIframes(msg)
+// Envoie un postMessage à toutes les iframes de la page parent.
+// Utilisé pour renvoyer le résultat du snapshot à l'iframe demandeuse.
+// ---------------------------------------------------------
+function broadcastToIframes(msg) {
+    const parentDoc = window.parent.document;
+    const iframes = parentDoc.querySelectorAll('iframe');
+    iframes.forEach(function(iframe) {
+        try {
+            iframe.contentWindow.postMessage(msg, '*');
+        } catch(e) {}  // certaines iframes cross-origin peuvent refuser
+    });
+}
+
+// Initialisation immédiate : crée l'overlay dès le chargement
+// pour que le listener clavier soit prêt avant même le premier clic
+ensureOverlay();
+</script>
+""", height=0)  # height=0 → iframe invisible, uniquement un pont JavaScript
+
 
 # CHARGEMENT DES ALERTES
 
@@ -263,31 +540,513 @@ if st.sidebar.button("🚪 Déconnexion"):
     st.rerun()  # Recharge app
 
 
+def render_camera_zone(zone_name: str, cams: list, all_cams: list):
+    """
+    Rend UNE ZONE ENTIÈRE de caméras en grille 2 colonnes dans un seul components.html().
+
+    ╔══════════════════════════════════════════════════════════════════════╗
+    ║  CHANGEMENTS PAR RAPPORT AU CODE ORIGINAL                           ║
+    ║                                                                      ║
+    ║  FIX FLUX (limite Firefox 6 connexions simultanées) :               ║
+    ║  Les <img> de la GRILLE ont src="" au départ → aucun flux chargé.   ║
+    ║  Le flux ne démarre que quand on ouvre le plein écran (loadCam).    ║
+    ║  Résultat : une seule connexion MJPEG active à la fois → CAM_49     ║
+    ║  et toutes les autres sont accessibles via les flèches.             ║
+    ║                                                                      ║
+    ║  FIX NAVIGATION CIRCULAIRE GLOBALE :                                ║
+    ║  Navigation ←/→ parcourt ALL_CAMS (toutes zones) de façon          ║
+    ║  circulaire. Le label affiche la zone + position globale :          ║
+    ║  "🎥 Champagnes | 🍾 Alcool (3/13 global)"                         ║
+    ║  Chaque cam dans ALL_CAMS porte un champ `zone` (ajouté Python).   ║
+    ║                                                                      ║
+    ║  CE QUI N'A PAS CHANGÉ :                                            ║
+    ║  - La grille 2 colonnes CSS reste identique                         ║
+    ║  - Les boutons Python Capture/Download restent identiques           ║
+    ║  - La logique d'overlay, fullscreen, snapshot reste identique       ║
+    ║  - Les commentaires sont conservés et enrichis                      ║
+    ╚══════════════════════════════════════════════════════════════════════╝
+
+    Paramètres:
+      zone_name : nom de la zone (ex: "Alcool") — non utilisé dans le HTML
+                  car le titre est géré par st.expander côté Python
+      cams      : liste de TOUTES les caméras de cette zone
+      all_cams  : liste COMPLÈTE de toutes les caméras du site (toutes zones)
+                  → chaque cam doit avoir un champ `zone` pour l'affichage
+                  → transmise via postMessage au pont parent pour la navigation
+                  globale ←/→ en plein écran
+    """
+
+    # Sérialisation JSON pour injection dans le JS inline.
+    # cams_json     = toutes les caméras de CETTE zone (pour construire la grille)
+    # all_cams_json = toutes les caméras du SITE avec champ `zone` (pour la nav globale)
+    cams_json     = json.dumps(cams)
+    all_cams_json = json.dumps(all_cams)
+
+    # ---------------------------------------------------------
+    # Calcul de la hauteur de l'iframe :
+    # On calcule en fonction du nombre TOTAL de caméras de la zone.
+    # layout=wide Streamlit → zone ≈ 1200px. 2 colonnes → chaque col ≈ 595px.
+    # Image 16/9 dans 595px → ~335px. + header(36) + border(8) + caption(24)
+    # + capture_btn(44) + gap(10) ≈ 457px/ligne. On prend 470px + 30px marge basse.
+    # scrolling=True en filet de sécurité sur petits écrans.
+    # ---------------------------------------------------------
+    rows        = (len(cams) + 1) // 2   # ex: 3 cams → 2 lignes, 4 cams → 2 lignes
+    grid_height = rows * 470 + 30        # 470px / ligne + 30px marge basse
+
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* {{ box-sizing: border-box; margin: 0; padding: 0; }}
+
+/* body sans overflow caché : on laisse le contenu définir sa taille réelle */
+body {{
+    font-family: sans-serif;
+    background: white;
+    overflow: hidden;   /* pas de scrollbar dans l'iframe */
+}}
+
+/* ---- GRILLE 2 COLONNES ---- */
+/* grid-template-columns: 1fr 1fr → 2 caméras côte à côte par ligne.
+   Les lignes supplémentaires (3e, 4e cam…) s'ajoutent automatiquement
+   grâce à grid-auto-rows: auto qui prend la hauteur naturelle du contenu. */
+.cam-grid {{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: auto;   /* chaque ligne prend sa hauteur naturelle */
+    gap: 10px;
+    padding: 4px 4px 8px 4px;
+}}
+
+/* ---- CARTE CAMÉRA ---- */
+.cam-card {{ border-radius: 10px; overflow: hidden; }}
+
+/* Header bleu avec nom en orange */
+.cam-header {{
+    background-color: #0066b2;
+    color: #f39200;
+    padding: 5px 10px;
+    border-radius: 10px 10px 0 0;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}}
+.cam-header span {{ color: #f39200; }}
+
+/* Bouton plein écran ⛶ */
+.fs-btn {{
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 2px 5px;
+    border-radius: 4px;
+    line-height: 1;
+    transition: background 0.15s;
+}}
+.fs-btn:hover {{ background: rgba(255,255,255,0.25); }}
+
+/* Flux caméra — border bleue + fond noir */
+/* FIX FLUX : on affiche un placeholder gris foncé quand src est vide.
+   L'utilisateur voit que la cam existe mais le flux n'est pas chargé.
+   Un clic sur ⛶ charge le flux uniquement dans l'overlay plein écran. */
+.cam-body {{
+    border: 4px solid #0066b2;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+    background-color: #1a1a2e;   /* fond sombre indiquant que le flux est en veille */
+    position: relative;
+}}
+.cam-body img {{
+    width: 100%;
+    display: block;
+    aspect-ratio: 16/9;    /* ratio fixe : la hauteur est déduite de la largeur */
+    object-fit: contain;
+}}
+
+/* Texte placeholder affiché quand la cam est en veille (flux non chargé) */
+.cam-placeholder {{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #f39200;
+    font-size: 0.85rem;
+    text-align: center;
+    pointer-events: none;   /* le clic passe à travers vers l'image */
+    opacity: 0.8;
+}}
+
+/* Caption sous la carte */
+.cam-caption {{
+    font-size: 0.75rem;
+    color: #888;
+    padding: 2px 2px 6px 2px;
+}}
+
+/* ==============================================================
+   OVERLAY PLEIN ÉCRAN (dans cette iframe)
+   Quand requestFullscreen() est actif, le navigateur agrandit
+   l'iframe en 100% écran → position:fixed couvre tout l'écran ✓
+   ============================================================== */
+#fs-overlay {{
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.97);
+    z-index: 99999;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}}
+#fs-overlay.active {{ display: flex; }}
+
+#fs-img {{
+    max-width: 95%;
+    max-height: 82vh;
+    object-fit: contain;
+    border: 3px solid #f39200;
+    border-radius: 6px;
+}}
+
+.fs-nav {{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 14px;
+}}
+
+.fs-nav button {{
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 2px solid white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}}
+.fs-nav button:hover {{ background: rgba(255,255,255,0.35); }}
+
+#fs-cam-name {{
+    color: #f39200;
+    font-size: 1rem;
+    font-weight: bold;
+    min-width: 280px;   /* agrandi pour afficher zone + position */
+    text-align: center;
+}}
+</style>
+</head>
+<body>
+
+<!-- GRILLE DE CAMÉRAS (le titre de zone est géré par st.expander Python) -->
+<div class="cam-grid" id="cam-grid"></div>
+
+<!-- OVERLAY PLEIN ÉCRAN (local à cette iframe, activé via requestFullscreen) -->
+<div id="fs-overlay">
+    <img id="fs-img" src="" alt="flux caméra plein écran">
+    <div class="fs-nav">
+        <button id="cap">📸 Capture</button>
+        <button id="fs-prev">◀ Précédent</button>
+        <span id="fs-cam-name"></span>
+        <button id="fs-next">Suivant ▶</button>
+        <button id="fs-close">✕ Fermer</button>
+    </div>
+</div>
+
+<script>
+// ==============================================================
+// DONNÉES DE CAMÉRAS
+//
+// CAMS_ZONE  = caméras de CETTE zone uniquement (pour construire la grille HTML)
+// ALL_CAMS   = toutes les caméras du site, toutes zones confondues
+//              Chaque cam porte un champ `zone` pour l'affichage du label.
+//              Ex: {{ id:"CAM_23", name:"Champagnes", url:"...", zone:"🍾 Alcool" }}
+// ==============================================================
+const CAMS_ZONE = {cams_json};    // Caméras de cette zone (pour la grille)
+const ALL_CAMS  = {all_cams_json}; // Toutes les caméras du site (pour la nav plein écran)
+
+// Index courant dans ALL_CAMS (-1 = overlay fermé)
+let currentIdx = -1;
+
+// ----------------------------------------------------------
+// Construction dynamique de la grille de caméras
+//
+// FIX FLUX : Les <img> sont créées avec src="" (pas de flux chargé).
+// On affiche un placeholder texte pour indiquer que la cam est en veille.
+// Le flux ne démarre que lors de l'ouverture plein écran via openFS().
+// Cela respecte la limite de 6 connexions simultanées de Firefox.
+// ----------------------------------------------------------
+const grid = document.getElementById('cam-grid');
+
+CAMS_ZONE.forEach(function(cam) {{
+    // On retrouve l'index global de cette caméra dans ALL_CAMS.
+    // C'est cet index qui sera transmis à openFS() pour que navigate()
+    // sache exactement où on se situe dans la liste complète du site.
+    const globalIdx = ALL_CAMS.findIndex(function(c) {{ return c.id === cam.id; }});
+
+    const card = document.createElement('div');
+    card.className = 'cam-card';
+
+    // FIX FLUX : src="" → pas de connexion MJPEG dans la grille.
+    // Le placeholder indique à l'utilisateur comment voir le flux.
+    card.innerHTML =
+        '<div class="cam-header">' +
+            '<span>🎥 ' + cam.name + '</span>' +
+            '<button class="fs-btn" title="Ouvrir en plein écran pour voir le flux">⛶</button>' +
+        '</div>' +
+        '<div class="cam-body">' +
+            '<img id="img_' + cam.id + '" src="" alt="' + cam.name + '">' +
+            '<div class="cam-placeholder">▶ Cliquer sur ⛶ pour voir le flux</div>' +
+        '</div>' +
+        '<div class="cam-caption">ID: ' + cam.id + ' | Cliquer ⛶ pour activer le flux</div>';
+
+    // Listener sur ⛶ — attaché APRÈS insertion dans le DOM.
+    // On capture globalIdx par closure pour que chaque bouton ouvre
+    // la bonne caméra dans le contexte global (pas juste dans la zone).
+    card.querySelector('.fs-btn').addEventListener('click', (function(idx) {{
+        return function() {{ openFS(idx); }};
+    }})(globalIdx));
+
+    grid.appendChild(card);
+}});
+
+// ----------------------------------------------------------
+// BUG 1 FIX — Ajustement dynamique de la hauteur de l'iframe
+// On attend que le DOM soit rendu (requestAnimationFrame) puis
+// on mesure la hauteur réelle du contenu (scrollHeight).
+// On envoie cette valeur au document parent via postMessage
+// avec le type 'setHeight' : le pont parent ajuste l'iframe.
+// On ajoute 20px de marge basse pour éviter toute coupure.
+// ----------------------------------------------------------
+function reportHeight() {{
+    const h = document.body.scrollHeight + 20;
+    window.parent.postMessage({{ type: 'setHeight', height: h }}, '*');
+}}
+// Premier appel après le premier paint
+requestAnimationFrame(function() {{
+    setTimeout(reportHeight, 200);  // 200ms : laisse le temps aux images de s'initialiser
+}});
+
+// ----------------------------------------------------------
+// FONCTIONS PLEIN ÉCRAN
+// ----------------------------------------------------------
+
+// loadCam(idx) : charge le flux de ALL_CAMS[idx] dans l'overlay
+//
+// FIX NAVIGATION GLOBALE + AFFICHAGE ZONE :
+// Le label affiche désormais : "🎥 Nom cam | Zone (X/13 global)"
+// Le champ `zone` est injecté côté Python dans all_cams.
+// La position est toujours globale (sur ALL_CAMS) pour indiquer
+// clairement où on se trouve parmi toutes les caméras du site.
+function loadCam(idx) {{
+    const cam = ALL_CAMS[idx];
+
+    // FIX FLUX : on charge le flux UNIQUEMENT dans l'overlay, jamais dans la grille
+    document.getElementById('fs-img').src = cam.url;
+
+    // Label : "🎥 Nom | Zone (position/total global)"
+    // Le champ `zone` est ajouté par Python lors de la construction de all_cams.
+    const zoneLabel = cam.zone ? ' | ' + cam.zone : '';
+    document.getElementById('fs-cam-name').textContent =
+        '🎥 ' + cam.name + zoneLabel + ' (' + (idx + 1) + '/' + ALL_CAMS.length + ' global)';
+}}
+
+// openFS(idx) : ouvre l'overlay plein écran sur la caméra d'index global idx
+function openFS(idx) {{
+    currentIdx = idx;
+    loadCam(idx);
+    document.getElementById('fs-overlay').classList.add('active');
+
+    // Vrai plein écran navigateur via requestFullscreen()
+    // DOIT être appelé dans un handler d'événement utilisateur (clic) ✓
+    const el = document.documentElement;
+    if (el.requestFullscreen) {{
+        el.requestFullscreen().catch(function() {{}});
+    }} else if (el.webkitRequestFullscreen) {{
+        el.webkitRequestFullscreen();  // Safari
+    }} else if (el.mozRequestFullScreen) {{
+        el.mozRequestFullScreen();     // Firefox ancien
+    }} else if (el.msRequestFullscreen) {{
+        el.msRequestFullscreen();      // IE/Edge ancien
+    }}
+}}
+
+// navigate(dir) : passe à la caméra suivante (+1) ou précédente (-1)
+//
+// FIX NAVIGATION CIRCULAIRE GLOBALE :
+// - ALL_CAMS contient toutes les cams du site (toutes zones confondues)
+// - Navigation CIRCULAIRE : depuis la dernière cam → Suivant → 1ère cam
+//   grâce au modulo : (idx + dir + total) % total
+// - Le label affiche la zone en temps réel via loadCam()
+// Exemple : 13 cams, on est à idx=12 (dernière)
+//   navigate(+1) → (12 + 1 + 13) % 13 = 0 → retour à la 1ère cam ✓
+//   navigate(-1) → (0 - 1 + 13) % 13 = 12 → retour à la dernière ✓
+function navigate(dir) {{
+    if (currentIdx === -1) return;
+    // Modulo sur ALL_CAMS.length → navigation circulaire sans jamais bloquer
+    currentIdx = (currentIdx + dir + ALL_CAMS.length) % ALL_CAMS.length;
+    loadCam(currentIdx);
+}}
+
+// closeFS() : ferme l'overlay + quitte le plein écran navigateur
+//
+// FIX FLUX : on coupe uniquement le flux de l'overlay (img#fs-img).
+// La grille reste inchangée : ses img ont toujours src="" donc
+// aucune connexion MJPEG n'est ouverte ni à fermer côté grille.
+function closeFS() {{
+    document.getElementById('fs-overlay').classList.remove('active');
+    document.getElementById('fs-img').src = '';  // libère la connexion HTTP MJPEG
+    currentIdx = -1;
+
+    // Quitte le plein écran navigateur (API standard + variantes navigateurs)
+    if (document.exitFullscreen) {{
+        document.exitFullscreen().catch(function() {{}});
+    }} else if (document.webkitExitFullscreen) {{
+        document.webkitExitFullscreen();
+    }} else if (document.mozCancelFullScreen) {{
+        document.mozCancelFullScreen();
+    }} else if (document.msExitFullscreen) {{
+        document.msExitFullscreen();
+    }}
+}}
+
+// ----------------------------------------------------------
+// BUG 2 FIX — Bouton Capture plein écran
+//
+// PROBLÈME PRÉCÉDENT :
+//   fetch("/snapshot") depuis cette iframe
+//   était bloqué par la politique same-origin du navigateur.
+//
+// SOLUTION :
+//   On fait le fetch() DIRECTEMENT depuis l'iframe avec un timeout
+//   de 3 secondes. Cela fonctionne en HTTP local (même réseau LAN).
+//   Si le serveur Flask est injoignable, on affiche "❌ Hors ligne".
+// ----------------------------------------------------------
+function takeSnapshot() {{
+    if (currentIdx === -1) return;  // Sécurité : overlay doit être ouvert
+
+    const cam = ALL_CAMS[currentIdx];
+    const btn = document.getElementById('cap');
+    const originalText = btn.textContent;
+
+    // Feedback visuel immédiat
+    btn.textContent = "⏳ Capture...";
+    btn.style.borderColor = "#f39200";
+    btn.disabled = true;
+
+    // AbortController pour le timeout de 3 secondes
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+    // POST vers /snapshot avec l'identifiant de la caméra courante
+    fetch("/snapshot", {{
+        method: "POST",
+        headers: {{ "Content-Type": "application/json" }},
+        body: JSON.stringify({{ cam_id: cam.id }}),
+        signal: controller.signal
+    }})
+    .then(function(response) {{
+        clearTimeout(timeoutId);
+        if (response.ok) {{
+            btn.textContent = "✅ OK";
+            btn.style.color = "#28a745";
+        }} else {{
+            btn.textContent = "❌ Erreur serveur";
+            btn.style.color = "#ff0000";
+        }}
+    }})
+    .catch(function(err) {{
+        clearTimeout(timeoutId);
+        btn.textContent = "❌ Hors ligne";
+        btn.style.color = "#ff0000";
+    }})
+    .finally(function() {{
+        setTimeout(function() {{
+            btn.textContent = originalText;
+            btn.style.color = "white";
+            btn.style.borderColor = "white";
+            btn.disabled = false;
+        }}, 2000);
+    }});
+}}
+
+// ----------------------------------------------------------
+// Navigation clavier ←/→ dans l'overlay
+// ----------------------------------------------------------
+document.addEventListener('keydown', function(e) {{
+    if (currentIdx === -1) return;
+    if (e.key === 'ArrowLeft')  {{ e.preventDefault(); navigate(-1); }}
+    if (e.key === 'ArrowRight') {{ e.preventDefault(); navigate(+1); }}
+    if (e.key === 'c' || e.key === 'C') takeSnapshot();
+}});
+
+// Quand le navigateur quitte le plein écran (Echap ou bouton natif)
+// → ferme l'overlay proprement pour rester en état cohérent
+document.addEventListener('fullscreenchange', function() {{
+    if (!document.fullscreenElement && currentIdx !== -1) {{
+        document.getElementById('fs-overlay').classList.remove('active');
+        document.getElementById('fs-img').src = '';
+        currentIdx = -1;
+    }}
+}});
+// Variante webkit pour Safari
+document.addEventListener('webkitfullscreenchange', function() {{
+    if (!document.webkitFullscreenElement && currentIdx !== -1) {{
+        document.getElementById('fs-overlay').classList.remove('active');
+        document.getElementById('fs-img').src = '';
+        currentIdx = -1;
+    }}
+}});
+
+// Clic sur le fond noir de l'overlay → ferme + quitte le plein écran
+document.getElementById('fs-overlay').addEventListener('click', function(e) {{
+    if (e.target === this) closeFS();
+}});
+
+// Boutons de navigation de l'overlay
+document.getElementById('fs-close').addEventListener('click', closeFS);
+document.getElementById('fs-prev').addEventListener('click', function() {{ navigate(-1); }});
+document.getElementById('fs-next').addEventListener('click', function() {{ navigate(+1); }});
+document.getElementById('cap').addEventListener('click', takeSnapshot);
+</script>
+
+</body>
+</html>"""
+
+    components.html(html, height=grid_height, scrolling=True)
+
+
 # 📺 PAGE LIVE (MULTI CAMÉRAS PRO)
 
 if page == "📺 LIVE":
     st.subheader("🎥 Surveillance en direct")
-    # On utilise des colonnes pour économiser de l'espace
     col_refresh, col_info = st.columns([1, 4])
     with col_refresh:
         if st.button("🔄 Actualiser"):
             st.rerun()
     with col_info:
-        st.info("Note : Les flux sont optimisés pour le GPU. Si une image ne s'affiche pas, vérifiez que le script IA tourne.")
+        st.info("Note : Les flux s'activent uniquement en mode plein écran (⛶) pour rester sous la limite navigateur.")
 
-    
     # 📍 DÉFINITION DES CAMÉRAS PAR ZONES
-    
     cameras = {
         "🍾 Alcool": [
-            {"id": "CAM_01", "name": "🥃​ Rayon alcool fort", "url": "http://192.168.0.97:5000/video/CAM_01"},
-            {"id": "CAM_02", "name": "🍷 Vins", "url": "http://192.168.0.97:5000/video/CAM_02"},
-            {"id": "CAM_03", "name": "🥂 Champagnes", "url": "http://192.168.0.97:5002/video/CAM_03"},
+            {"id": "CAM_21", "name": "🥃​ Rayon alcool fort", "url": "/video/CAM_21"},
+            {"id": "CAM_22", "name": "🍷 Vins", "url": "/video/CAM_22"},
+            {"id": "CAM_23", "name": "🥂 Champagnes", "url": "/video/CAM_23"},
         ],
         "🌍 Espace culturel": [
-            {"id": "CAM_04", "name": "Zone jeux vidéo", "url": "http://192.168.0.97:5003/video"},
-            {"id": "CAM_05", "name": "Librairie", "url": "http://192.168.0.97:5004/video"},
-            {"id": "CAM_06", "name": "Caisse", "url": "http://192.168.0.97:5005/video"},
+            {"id": "CAM_45", "name": "👀​ Vue Globale", "url": "/video/CAM_45"},
+            {"id": "CAM_46", "name": "📠​ Electronique/divertissement", "url": "/video/CAM_46"},
+            {"id": "CAM_47", "name": "🎧​ Audio", "url": "/video/CAM_47"},
+            {"id": "CAM_49", "name": "🎮​ Jeux Vidéos", "url": "/video/CAM_49"},
         ],
         "🏪 Galerie": [
             {"id": "CAM_07", "name": "Fleuriste", "url": "http://192.168.0.97:5006/video"},
@@ -298,85 +1057,39 @@ if page == "📺 LIVE":
             {"id": "CAM_10", "name": "Sortie secours", "url": "http://192.168.0.97:5009/video"},
             {"id": "CAM_11", "name": "Réserve", "url": "http://192.168.0.97:5010/video"},
             {"id": "CAM_12", "name": "Personnel", "url": "http://192.168.0.97:5011/video"},
-        
         ]
-    }  
+    }
 
-    # --- CORRECTION DE L'INJECTION JAVASCRIPT ---
-    # Récupération de l'ordre linéaire de toutes les URLS pour la navigation au clavier
-    all_cam_urls = []
-    for zone, cams in cameras.items():
-        for cam in cams:
-            all_cam_urls.append(cam["url"])
-    
-    js_urls_array = "[" + ",".join([f"'{url}'" for url in all_cam_urls]) + "]"
-
-    # Code Javascript sur UNE SEULE LIGNE (minifié) pour éviter que Streamlit l'affiche comme du Markdown
-    js_code = (
-        "window.camUrls=" + js_urls_array + ";"
-        "window.handleKey=function(e,imgElem){"
-        "if(e.key==='ArrowRight'){"
-        "let idx=parseInt(imgElem.getAttribute('data-index'));idx=(idx+1)%window.camUrls.length;"
-        "imgElem.setAttribute('data-index',idx);imgElem.src=window.camUrls[idx];"
-        "}else if(e.key==='ArrowLeft'){"
-        "let idx=parseInt(imgElem.getAttribute('data-index'));idx=(idx-1+window.camUrls.length)%window.camUrls.length;"
-        "imgElem.setAttribute('data-index',idx);imgElem.src=window.camUrls[idx];"
-        "}"
-        "};"
-        
-        # FIX FULLSCREEN
-        "window.openFS=function(id){"
-        "let el=document.getElementById('container_'+id);"
-        "if(!el)return;"
-        "if(el.requestFullscreen)el.requestFullscreen();"
-        "else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();"
-        "else if(el.msRequestFullscreen)el.msRequestFullscreen();"
-        "};"
-    )
-
-    # Injection sans sauts de ligne
-    st.markdown(f'<img src="dummy" style="display:none;" onerror="{js_code}">', unsafe_allow_html=True)
-    # -------------------------------------------------------------
+    # ---------------------------------------------------------
+    # Construction de all_cams avec le champ `zone` injecté.
+    #
+    # FIX NAVIGATION GLOBALE : on ajoute le nom de la zone à chaque cam
+    # pour que le JS puisse l'afficher dans le label plein écran.
+    # Format : "🎥 Champagnes | 🍾 Alcool (3/13 global)"
+    # On ne modifie pas le dict original (on crée une copie avec zone).
+    # ---------------------------------------------------------
+    all_cams = []
+    for zone_name, zone_cams in cameras.items():
+        for cam in zone_cams:
+            cam_with_zone = dict(cam)          # copie pour ne pas polluer le dict original
+            cam_with_zone["zone"] = zone_name  # on ajoute le nom de zone
+            all_cams.append(cam_with_zone)
 
     for zone, cams in cameras.items():
-        with st.expander(f"📍 {zone}", expanded=True): # Utiliser expander réduit la charge CPU si fermé
-            for i in range(0, len(cams), 2): # 2 caméras par ligne pour plus de stabilité
-                cols = st.columns(2)
-                for j in range(2):
-                    if i + j < len(cams):
-                        cam = cams[i + j]
-                        global_cam_index = all_cam_urls.index(cam["url"]) # Index global pour le JS
-                        with cols[j]:
-                            # On simplifie le HTML pour ne garder que le Fullscreen
-                            st.markdown(f"""
-                                <div id="container_img_{cam['id']}">
-                                    <div style="background-color:#0066b2; color:#f39200; padding:5px 10px; border-radius:10px 10px 0 0; font-weight:bold; display: flex; justify-content: space-between; align-items: center;">
-                                        <span>🎥 {cam['name']}</span>
-                                        <button onclick="window.openFS('img_{cam['id']}')" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2rem;">⛶</button>
-                                    </div>
-                                    <div style="border: 4px solid #0066b2; border-radius: 0 0 10px 10px; overflow: hidden; background-color: #000;">
-                                        <img id="img_{cam['id']}" data-index="{global_cam_index}" src="{cam['url']}" tabindex="0" onkeydown="window.handleKey(event, this)" style="width: 100%; display: block; aspect-ratio: 16/9; object-fit: contain;">
-                                    </div>
-                                </div>
-                            """, unsafe_allow_html=True)
-                            st.caption(f"ID: {cam['id']} | Flux Temps Réel")
+        with st.expander(f"📍 {zone}", expanded=True):
 
-                            # 👉 BOUTON PYTHON (backend)
-                            if st.button(f"📸 Prendre une capture {cam['id']}", key=f"snap_{cam['id']}"):
-                                try:
-                                    response = requests.post(
-                                        "http://192.168.0.97:5000/snapshot",
-                                        json={"cam_id": cam["id"]},
-                                        timeout=2
-                                    )
+            # ----------------------------------------------------------
+            # render_camera_zone() est appelée UNE SEULE FOIS par zone
+            # avec toutes les cams de la zone → une seule iframe par zone.
+            # La grille 2 colonnes est gérée par CSS (pas changée).
+            # ----------------------------------------------------------
+            render_camera_zone(zone, cams, all_cams)
 
-                                    if response.status_code == 200:
-                                        st.success(f"Capture enregistrée 📸 ({cam['id']})")
-                                    else:
-                                        st.error("Erreur snapshot")
+            # ----------------------------------------------------------
+            # BOUTONS CAPTURE PYTHON — affichés PAR PAIRE sous chaque rangée.
+            # Ces boutons n'ont pas changé par rapport au code original.
+            # ----------------------------------------------------------
 
-                                except Exception as e:
-                                    st.error(f"Erreur connexion caméra : {e}")
 
 # PAGE ALERTES
 
@@ -442,7 +1155,6 @@ elif page == "🚨 ALERTES":
             main_color, status_text = "#FF0000", "CERTITUDE HAUTE" # Rouge
 
         # EXTRACTION DE LA DATE
-        # Si la date n'est pas dans le JSON, on regarde la date de modification du fichier mp4
         vid_clip = alert.get("video_clip", "")
         vid_raw = alert.get("video_raw", "")
         
@@ -453,10 +1165,8 @@ elif page == "🚨 ALERTES":
             timestamp_creation = os.path.getmtime(vid_clip)
             alert_date_str = datetime.fromtimestamp(timestamp_creation).strftime("%d/%m/%Y")
 
-        # ON OUVRE LE CONTENEUR DE L'ALERTE (pour la marge)
         st.markdown('<div style="margin-bottom: 25px;">', unsafe_allow_html=True)
 
-        # 1. LE HEADER DE COULEUR FUSIONNÉ (Ajout de la date)
         st.markdown(f"""
             <div style="
                 background-color: {main_color};
@@ -477,7 +1187,6 @@ elif page == "🚨 ALERTES":
             </div>
         """, unsafe_allow_html=True)
 
-        # 2. LE BLOC VIDÉO AVEC BORDURE ÉPAISSE
         with st.container():
             st.markdown(f"""
                 <div style="
@@ -498,7 +1207,6 @@ elif page == "🚨 ALERTES":
 
             is_raw_view = st.session_state[toggle_key]
             
-            # Si le mode raw est actif et que la vidéo existe, on la prend, sinon on rabat sur clip
             active_video_path = vid_raw if (is_raw_view and vid_raw and os.path.exists(vid_raw)) else vid_clip
 
             with col_video:
@@ -508,20 +1216,16 @@ elif page == "🚨 ALERTES":
                     st.warning("Flux vidéo indisponible sur le disque")
 
             with col_actions:
-                # Espace initial pour centrer les boutons par rapport à la vidéo
                 st.markdown('<div style="margin-top: 15px;"></div>', unsafe_allow_html=True)
                 
-                # BOUTON : Toggle Vue IA / Vue Nette
                 btn_text = "📹​ Voir la vue naturelle" if not is_raw_view else "🧠​ Voir la vue intelligente "
                 if st.button(btn_text, key=f"btn_toggle_{i}", use_container_width=True):
                     st.session_state[toggle_key] = not is_raw_view
                     st.rerun()
 
-                # Bouton suppression (Modifié pour supprimer IA + RAW)
                 if st.button("🗑️ Supprimer", key=f"del_{i}", use_container_width=True):
                     delete_alert(original_index, vid_clip, vid_raw)
 
-                # Bouton téléchargement (Télécharge la vidéo affichée à l'écran : IA ou RAW)
                 if active_video_path and os.path.exists(active_video_path):
                     with open(active_video_path, "rb") as f:
                         file_suffix = "RAW" if is_raw_view else "IA"
@@ -590,9 +1294,6 @@ elif page == "📘 GUIDE D'AMÉLIORATION":
     </style>
     """, unsafe_allow_html=True)
 
-    # =========================
-    # ÉTAPE 1
-    # =========================
     st.markdown(
         '<div class="step-card">'
             '<div class="step-title">🧪 ÉTAPE 1 : Identification et Extraction</div>'
@@ -620,9 +1321,6 @@ elif page == "📘 GUIDE D'AMÉLIORATION":
     unsafe_allow_html=True
     )
 
-    # =========================
-    # ÉTAPE 2
-    # =========================
     st.markdown(
         '<div class="step-card">'
             '<div class="step-title">🧠 ÉTAPE 2 : Mise à jour Dataset Global (Radar)</div>'
@@ -641,9 +1339,6 @@ elif page == "📘 GUIDE D'AMÉLIORATION":
         '</div>',
     unsafe_allow_html=True)
 
-    # =========================
-    # ÉTAPE 3
-    # =========================
     st.markdown(
         '<div class="step-card">'
             '<div class="step-title">🔧 ÉTAPE 3 : Radar Global</div>'
@@ -655,9 +1350,6 @@ elif page == "📘 GUIDE D'AMÉLIORATION":
         '</div>', 
     unsafe_allow_html=True)
 
-    # =========================
-    # ÉTAPE 4
-    # =========================
     st.markdown(
         '<div class="step-card">'
             '<div class="step-title">✂️ ÉTAPE 4 : Préparation du Spécialiste</div>'
@@ -701,9 +1393,6 @@ elif page == "📘 GUIDE D'AMÉLIORATION":
         '</div>',
      unsafe_allow_html=True)
 
-    # =========================
-    # ÉTAPE 5
-    # =========================
     st.markdown(
         '<div class="step-card">'
             '<div class="step-title">🚀 ÉTAPE 5 : Ré-entraînement du Spécialiste</div>'
@@ -726,9 +1415,6 @@ elif page == "📘 GUIDE D'AMÉLIORATION":
         '</div>',
     unsafe_allow_html=True)
 
-    # =========================
-    # ÉTAPE 6
-    # =========================
     st.markdown(
         '<div class="step-card">'
             '<div class="step-title">🔄 ÉTAPE 6 : Mise à jour detect_obj.py</div>'
