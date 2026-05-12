@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 
 # --- CONFIGURATION ---
-root_folder = 'Data_global_v2' 
-output_dir = Path('Dataset_Specialiste_v2')
+root_folder = 'Data_global_v3' 
+output_dir = Path('Dataset_Specialiste_v3')
 padding = 25
 ID_PERSONNE = 3 
 

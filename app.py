@@ -5,6 +5,7 @@ from datetime import datetime, timedelta  # Gestion des heures
 from streamlit_cookies_manager import EncryptedCookieManager  # Cookies persistants sécurisés
 import requests
 import streamlit.components.v1 as components  # Pour injecter le récepteur postMessage dans la page principale
+from streamlit_autorefresh import st_autorefresh # AUTO-REFRESH TOUTES LES 5 SECONDES (méthode propre)
 
 # IDENTIFIANTS ADMIN (À PROTÉGER EN PRODUCTION)
 
@@ -18,7 +19,7 @@ cookies = EncryptedCookieManager(
     password="CHANGE_THIS_SECRET_KEY"  # Clé de chiffrement obligatoire
 )
 
-# On bloque l'app tant que les cookies ne sont pas prêts
+# On bloque l'app tant que les cookies ne sont pas prfts
 if not cookies.ready():
     st.stop()
 
@@ -134,6 +135,27 @@ st.markdown("""
 
     div[data-testid="stExpander"] > details > summary:hover * {
         color: white !important;
+    }
+    
+    div[data-testid="stButton"] > button:disabled {
+        background-color: white !important;
+        color: #0066b2 !important;
+        border: 2px solid #0066b2 !important;
+        opacity: 1 !important;
+        cursor: default !important;
+    }
+
+    /* Bouton VP actif (classé VP = disabled) → vert */
+    div[data-testid="stButton"] > button:disabled:has(p:contains("◀")) {
+        background-color: #1a7a1a !important;
+        color: white !important;
+        border: 2px solid #1a7a1a !important;
+    }
+
+    /* Bouton FP inactif (non classé) → style normal blanc/bleu */
+    div[data-testid="stButton"] > button p {
+        color: inherit !important;
+        font-weight: bold !important;
     }
 
 </style>
@@ -420,24 +442,47 @@ ensureOverlay();
 # CHARGEMENT DES ALERTES
 
 def load_alerts():
-    """Charge les alertes depuis fichier JSON"""
-
-    if not os.path.exists("alerts.json"):
+    if not os.path.exists("alerts.jsonl"):
         return []
 
     try:
-        with open("alerts.json", "r") as f:
-            data = json.load(f)
+        alerts = []
+        with open("alerts.jsonl", "r") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        alerts.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        pass  # Ignore les lignes corrompues
 
-        # sécurité: garantir compatibilité multi-cam
-        for a in data:
+        for a in alerts:
             if "cam" not in a:
                 a["cam"] = "CAM_INCONNUE"
 
-        return data
+        return alerts
 
     except:
         return []
+
+
+
+# CHARGEMENT DES SUSPICIONS DEPUIS FLASK
+
+def load_suspicions():
+    """
+    Récupère les suspicions actives depuis le serveur Flask (detect_obj.py).
+    Les suspicions sont en mémoire RAM côté serveur, pas dans le fichier JSONL.
+    Retourne un dict { cam_id → {time, score, type} } ou {} si serveur injoignable.
+    """
+    try:
+        response = requests.get("http://192.168.0.97:5000/suspicions", timeout=2)
+        if response.status_code == 200:
+            return response.json()
+    except Exception:
+        pass  # Serveur éteint ou inaccessible → on ignore silencieusement
+    return {}
+
 
 # SUPPRESSION D'ALERTE
 
@@ -463,10 +508,67 @@ def delete_alert(index_to_remove, video_path, raw_path=None):
     if 0 <= index_to_remove < len(alerts):  # Vérifie index valide
         alerts.pop(index_to_remove)  # Supprime alerte
 
-        with open("alerts.json", "w") as f:  # Réécrit JSON
-            json.dump(alerts, f, indent=4)
+        with open("alerts.jsonl", "w") as f:  # Réécrit JSONL (1 ligne par alerte)
+            for alert in alerts:
+                f.write(json.dumps(alert, ensure_ascii=False) + "\n")
 
     st.rerun()  # Recharge interface
+
+def _classify_alert(index_to_classify, video_path, raw_path, label: str):
+    """
+    Classe une alerte en Vrai Positif (VP) ou Faux Positif (FP).
+
+    COMPORTEMENT TOGGLE :
+    - Si l'alerte est déjà dans le dossier `label`, on ne fait rien de plus.
+    - Si elle était dans l'autre dossier (ex: FP → VP), on déplace les vidéos
+      depuis l'ancien dossier vers le nouveau.
+    - La vidéo reste visible dans l'interface (on met juste à jour le chemin).
+    - Le choix est mémorisé dans alerts.jsonl (champ "label").
+
+    Paramètres:
+        index_to_classify : index dans load_alerts()
+        video_path        : chemin actuel de la vidéo IA
+        raw_path          : chemin actuel de la vidéo RAW
+        label             : "VP" ou "FP" (cible)
+    """
+    import shutil
+
+    dest_dir = os.path.join("alert_clips", label)
+    os.makedirs(dest_dir, exist_ok=True)  # Crée VP/ ou FP/ si absent
+
+    def _move(src):
+        """
+        Déplace le fichier src vers dest_dir.
+        Si le fichier est déjà dans dest_dir, rien à faire.
+        Retourne le nouveau chemin (ou l'ancien si échec/absent).
+        """
+        if not src or not os.path.exists(src):
+            return src
+        # Déjà dans le bon dossier → pas besoin de déplacer
+        if os.path.dirname(os.path.abspath(src)) == os.path.abspath(dest_dir):
+            return src
+        dest = os.path.join(dest_dir, os.path.basename(src))
+        try:
+            shutil.move(src, dest)
+            return dest
+        except Exception:
+            return src  # En cas d'erreur on conserve l'ancien chemin
+
+    new_video_path = _move(video_path)
+    new_raw_path   = _move(raw_path) if raw_path else ""
+
+    # Mise à jour du JSONL : nouveaux chemins + label VP ou FP
+    alerts = load_alerts()
+    if 0 <= index_to_classify < len(alerts):
+        alerts[index_to_classify]["label"]      = label
+        alerts[index_to_classify]["video_clip"] = new_video_path
+        alerts[index_to_classify]["video_raw"]  = new_raw_path
+
+        with open("alerts.jsonl", "w") as f:
+            for a in alerts:
+                f.write(json.dumps(a, ensure_ascii=False) + "\n")
+
+    st.rerun()
 
 # VERIFICATION AUTHENTIFICATION
 
@@ -528,6 +630,137 @@ st.sidebar.title("📊 Menu")  # Titre sidebar
 
 st.sidebar.metric("Alertes", len(alerts))  # Nombre alertes
 
+# ==============================================================
+# AFFICHAGE DES SUSPICIONS
+#
+# CHANGEMENT : chaque suspicion est ignorable INDIVIDUELLEMENT.
+# On stocke dans st.session_state un set des cam_id ignorées.
+# Une suspicion ignorée disparaît jusqu'au prochain refresh (5s).
+# Si une NOUVELLE suspicion apparaît sur une cam non ignorée,
+# elle s'affiche immédiatement dans la bannière.
+# ==============================================================
+
+suspicions = load_suspicions()
+
+# Initialisation du set des suspicions ignorées par l'agent
+# (réinitialisé à chaque redémarrage de l'app, pas persistant)
+if "ignored_suspicions" not in st.session_state:
+    st.session_state.ignored_suspicions = set()
+
+# Suspicions NON ignorées = celles à afficher
+suspicions_visibles = {
+    cam_id: data
+    for cam_id, data in suspicions.items()
+    if cam_id not in st.session_state.ignored_suspicions
+}
+
+if suspicions:
+    nb_total    = len(suspicions)
+    nb_visibles = len(suspicions_visibles)
+
+    # --- SIDEBAR : badge rouge avec le nombre total de suspicions actives ---
+    st.sidebar.markdown("---")
+    st.sidebar.markdown(
+        f"""<div style="
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            background:rgba(255,255,255,0.15);
+            padding:8px 12px;
+            border-radius:8px;
+            margin-bottom:6px;
+        ">
+            <span style="color:white;font-weight:bold;font-size:0.95rem;">🚨 Suspicions</span>
+            <span style="
+                background:#FF0000;
+                color:white;
+                border-radius:999px;
+                padding:2px 10px;
+                font-size:0.85rem;
+                font-weight:bold;
+            ">{nb_total}</span>
+        </div>""",
+        unsafe_allow_html=True
+    )
+    # Détail compact dans la sidebar
+    for cam_id, data in suspicions.items():
+        score_pct = int(data.get("score", 0) * 100)
+        type_vol  = data.get("type", "?")
+        heure     = data.get("time", "?")
+        color = "#FF8C00" if score_pct < 75 else "#FF0000"
+        st.sidebar.markdown(
+            f"""<div style="
+                background:{color};
+                color:white;
+                padding:6px 10px;
+                border-radius:8px;
+                margin-bottom:5px;
+                font-size:0.82rem;
+                font-weight:bold;
+            ">👁 {cam_id} — VOL {type_vol} {score_pct}%<br>
+            <span style="font-weight:normal;">🕒 {heure}</span></div>""",
+            unsafe_allow_html=True
+        )
+
+    # --- BANNIÈRE PRINCIPALE : une notif par suspicion non ignorée ---
+    # Chaque suspicion visible a sa propre bannière avec son propre bouton Ignorer.
+    # Cliquer "Ignorer" sur une cam l'ajoute au set ignored_suspicions
+    # et la fait disparaître sans toucher aux autres.
+    if suspicions_visibles:
+        st.markdown(
+            """<style>
+            @keyframes pulse-red {
+                0%,100% { box-shadow: 0 0 0 0 rgba(204,0,0,0.5); }
+                50% { box-shadow: 0 0 0 8px rgba(204,0,0,0); }
+            }
+            </style>""",
+            unsafe_allow_html=True
+        )
+        for cam_id, data in suspicions_visibles.items():
+            score_pct = int(data.get("score", 0) * 100)
+            type_vol  = data.get("type", "?")
+            heure     = data.get("time", "?")
+            # Couleur selon le score : orange moyen, rouge haute certitude
+            bg_color  = "#CC0000" if score_pct >= 75 else "#CC6600"
+            label_txt = "CERTITUDE HAUTE" if score_pct >= 75 else "CERTITUDE MOYENNE"
+
+            # Chaque bannière est dans un container Streamlit pour
+            # pouvoir y placer un bouton Streamlit (st.button) à côté du HTML.
+            with st.container():
+                col_banner, col_btn = st.columns([5, 1])
+
+                with col_banner:
+                    st.markdown(
+                        f"""<div style="
+                            background:{bg_color};
+                            border-radius:10px;
+                            padding:12px 16px;
+                            animation: pulse-red 1.5s ease-in-out infinite;
+                            margin-bottom:4px;
+                        ">
+                            <div style="color:white;font-size:1rem;font-weight:bold;">
+                                ⚠️ Suspicion — {cam_id}
+                            </div>
+                            <div style="color:white;font-size:0.88rem;margin-top:4px;">
+                                VOL {type_vol} — {score_pct}% ({label_txt}) — 🕒 {heure}
+                            </div>
+                        </div>""",
+                        unsafe_allow_html=True
+                    )
+
+                with col_btn:
+                    # Bouton individuel : ignore UNIQUEMENT cette caméra
+                    # La clé inclut cam_id pour être unique par suspicion
+                    if st.button("✕ Ignorer", key=f"ignore_{cam_id}"):
+                        st.session_state.ignored_suspicions.add(cam_id)
+
+else:
+    # Aucune suspicion active → sidebar sobre
+    st.sidebar.markdown("---")
+    st.sidebar.markdown(
+        "<div style='color:white;font-size:0.85rem;opacity:0.7;'>✅ Aucune suspicion active</div>",
+        unsafe_allow_html=True
+    )
 page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES", "📘 GUIDE D'AMÉLIORATION"])  # Navigation
 
 # DÉCONNEXION
@@ -1217,15 +1450,83 @@ elif page == "🚨 ALERTES":
 
             with col_actions:
                 st.markdown('<div style="margin-top: 15px;"></div>', unsafe_allow_html=True)
-                
-                btn_text = "📹​ Voir la vue naturelle" if not is_raw_view else "🧠​ Voir la vue intelligente "
+
+                # Bouton toggle vue IA / vue naturelle (inchangé)
+                btn_text = "📹 Voir la vue naturelle" if not is_raw_view else "🧠 Voir la vue intelligente"
                 if st.button(btn_text, key=f"btn_toggle_{i}", use_container_width=True):
                     st.session_state[toggle_key] = not is_raw_view
                     st.rerun()
 
+                # ==============================================================
+                # BOUTONS FP / VP — Toggle mémorisé
+                #
+                # Le label courant est lu depuis alerts.jsonl (champ "label").
+                # Le bouton actif est affiché en surligné (gras + bordure).
+                # Cliquer sur l'autre label déplace les vidéos + met à jour le JSONL.
+                # Cliquer sur le label déjà actif ne fait rien (idempotent).
+                # L'alerte reste visible dans l'interface dans tous les cas.
+                # ==============================================================
+                current_label = alert.get("label", None)  # "VP", "FP", ou None
+
+                # Style des boutons : actif = fond coloré, inactif = transparent
+                # On construit le style inline pour chaque bouton selon l'état courant
+                st.markdown("**Classifier :**")
+
+                col_vp, col_fp = st.columns(2)
+
+                with col_vp:
+                    vp_active = current_label == "VP"
+                    if vp_active:
+                        # Bouton actif : rendu en HTML vert, pas cliquable
+                        st.markdown(
+                            """<button style="
+                                width:100%;
+                                background-color:#1a7a1a;
+                                color:white;
+                                border:2px solid #1a7a1a;
+                                border-radius:8px;
+                                padding:8px;
+                                font-weight:bold;
+                                font-size:0.95rem;
+                                cursor:default;
+                            ">✅ VP ◀ Actif</button>""",
+                            unsafe_allow_html=True
+                        )
+                    else:
+                        if st.button("✅ VP", key=f"vp_{i}",
+                                     use_container_width=True,
+                                     help="Vrai Positif — vol réel confirmé"):
+                            _classify_alert(original_index, vid_clip, vid_raw, "VP")
+
+                with col_fp:
+                    fp_active = current_label == "FP"
+                    if fp_active:
+                        # Bouton actif : rendu en HTML rouge, pas cliquable
+                        st.markdown(
+                            """<button style="
+                                width:100%;
+                                background-color:#CC0000;
+                                color:white;
+                                border:2px solid #CC0000;
+                                border-radius:8px;
+                                padding:8px;
+                                font-weight:bold;
+                                font-size:0.95rem;
+                                cursor:default;
+                            ">❌ FP ◀ Actif</button>""",
+                            unsafe_allow_html=True
+                        )
+                    else:
+                        if st.button("❌ FP", key=f"fp_{i}",
+                                     use_container_width=True,
+                                     help="Faux Positif — fausse alerte"):
+                            _classify_alert(original_index, vid_clip, vid_raw, "FP")
+
+                # Suppression simple (sans classification)
                 if st.button("🗑️ Supprimer", key=f"del_{i}", use_container_width=True):
                     delete_alert(original_index, vid_clip, vid_raw)
 
+                # Téléchargement (inchangé)
                 if active_video_path and os.path.exists(active_video_path):
                     with open(active_video_path, "rb") as f:
                         file_suffix = "RAW" if is_raw_view else "IA"
@@ -1432,6 +1733,12 @@ elif page == "📘 GUIDE D'AMÉLIORATION":
             '</div>'
         '</div>', 
     unsafe_allow_html=True)
+
+# AUTO-REFRESH TOUTES LES 5 SECONDES
+# Permet de voir apparaître les nouvelles suspicions sans recharger manuellement.
+# Uniquement sur les pages LIVE et ALERTES (pas sur le guide qui ne change pas).
+if page in ["📺 LIVE", "🚨 ALERTES"]:
+    st_autorefresh(interval=5000, key="suspicions_refresh")
 
 # RGPD
 st.markdown("""

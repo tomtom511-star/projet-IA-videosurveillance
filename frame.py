@@ -11,7 +11,7 @@ os.makedirs(output_frames_dir, exist_ok=True)
 
 # --- OUVERTURE DE LA VIDÉO ---
 # Remplace par le chemin de ta vidéo
-video_path = "vidéos/test4.mp4"
+video_path = "alert_clips/raw/RAW_SAC_154817.mp4"
 cap = cv2.VideoCapture(video_path)
 
 # Vérifie que la vidéo s'est bien ouverte
@@ -36,8 +36,7 @@ while True:
     frame_count += 1
 
     # --- SAUVEGARDE DES FRAMES ---
-    # Ici : on sauvegarde 1 frame toutes les 60 frames (~2 secondes si 30 fps)
-    if frame_count % 60 == 0:
+    if frame_count % 12 == 0:
 
         # Nom du fichier image
         img_name = f"frame_{timestamp_session}_{frame_count}.jpg"
