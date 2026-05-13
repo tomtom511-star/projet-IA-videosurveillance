@@ -483,6 +483,20 @@ def load_suspicions():
         pass  # Serveur éteint ou inaccessible → on ignore silencieusement
     return {}
 
+# 1. On stocke les suspicions dans session_state
+if "current_suspicions" not in st.session_state:
+    st.session_state.current_suspicions = {}
+
+# 2. On fetch les nouvelles suspicions
+new_suspicions = load_suspicions()
+
+# 3. On met à jour SEULEMENT si elles ont changé
+if new_suspicions != st.session_state.current_suspicions:
+    st.session_state.current_suspicions = new_suspicions
+    # PAS de st.rerun() ici — le cycle courant continue normalement
+
+# 4. On utilise session_state partout au lieu de `suspicions` direct
+suspicions = st.session_state.current_suspicions
 
 # SUPPRESSION D'ALERTE
 
@@ -533,10 +547,12 @@ def _classify_alert(index_to_classify, video_path, raw_path, label: str):
     """
     import shutil
 
-    dest_dir = os.path.join("alert_clips", label)
-    os.makedirs(dest_dir, exist_ok=True)  # Crée VP/ ou FP/ si absent
+    dest_dir_ia  = os.path.join("alert_clips", label)           # VP/  ou FP/
+    dest_dir_raw = os.path.join("alert_clips", label, "raw")    # VP/raw/  ou FP/raw/
+    os.makedirs(dest_dir_ia,  exist_ok=True)
+    os.makedirs(dest_dir_raw, exist_ok=True)
 
-    def _move(src):
+    def _move(src, dest_dir):
         """
         Déplace le fichier src vers dest_dir.
         Si le fichier est déjà dans dest_dir, rien à faire.
@@ -554,8 +570,8 @@ def _classify_alert(index_to_classify, video_path, raw_path, label: str):
         except Exception:
             return src  # En cas d'erreur on conserve l'ancien chemin
 
-    new_video_path = _move(video_path)
-    new_raw_path   = _move(raw_path) if raw_path else ""
+    new_video_path = _move(video_path, dest_dir_ia)   # vidéo IA → VP/ ou FP/
+    new_raw_path   = _move(raw_path,   dest_dir_raw)  # vidéo RAW → VP/raw/ ou FP/raw/
 
     # Mise à jour du JSONL : nouveaux chemins + label VP ou FP
     alerts = load_alerts()
@@ -624,6 +640,291 @@ st.markdown(
 
 alerts = load_alerts()  # Liste des alertes
 
+@st.fragment
+def gestion_suspicions_fragment():
+    # --- 1. LE REFRESH LOCAL ---
+    # On définit le refresh à l'intérieur : il ne fera "vibrer" que ce bloc
+    st_autorefresh(interval=5000, key="fragment_refresh")
+
+    # --- 2. RÉCUPÉRATION DES DONNÉES ---
+    # On appelle ta fonction (assure-toi qu'elle retourne bien le dict des suspicions)
+    suspicions = load_suspicions() 
+    
+    # On récupère les ignorées depuis le state
+    if "ignored_suspicions" not in st.session_state:
+        st.session_state.ignored_suspicions = set()
+    
+    # Filtrage des visibles
+    suspicions_visibles = {k: v for k, v in suspicions.items() if k not in st.session_state.ignored_suspicions}
+
+    # --- 3. TON CODE D'AFFICHAGE (Le bloc que tu m'as donné) ---
+    if suspicions:
+        nb_total = len(suspicions)
+        
+        # SIDEBAR
+        st.markdown("---")
+        st.markdown(f"""
+            <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.15);padding:8px 12px;border-radius:8px;margin-bottom:6px;">
+                <span style="color:white;font-weight:bold;font-size:0.95rem;">👁️​ Suspicions</span>
+                <span style="background:#FF0000;color:white;border-radius:999px;padding:2px 10px;font-size:0.85rem;font-weight:bold;">{nb_total}</span>
+            </div>
+        """, unsafe_allow_html=True)
+
+        for cam_id, data in suspicions.items():
+            score_pct = int(data.get("score", 0) * 100)
+            color = "#FF8C00" if score_pct < 75 else "#FF0000"
+            st.markdown(f"""
+                <div style="background:{color};color:white;padding:6px 10px;border-radius:8px;margin-bottom:5px;font-size:0.82rem;font-weight:bold;">
+                    👁 {cam_id} — SUSPECT {score_pct}%<br>
+                    <span style="font-weight:normal;">🕒 {data.get('time','?')}</span>
+                </div>
+            """, unsafe_allow_html=True)
+
+        # BANNIÈRES PRINCIPALES
+        if suspicions_visibles:
+            st.markdown("""<style>@keyframes pulse-red {0%,100% {box-shadow: 0 0 0 0 rgba(204,0,0,0.5);} 50% {box-shadow: 0 0 0 8px rgba(204,0,0,0);}}</style>""", unsafe_allow_html=True)
+            for cam_id, data in suspicions_visibles.items():
+                score_pct = int(data.get("score", 0) * 100)
+                bg_color = "#CC0000" if score_pct >= 75 else "#CC6600"
+                
+                with st.container():
+                    col_banner, col_btn = st.columns([5, 1])
+                    with col_banner:
+                        st.markdown(f"""
+                            <div style="background:{bg_color};border-radius:10px;padding:12px 16px;animation: pulse-red 1.5s ease-in-out infinite;margin-bottom:4px;">
+                                <div style="color:white;font-size:1rem;font-weight:bold;">⚠️ Suspicion — {cam_id}</div>
+                                <div style="color:white;font-size:0.88rem;margin-top:4px;">Suspect {data.get('type','?')} — {score_pct}% — 🕒 {data.get('time','?')}</div>
+                            </div>
+                        """, unsafe_allow_html=True)
+                    with col_btn:
+                        if st.button("✕", key=f"ignore_{cam_id}"):
+                            st.session_state.ignored_suspicions.add(cam_id)
+                            st.rerun(scope="fragment") # Important : on relance juste le fragment
+    else:
+        st.markdown("---")
+        st.markdown("<div style='color:white;font-size:0.85rem;opacity:0.7;'>✅ Aucune suspicion active</div>", unsafe_allow_html=True)
+
+
+with st.sidebar:
+    gestion_suspicions_fragment()
+
+@st.fragment
+def alertes_fragment():
+
+    st_autorefresh(interval=5000, key="alertes_refresh")
+
+    alerts = load_alerts()
+
+    st.subheader("🚨 Historique des alertes")
+
+    if not alerts:  # Si aucune alerte
+        st.info("Aucune alerte")  # Message info
+        return
+
+    cams_available = sorted(list(set(a.get("cam", "CAM_INCONNUE") for a in alerts)))
+    cams_available.insert(0, "Toutes")
+
+    # Filtres UI
+    type_filter = st.selectbox("Type", ["Tous", "SAC", "CORPS"])
+    time_filter = st.selectbox("Période", ["Toutes", "Dernière heure"])
+    cam_filter = st.selectbox("Caméra", cams_available)
+
+    now = datetime.now()  # Heure actuelle
+
+    filtered = []  # Liste filtrée
+
+    # FILTRAGE ALERTES
+
+    for alert in alerts:
+
+        if type_filter != "Tous" and alert.get("type") != type_filter:
+            continue  # Skip si type différent
+
+        if cam_filter != "Toutes" and alert.get("cam") != cam_filter:
+            continue
+
+        if time_filter == "Dernière heure":
+            try:
+                t = datetime.strptime(alert["time"], "%H:%M:%S").replace(
+                    year=now.year,
+                    month=now.month,
+                    day=now.day
+                )
+
+                if now - t > timedelta(hours=1):
+                    continue  # Skip si trop ancien
+
+            except:
+                pass
+
+        filtered.append(alert)  # Ajout si valide
+
+    st.write(f"**{len(filtered)} alertes**")  # compteur
+
+    # AFFICHAGE ALERTES
+    for i, alert in enumerate(reversed(filtered)):
+        original_index = alerts.index(alert)
+        score_percent = int(alert.get('score', 0) * 100)
+        
+        # Choix des couleurs et du texte de statut selon les critères
+        if score_percent < 60:
+            main_color, status_text = "#FFD700", "DOUTE IA" # Jaune
+        elif score_percent < 85:
+            main_color, status_text = "#FF8C00", "CERTITUDE MOYENNE" # Orange
+        else:
+            main_color, status_text = "#FF0000", "CERTITUDE HAUTE" # Rouge
+
+        # EXTRACTION DE LA DATE
+        vid_clip = alert.get("video_clip", "")
+        vid_raw = alert.get("video_raw", "")
+        
+        alert_date_str = "Date inconnue"
+        if "date" in alert:
+            alert_date_str = alert["date"]
+        elif vid_clip and os.path.exists(vid_clip):
+            timestamp_creation = os.path.getmtime(vid_clip)
+            alert_date_str = datetime.fromtimestamp(timestamp_creation).strftime("%d/%m/%Y")
+
+        st.markdown('<div style="margin-bottom: 25px;">', unsafe_allow_html=True)
+
+        st.markdown(f"""
+            <div style="
+                background-color: {main_color};
+                color: white; 
+                padding: 10px 15px; 
+                border-radius: 10px 10px 0 0; 
+                font-size: 1.1rem; 
+                font-weight: bold; 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center;
+            ">
+                <span>⚠️ ALERTE VOL {alert.get('type')}</span>
+                <div style="color:white; font-size:1.1rem; padding: 2px 10px;">📅 {alert_date_str} - 🕒 {alert.get("time")}</div>
+                <span style="background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 20px;">
+                    {status_text} | {score_percent}%
+                </span>
+            </div>
+        """, unsafe_allow_html=True)
+
+        with st.container():
+            st.markdown(f"""
+                <div style="
+                    border: 6px solid {main_color}; 
+                    border-top: none; 
+                    border-radius: 0 0 10px 10px; 
+                    background-color: #fcfcfc;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                ">
+            """, unsafe_allow_html=True)
+
+            col_video, col_actions = st.columns([3, 1])
+            
+            # GESTION DU TOGGLE IA / RAW DANS LE SESSION_STATE
+            toggle_key = f"toggle_raw_{i}"
+            if toggle_key not in st.session_state:
+                st.session_state[toggle_key] = False # Par défaut: Vue IA
+
+            is_raw_view = st.session_state[toggle_key]
+            
+            active_video_path = vid_raw if (is_raw_view and vid_raw and os.path.exists(vid_raw)) else vid_clip
+
+            with col_video:
+                if active_video_path and os.path.exists(active_video_path):
+                    st.video(active_video_path)
+                else:
+                    st.warning("Flux vidéo indisponible sur le disque")
+
+            with col_actions:
+                st.markdown('<div style="margin-top: 15px;"></div>', unsafe_allow_html=True)
+
+                # Bouton toggle vue IA / vue naturelle (inchangé)
+                btn_text = "📹 Voir la vue naturelle" if not is_raw_view else "🧠 Voir la vue intelligente"
+                if st.button(btn_text, key=f"btn_toggle_{i}", use_container_width=True):
+                    st.session_state[toggle_key] = not is_raw_view
+                    st.rerun()
+
+                # ==============================================================
+                # BOUTONS FP / VP — Toggle mémorisé
+                #
+                # Le label courant est lu depuis alerts.jsonl (champ "label").
+                # Le bouton actif est affiché en surligné (gras + bordure).
+                # Cliquer sur l'autre label déplace les vidéos + met à jour le JSONL.
+                # Cliquer sur le label déjà actif ne fait rien (idempotent).
+                # L'alerte reste visible dans l'interface dans tous les cas.
+                # ==============================================================
+                current_label = alert.get("label", None)  # "VP", "FP", ou None
+
+                # Style des boutons : actif = fond coloré, inactif = transparent
+                # On construit le style inline pour chaque bouton selon l'état courant
+                st.markdown("**Classifier :**")
+
+                col_vp, col_fp = st.columns(2)
+
+                with col_vp:
+                    vp_active = current_label == "VP"
+                    if vp_active:
+                        # Bouton actif : rendu en HTML vert, pas cliquable
+                        st.markdown(
+                            """<button style="
+                                width:100%;
+                                background-color:#1a7a1a;
+                                color:white;
+                                border:2px solid #1a7a1a;
+                                border-radius:8px;
+                                padding:8px;
+                                font-weight:bold;
+                                font-size:0.95rem;
+                                cursor:default;
+                            ">✅ VP ◀ Actif</button>""",
+                            unsafe_allow_html=True
+                        )
+                    else:
+                        if st.button("✅ VP", key=f"vp_{i}",
+                                     use_container_width=True,
+                                     help="Vrai Positif — vol réel confirmé"):
+                            _classify_alert(original_index, vid_clip, vid_raw, "VP")
+
+                with col_fp:
+                    fp_active = current_label == "FP"
+                    if fp_active:
+                        # Bouton actif : rendu en HTML rouge, pas cliquable
+                        st.markdown(
+                            """<button style="
+                                width:100%;
+                                background-color:#CC0000;
+                                color:white;
+                                border:2px solid #CC0000;
+                                border-radius:8px;
+                                padding:8px;
+                                font-weight:bold;
+                                font-size:0.95rem;
+                                cursor:default;
+                            ">❌ FP ◀ Actif</button>""",
+                            unsafe_allow_html=True
+                        )
+                    else:
+                        if st.button("❌ FP", key=f"fp_{i}",
+                                     use_container_width=True,
+                                     help="Faux Positif — fausse alerte"):
+                            _classify_alert(original_index, vid_clip, vid_raw, "FP")
+
+                # Suppression simple (sans classification)
+                if st.button("🗑️ Supprimer", key=f"del_{i}", use_container_width=True):
+                    delete_alert(original_index, vid_clip, vid_raw)
+
+                # Téléchargement (inchangé)
+                if active_video_path and os.path.exists(active_video_path):
+                    with open(active_video_path, "rb") as f:
+                        file_suffix = "RAW" if is_raw_view else "IA"
+                        st.download_button(
+                            "📥 Télécharger",
+                            f,
+                            file_name=f"alert_{file_suffix}_{alert['time'].replace(':', '')}.mp4",
+                            key=f"dl_{i}",
+                            use_container_width=True
+                        )
+
 # SIDEBAR MENU
 
 st.sidebar.title("📊 Menu")  # Titre sidebar
@@ -654,113 +955,7 @@ suspicions_visibles = {
     if cam_id not in st.session_state.ignored_suspicions
 }
 
-if suspicions:
-    nb_total    = len(suspicions)
-    nb_visibles = len(suspicions_visibles)
 
-    # --- SIDEBAR : badge rouge avec le nombre total de suspicions actives ---
-    st.sidebar.markdown("---")
-    st.sidebar.markdown(
-        f"""<div style="
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            background:rgba(255,255,255,0.15);
-            padding:8px 12px;
-            border-radius:8px;
-            margin-bottom:6px;
-        ">
-            <span style="color:white;font-weight:bold;font-size:0.95rem;">🚨 Suspicions</span>
-            <span style="
-                background:#FF0000;
-                color:white;
-                border-radius:999px;
-                padding:2px 10px;
-                font-size:0.85rem;
-                font-weight:bold;
-            ">{nb_total}</span>
-        </div>""",
-        unsafe_allow_html=True
-    )
-    # Détail compact dans la sidebar
-    for cam_id, data in suspicions.items():
-        score_pct = int(data.get("score", 0) * 100)
-        type_vol  = data.get("type", "?")
-        heure     = data.get("time", "?")
-        color = "#FF8C00" if score_pct < 75 else "#FF0000"
-        st.sidebar.markdown(
-            f"""<div style="
-                background:{color};
-                color:white;
-                padding:6px 10px;
-                border-radius:8px;
-                margin-bottom:5px;
-                font-size:0.82rem;
-                font-weight:bold;
-            ">👁 {cam_id} — VOL {type_vol} {score_pct}%<br>
-            <span style="font-weight:normal;">🕒 {heure}</span></div>""",
-            unsafe_allow_html=True
-        )
-
-    # --- BANNIÈRE PRINCIPALE : une notif par suspicion non ignorée ---
-    # Chaque suspicion visible a sa propre bannière avec son propre bouton Ignorer.
-    # Cliquer "Ignorer" sur une cam l'ajoute au set ignored_suspicions
-    # et la fait disparaître sans toucher aux autres.
-    if suspicions_visibles:
-        st.markdown(
-            """<style>
-            @keyframes pulse-red {
-                0%,100% { box-shadow: 0 0 0 0 rgba(204,0,0,0.5); }
-                50% { box-shadow: 0 0 0 8px rgba(204,0,0,0); }
-            }
-            </style>""",
-            unsafe_allow_html=True
-        )
-        for cam_id, data in suspicions_visibles.items():
-            score_pct = int(data.get("score", 0) * 100)
-            type_vol  = data.get("type", "?")
-            heure     = data.get("time", "?")
-            # Couleur selon le score : orange moyen, rouge haute certitude
-            bg_color  = "#CC0000" if score_pct >= 75 else "#CC6600"
-            label_txt = "CERTITUDE HAUTE" if score_pct >= 75 else "CERTITUDE MOYENNE"
-
-            # Chaque bannière est dans un container Streamlit pour
-            # pouvoir y placer un bouton Streamlit (st.button) à côté du HTML.
-            with st.container():
-                col_banner, col_btn = st.columns([5, 1])
-
-                with col_banner:
-                    st.markdown(
-                        f"""<div style="
-                            background:{bg_color};
-                            border-radius:10px;
-                            padding:12px 16px;
-                            animation: pulse-red 1.5s ease-in-out infinite;
-                            margin-bottom:4px;
-                        ">
-                            <div style="color:white;font-size:1rem;font-weight:bold;">
-                                ⚠️ Suspicion — {cam_id}
-                            </div>
-                            <div style="color:white;font-size:0.88rem;margin-top:4px;">
-                                VOL {type_vol} — {score_pct}% ({label_txt}) — 🕒 {heure}
-                            </div>
-                        </div>""",
-                        unsafe_allow_html=True
-                    )
-
-                with col_btn:
-                    # Bouton individuel : ignore UNIQUEMENT cette caméra
-                    # La clé inclut cam_id pour être unique par suspicion
-                    if st.button("✕ Ignorer", key=f"ignore_{cam_id}"):
-                        st.session_state.ignored_suspicions.add(cam_id)
-
-else:
-    # Aucune suspicion active → sidebar sobre
-    st.sidebar.markdown("---")
-    st.sidebar.markdown(
-        "<div style='color:white;font-size:0.85rem;opacity:0.7;'>✅ Aucune suspicion active</div>",
-        unsafe_allow_html=True
-    )
 page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES", "📘 GUIDE D'AMÉLIORATION"])  # Navigation
 
 # DÉCONNEXION
@@ -1327,216 +1522,7 @@ if page == "📺 LIVE":
 # PAGE ALERTES
 
 elif page == "🚨 ALERTES":
-
-    st.subheader("🚨 Historique des alertes")
-
-    if not alerts:  # Si aucune alerte
-        st.info("Aucune alerte")  # Message info
-        st.stop()  # Stop affichage
-
-    cams_available = sorted(list(set(a.get("cam", "CAM_INCONNUE") for a in alerts)))
-    cams_available.insert(0, "Toutes")
-
-    # Filtres UI
-    type_filter = st.selectbox("Type", ["Tous", "SAC", "CORPS"])
-    time_filter = st.selectbox("Période", ["Toutes", "Dernière heure"])
-    cam_filter = st.selectbox("Caméra", cams_available)
-
-    now = datetime.now()  # Heure actuelle
-
-    filtered = []  # Liste filtrée
-
-    # FILTRAGE ALERTES
-
-    for alert in alerts:
-
-        if type_filter != "Tous" and alert.get("type") != type_filter:
-            continue  # Skip si type différent
-
-        if cam_filter != "Toutes" and alert.get("cam") != cam_filter:
-            continue
-
-        if time_filter == "Dernière heure":
-            try:
-                t = datetime.strptime(alert["time"], "%H:%M:%S").replace(
-                    year=now.year,
-                    month=now.month,
-                    day=now.day
-                )
-
-                if now - t > timedelta(hours=1):
-                    continue  # Skip si trop ancien
-
-            except:
-                pass
-
-        filtered.append(alert)  # Ajout si valide
-
-    st.write(f"**{len(filtered)} alertes**")  # compteur
-
-    # AFFICHAGE ALERTES
-    for i, alert in enumerate(reversed(filtered)):
-        original_index = alerts.index(alert)
-        score_percent = int(alert.get('score', 0) * 100)
-        
-        # Choix des couleurs et du texte de statut selon les critères
-        if score_percent < 60:
-            main_color, status_text = "#FFD700", "DOUTE IA" # Jaune
-        elif score_percent < 85:
-            main_color, status_text = "#FF8C00", "CERTITUDE MOYENNE" # Orange
-        else:
-            main_color, status_text = "#FF0000", "CERTITUDE HAUTE" # Rouge
-
-        # EXTRACTION DE LA DATE
-        vid_clip = alert.get("video_clip", "")
-        vid_raw = alert.get("video_raw", "")
-        
-        alert_date_str = "Date inconnue"
-        if "date" in alert:
-            alert_date_str = alert["date"]
-        elif vid_clip and os.path.exists(vid_clip):
-            timestamp_creation = os.path.getmtime(vid_clip)
-            alert_date_str = datetime.fromtimestamp(timestamp_creation).strftime("%d/%m/%Y")
-
-        st.markdown('<div style="margin-bottom: 25px;">', unsafe_allow_html=True)
-
-        st.markdown(f"""
-            <div style="
-                background-color: {main_color};
-                color: white; 
-                padding: 10px 15px; 
-                border-radius: 10px 10px 0 0; 
-                font-size: 1.1rem; 
-                font-weight: bold; 
-                display: flex; 
-                justify-content: space-between; 
-                align-items: center;
-            ">
-                <span>⚠️ ALERTE VOL {alert.get('type')}</span>
-                <div style="color:white; font-size:1.1rem; padding: 2px 10px;">📅 {alert_date_str} - 🕒 {alert.get("time")}</div>
-                <span style="background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 20px;">
-                    {status_text} | {score_percent}%
-                </span>
-            </div>
-        """, unsafe_allow_html=True)
-
-        with st.container():
-            st.markdown(f"""
-                <div style="
-                    border: 6px solid {main_color}; 
-                    border-top: none; 
-                    border-radius: 0 0 10px 10px; 
-                    background-color: #fcfcfc;
-                    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-                ">
-            """, unsafe_allow_html=True)
-
-            col_video, col_actions = st.columns([3, 1])
-            
-            # GESTION DU TOGGLE IA / RAW DANS LE SESSION_STATE
-            toggle_key = f"toggle_raw_{i}"
-            if toggle_key not in st.session_state:
-                st.session_state[toggle_key] = False # Par défaut: Vue IA
-
-            is_raw_view = st.session_state[toggle_key]
-            
-            active_video_path = vid_raw if (is_raw_view and vid_raw and os.path.exists(vid_raw)) else vid_clip
-
-            with col_video:
-                if active_video_path and os.path.exists(active_video_path):
-                    st.video(active_video_path)
-                else:
-                    st.warning("Flux vidéo indisponible sur le disque")
-
-            with col_actions:
-                st.markdown('<div style="margin-top: 15px;"></div>', unsafe_allow_html=True)
-
-                # Bouton toggle vue IA / vue naturelle (inchangé)
-                btn_text = "📹 Voir la vue naturelle" if not is_raw_view else "🧠 Voir la vue intelligente"
-                if st.button(btn_text, key=f"btn_toggle_{i}", use_container_width=True):
-                    st.session_state[toggle_key] = not is_raw_view
-                    st.rerun()
-
-                # ==============================================================
-                # BOUTONS FP / VP — Toggle mémorisé
-                #
-                # Le label courant est lu depuis alerts.jsonl (champ "label").
-                # Le bouton actif est affiché en surligné (gras + bordure).
-                # Cliquer sur l'autre label déplace les vidéos + met à jour le JSONL.
-                # Cliquer sur le label déjà actif ne fait rien (idempotent).
-                # L'alerte reste visible dans l'interface dans tous les cas.
-                # ==============================================================
-                current_label = alert.get("label", None)  # "VP", "FP", ou None
-
-                # Style des boutons : actif = fond coloré, inactif = transparent
-                # On construit le style inline pour chaque bouton selon l'état courant
-                st.markdown("**Classifier :**")
-
-                col_vp, col_fp = st.columns(2)
-
-                with col_vp:
-                    vp_active = current_label == "VP"
-                    if vp_active:
-                        # Bouton actif : rendu en HTML vert, pas cliquable
-                        st.markdown(
-                            """<button style="
-                                width:100%;
-                                background-color:#1a7a1a;
-                                color:white;
-                                border:2px solid #1a7a1a;
-                                border-radius:8px;
-                                padding:8px;
-                                font-weight:bold;
-                                font-size:0.95rem;
-                                cursor:default;
-                            ">✅ VP ◀ Actif</button>""",
-                            unsafe_allow_html=True
-                        )
-                    else:
-                        if st.button("✅ VP", key=f"vp_{i}",
-                                     use_container_width=True,
-                                     help="Vrai Positif — vol réel confirmé"):
-                            _classify_alert(original_index, vid_clip, vid_raw, "VP")
-
-                with col_fp:
-                    fp_active = current_label == "FP"
-                    if fp_active:
-                        # Bouton actif : rendu en HTML rouge, pas cliquable
-                        st.markdown(
-                            """<button style="
-                                width:100%;
-                                background-color:#CC0000;
-                                color:white;
-                                border:2px solid #CC0000;
-                                border-radius:8px;
-                                padding:8px;
-                                font-weight:bold;
-                                font-size:0.95rem;
-                                cursor:default;
-                            ">❌ FP ◀ Actif</button>""",
-                            unsafe_allow_html=True
-                        )
-                    else:
-                        if st.button("❌ FP", key=f"fp_{i}",
-                                     use_container_width=True,
-                                     help="Faux Positif — fausse alerte"):
-                            _classify_alert(original_index, vid_clip, vid_raw, "FP")
-
-                # Suppression simple (sans classification)
-                if st.button("🗑️ Supprimer", key=f"del_{i}", use_container_width=True):
-                    delete_alert(original_index, vid_clip, vid_raw)
-
-                # Téléchargement (inchangé)
-                if active_video_path and os.path.exists(active_video_path):
-                    with open(active_video_path, "rb") as f:
-                        file_suffix = "RAW" if is_raw_view else "IA"
-                        st.download_button(
-                            "📥 Télécharger",
-                            f,
-                            file_name=f"alert_{file_suffix}_{alert['time'].replace(':', '')}.mp4",
-                            key=f"dl_{i}",
-                            use_container_width=True
-                        )
+    alertes_fragment()
 
 elif page == "📘 GUIDE D'AMÉLIORATION":
 
@@ -1734,11 +1720,6 @@ elif page == "📘 GUIDE D'AMÉLIORATION":
         '</div>', 
     unsafe_allow_html=True)
 
-# AUTO-REFRESH TOUTES LES 5 SECONDES
-# Permet de voir apparaître les nouvelles suspicions sans recharger manuellement.
-# Uniquement sur les pages LIVE et ALERTES (pas sur le guide qui ne change pas).
-if page in ["📺 LIVE", "🚨 ALERTES"]:
-    st_autorefresh(interval=5000, key="suspicions_refresh")
 
 # RGPD
 st.markdown("""

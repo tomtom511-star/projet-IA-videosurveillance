@@ -198,18 +198,18 @@ ALERT_COOLDOWN        = 20    # Temps minimum (en secondes) entre 2 alertes SUR 
                               # (v9 : cooldown par article_id, pas global — voir FILTRE E)
 DISAPPEARANCE_TIMEOUT = 12.0  # Temps (en secondes) avant de considérer un objet "disparu sous les vêtements"
 FRAME_THRESHOLD       = 8     # Nombre de frames consécutives pour valider qu'un objet est bien "tenu"
-LOITERING_THRESHOLD   = 90.0  # Temps (en secondes) avant qu'une personne soit considérée suspecte (flânerie)
+LOITERING_THRESHOLD   = 120.0  # Temps (en secondes) avant qu'une personne soit considérée suspecte (flânerie)
 
 # Durée d'affichage du texte d'alerte à l'écran
 DISPLAY_TEXT_DURATION = 4.0
 
 # Durées du clip vidéo enregistré lors d'une alerte
-BEFORE_ALERT_SECS = 5
+BEFORE_ALERT_SECS = 12
 AFTER_ALERT_SECS  = 8
 
 # Tolérance du mini-tracker : nombre de frames pendant lesquelles un article
 # peut disparaître (occlusion, raté YOLO) avant d'être définitivement perdu.
-TRACKER_MISS_TOLERANCE = 5
+TRACKER_MISS_TOLERANCE = 15
 
 # ── PARAMÈTRES DE DÉTECTION DE CONTACT ───────────────────────────────────────
 
@@ -238,6 +238,13 @@ MOVEMENT_CORRELATION_MIN = 0.6
 # 20 frames (~1.7s) reste défensif contre les faux positifs mais est atteignable.
 HOLD_STREAK_THRESHOLD = 20    # v8 : 20 frames (~1.7s) au lieu de 60
 
+'''Le Streak c'est le chemin secondaire de validation "tenu". 
+Il mesure le nombre de frames consécutives où l'article se déplace dans la même direction que la personne (corrélation de mouvement). 
+C'est la fonction _is_article_moving_with_person(). Si l'article bouge avec la personne pendant 20 frames consécutives (HOLD_STREAK_THRESHOLD = 20), 
+il est considéré tenu par ce chemin. En pratique avec tes logs, c'est le Consec qui valide en premier (seuil à 6) bien avant le Streak (seuil à 20).
+Le Streak est donc rarement décisif mais sert de filet de sécurité si le spécialiste rate des frames.'''
+
+
 # CORRECTIF v8 : HOLD_STREAK_MISS_MAX relevé de 3 à 10 frames.
 # POURQUOI : 3 frames = 250ms, insuffisant pour absorber le mouvement naturel
 # de marche (bras qui oscillent, bbox qui "respire" de quelques pixels).
@@ -248,13 +255,13 @@ HOLD_STREAK_MISS_MAX = 10     # v8 : 10 frames au lieu de 3
 # la bbox pour le considérer comme tenu VIA LE CHEMIN PRINCIPAL (détection pure).
 # Le modèle spécialiste ne détecte les articles QU'en main → 12 frames = ~1s.
 # C'est maintenant le chemin PRIMAIRE (plus robuste que la corrélation).
-ARTICLE_DETECTED_HOLD_THRESHOLD = 12
+ARTICLE_DETECTED_HOLD_THRESHOLD = 6
 
 # NOUVEAU v8 : tolérance aux "trous" dans la détection consécutive.
 # POURQUOI : si YOLO rate 1-2 frames, le compteur consécutif tombait à 0
 # immédiatement, rendant le chemin primaire aussi fragile que le streak.
-# Avec 5 frames de tolérance, les ratés ponctuels ne réinitialisent plus le compteur.
-CONSECUTIVE_MISS_MAX = 5      # v8 : nouveau paramètre, n'existait pas en v7
+# Avec 8 frames de tolérance, les ratés ponctuels ne réinitialisent plus le compteur.
+CONSECUTIVE_MISS_MAX = 8      # v8 : nouveau paramètre, n'existait pas en v7
 
 # ── PARAMÈTRES ANTI-FAUX-POSITIFS (NOUVEAUX v9) ──────────────────────────────
 
@@ -267,7 +274,7 @@ CONSECUTIVE_MISS_MAX = 5      # v8 : nouveau paramètre, n'existait pas en v7
 # téléphone personnel, bord de rayon) oscille entre 0.22 et 0.35 car YOLO
 # n'est pas sûr. En exigeant une moyenne ≥ 0.40 sur les dernières frames,
 # on filtre le bruit sans toucher à la sensibilité brute du détecteur.
-HOLD_CONF_MIN = 0.30          # v9 : confiance moyenne minimale pour valider "tenu"
+HOLD_CONF_MIN = 0.25          # v9 : confiance moyenne minimale pour valider "tenu"
 
 # Nombre de frames d'historique de confiance à conserver par article.
 # 20 frames = ~1.7s à 12 FPS → fenêtre glissante suffisamment longue pour
@@ -283,7 +290,7 @@ HOLD_CONF_HISTORY_LEN = 20    # v9 : fenêtre glissante de confiance
 # ponctuel, angle mort partiel) déclenchait donc systématiquement une
 # suspicion. Avec 36 frames (3s à 12 FPS), une occlusion courte est ignorée.
 # Un vrai vol corporel implique que l'article reste invisible bien plus longtemps.
-MIN_DISAPPEARANCE_FRAMES = 36 # v9 : 3 secondes à 12 FPS avant d'entrer en suspicion
+MIN_DISAPPEARANCE_FRAMES = 20 # v9 : 1.7 secondes à 12 FPS avant d'entrer en suspicion
 
 # [FILTRE D] Score minimum absolu pour déclencher une alerte formelle
 # (clip vidéo + écriture dans alerts.jsonl).
@@ -295,7 +302,7 @@ MIN_DISAPPEARANCE_FRAMES = 36 # v9 : 3 secondes à 12 FPS avant d'entrer en susp
 # sans être noyé dans des clips de faux positifs.
 # 0.55 = niveau "probable" : on veut des alertes à clip uniquement quand
 # le système est raisonnablement sûr, pas sur chaque doute.
-ALERT_SCORE_MIN = 0.55        # v9 : score minimum pour alerte formelle avec clip
+ALERT_SCORE_MIN = 0.35        # v9 : score minimum pour alerte formelle avec clip
 
 # ── AUTRES PARAMÈTRES GPU / SUSPICION ────────────────────────────────────────
 
@@ -314,7 +321,7 @@ SUSPICION_TTL = 30            # secondes
 # Nb minimum de frames où l'article doit être proche du sac AVANT de
 # surveiller sa disparition. À 12 FPS, 6 frames = 0.5s.
 # Évite qu'une seule frame de proximité accidentelle déclenche la séquence.
-SAC_PROXIMITY_FRAMES_MIN = 12
+SAC_PROXIMITY_FRAMES_MIN = 6
 
 # Distance max article/sac pour considérer une proximité (pixels).
 # 35px ≈ distance main-ouverture du sac vue depuis une caméra de rayon.
@@ -504,7 +511,6 @@ def get_alerts():
             pass   # Ignore les lignes corrompues (coupure disque, redémarrage brutal)
 
     return jsonify(alerts)
-
 
 @app.route("/suspicions")
 def get_suspicions():
@@ -1226,6 +1232,8 @@ class CameraWorker:
         # Évite que 1-2 frames YOLO ratées réinitialisent le compteur à 0.
         self.article_consecutive_miss: dict = {}    # { article_id → nb frames manquantes }
 
+        self.article_absence_frames: dict = {}      # [FILTRE B v10] compteur d'absence cumulé
+
         # ── [FILTRE A] v9 : historique de confiance par article ───────────────
         # Fenêtre glissante (HOLD_CONF_HISTORY_LEN frames) de la confiance YOLO
         # pour chaque article. La moyenne doit dépasser HOLD_CONF_MIN pour que
@@ -1304,7 +1312,7 @@ class CameraWorker:
         On prend 15% de cette hauteur comme seuil de matching.
         """
         best_dist    = float("inf")
-        adaptive_dist = 80   # Valeur par défaut si aucune personne visible
+        adaptive_dist = 120   # Valeur par défaut si aucune personne visible
 
         for p_id, p_box in self.last_known_person_boxes.items():
             if time.time() - self.person_last_seen.get(p_id, 0) > 5.0:
@@ -1645,6 +1653,16 @@ class CameraWorker:
         CORRECTIF v8 : prend article_id en paramètre pour gérer
         plusieurs articles en suspicion simultanément par caméra.
         """
+        # CORPS et SAC : on ne notifie PAS l'agent en temps réel.
+        # Le clip d'alerte (12s buffer + 8s après) capturera tout depuis le début.
+        # Notifier l'agent sur une suspicion CORPS/SAC l'interrompt inutilement
+        # puisqu'il arrivera sur le live APRÈS le geste, et le clip arrive de toute façon.
+        # Seule la FLÂNERIE est actionnnable en temps réel : l'agent peut intervenir
+        # préventivement avant qu'un vol ne se produise.
+        if type_vol in ("CORPS", "SAC"):
+            self._suspicion_logged[article_id] = True  # on garde le flag interne
+            return                                     # mais on ne notifie pas l'interface
+        
         with suspicions_lock:
             active_suspicions[self.cam_id] = {
                 "time":       datetime.now().strftime("%H:%M:%S"),
@@ -1652,7 +1670,8 @@ class CameraWorker:
                 "type":       type_vol,
                 "expires_at": time.time() + SUSPICION_TTL,
             }
-        print(f"[{self.cam_id}] 👁 SUSPICION article {article_id} : VOL {type_vol} possible (score={score:.2f})")
+        if type_vol != "FLÂNERIE":
+            print(f"[{self.cam_id}] 👁 SUSPICION article {article_id} : VOL {type_vol} possible (score={score:.2f})")
         self._suspicion_logged[article_id] = True
 
     def _clear_suspicion(self, article_id: int = None):
@@ -1675,7 +1694,7 @@ class CameraWorker:
     # ======================================================================
     # ZOOM LISSÉ SUR LE SUSPECT
     # ======================================================================
-    def _smooth_position(self, new_center, alpha=0.35):
+    def _smooth_position(self, new_center, alpha=0.3):
         """Lisse la position du centre du zoom par interpolation exponentielle (EWMA)."""
         if self.smooth_center is None:
             self.smooth_center = new_center
@@ -1695,8 +1714,8 @@ class CameraWorker:
         # Zoom proportionnel à la taille de la personne
         person_w = x2 - x1
         person_h = y2 - y1
-        new_w  = min(int(person_w + 130), w)
-        new_h  = min(int(person_h + 130), h)
+        new_w  = min(int(person_w + 160), w)
+        new_h  = min(int(person_h + 160), h)
         
         # CORRECTION : forcer les indices en int pour éviter le TypeError
         cx1 = int(max(0, cx - new_w // 2))
@@ -2015,6 +2034,7 @@ class CameraWorker:
                     self.hold_streak_miss.pop(a_id, None)
                     self.article_consecutive_frames.pop(a_id, None)
                     self.article_consecutive_miss.pop(a_id, None)
+                    self.article_absence_frames.pop(a_id, None)
                     self.article_position_history.pop(a_id, None)
                     # [FILTRE A — v9] Nettoyage de l'historique de confiance
                     self.article_conf_history.pop(a_id, None)
@@ -2085,6 +2105,7 @@ class CameraWorker:
                         current_consec = self.article_consecutive_frames.get(a_id, 0)
                         # L'article est détecté cette frame → reset du compteur de trous
                         self.article_consecutive_miss[a_id] = 0
+                        self.article_absence_frames[a_id] = 0   # reset absence cumulée dès que l'article réapparaît
                         self.article_consecutive_frames[a_id] = current_consec + 1
                         consecutive = self.article_consecutive_frames[a_id]
 
@@ -2153,24 +2174,41 @@ class CameraWorker:
             # sort de la bbox. On tolère CONSECUTIVE_MISS_MAX frames avant le reset.
             # Cela évite les resets dus aux "respirations" de bbox YOLO
             # (la bbox personne qui s'agrandit/rétrécit de quelques pixels par frame).
+            # BLOC 1 : articles encore détectés mais hors bbox personne (ton code existant, inchangé)
             for (a_center, a_id, a_conf) in articles_pos:
                 if a_id not in articles_in_person_bbox:
-                    # L'article n'est dans aucune bbox personne cette frame
                     consec_miss = self.article_consecutive_miss.get(a_id, 0) + 1
                     self.article_consecutive_miss[a_id] = consec_miss
-
                     if consec_miss >= CONSECUTIVE_MISS_MAX:
-                        # Assez de frames hors bbox → on remet le compteur consécutif à 0
                         self.article_consecutive_frames[a_id] = 0
                         self.article_consecutive_miss[a_id]   = 0
-
-                    # Le streak de mouvement, lui, on le pénalise aussi
                     miss = self.hold_streak_miss.get(a_id, 0) + 1
                     self.hold_streak_miss[a_id] = miss
                     if miss >= HOLD_STREAK_MISS_MAX:
                         self.hold_streak[a_id]      = 0
                         self.hold_streak_miss[a_id] = 0
 
+            # BLOC 2 : articles complètement disparus (absents de articles_pos) ← MÊME NIVEAU que le for ci-dessus
+            already_handled = {a_id for (_, a_id, _) in articles_pos}
+            for gone_id in list(self.last_known_articles.keys()):
+                if gone_id in already_handled:
+                    continue
+                consec_miss = self.article_consecutive_miss.get(gone_id, 0) + 1
+                self.article_consecutive_miss[gone_id] = consec_miss
+                if consec_miss >= CONSECUTIVE_MISS_MAX:
+                    self.article_consecutive_frames[gone_id] = 0
+                    # NE PAS reset article_consecutive_miss ici → il continue de monter
+                    # pour que article_absence_frames reflète la vraie durée d'absence
+
+                # Compteur d'absence CUMULÉ indépendant (pour le filtre B)
+                self.article_absence_frames[gone_id] = self.article_absence_frames.get(gone_id, 0) + 1
+
+                miss = self.hold_streak_miss.get(gone_id, 0) + 1
+                self.hold_streak_miss[gone_id] = miss
+                if miss >= HOLD_STREAK_MISS_MAX:
+                    self.hold_streak[gone_id]      = 0
+                    self.hold_streak_miss[gone_id] = 0
+            
             # ── Log de debug (toutes les ~2.5s si DEBUG_LOGS=True) ─────────────
             if DEBUG_LOGS and self.frames_processed % 30 == 0 and articles_pos:
                 for (_, a_id, _) in articles_pos:
@@ -2225,22 +2263,16 @@ class CameraWorker:
                                 self.article_near_bag[a_id] = {
                                     "frames_near_bag":    1,
                                     "bag_center":         b_center,
-                                    "bag_initial_center": b_center,   # [SAC FILTRE 2]
-                                    "bag_moved":          False,       # [SAC FILTRE 2]
                                     "p_id":               p_id,
                                     "conf":               a_conf,
                                     "start_time":         current_time,
+                                    "frames_gone":        0, 
                                 }
                             else:
                                 # Proximité confirmée → on incrémente
                                 self.article_near_bag[a_id]["frames_near_bag"] += 1
                                 self.article_near_bag[a_id]["bag_center"]       = b_center
                                 self.article_near_bag[a_id]["conf"]             = a_conf
-                                # [SAC FILTRE 2] Le sac a-t-il bougé depuis le début ?
-                                # Un vrai sac porté se déplace avec la personne (> 8px).
-                                init = self.article_near_bag[a_id]["bag_initial_center"]
-                                if math.hypot(b_center[0] - init[0], b_center[1] - init[1]) > 20:
-                                    self.article_near_bag[a_id]["bag_moved"] = True
                             break  # Un seul sac suffit
         
 
@@ -2270,18 +2302,19 @@ class CameraWorker:
             # ── Phase 2 : l'article a disparu après la phase de proximité → ALERTE ──
             for a_id, data in list(self.article_near_bag.items()):
                 if a_id in visible_article_ids:
-                    continue  # Toujours visible → pas un vol
+                    # Article toujours visible → reset du compteur de disparition
+                    data["frames_gone"] = 0
+                    continue
+
+                # Incrémente le compteur de frames absentes
+                data["frames_gone"] = data.get("frames_gone", 0) + 1
+
+                # On exige au moins 4 frames d'absence consécutives (~0.3s)
+                if data["frames_gone"] < 4:
+                    continue
 
                 if data["frames_near_bag"] < SAC_PROXIMITY_FRAMES_MIN:
                     # Proximité trop courte → bruit, on nettoie
-                    del self.article_near_bag[a_id]
-                    continue
-
-                # [SAC FILTRE 2] Le sac n'a jamais bougé → sac fixe (transpalette,
-                # caddie posé, sac de marchandise). Pas un vol dans un sac porté.
-                if not data.get("bag_moved", False):
-                    if DEBUG_LOGS:
-                        print(f"[{self.cam_id}] [SAC] Article {a_id} : sac immobile → faux positif ignoré")
                     del self.article_near_bag[a_id]
                     continue
 
@@ -2333,7 +2366,7 @@ class CameraWorker:
                 # - article tenu suffisamment longtemps (filtre bruit court)
                 streak_gone     = self.hold_streak.get(a_id, 0) == 0
                 consec_gone     = self.article_consecutive_frames.get(a_id, 0) == 0
-                article_was_active = a_id not in visible_ids and self.hold_durations.get(a_id, 0) >= 30
+                article_was_active = a_id not in visible_ids and self.hold_durations.get(a_id, 0) >= 12
 
                 if not (count >= FRAME_THRESHOLD
                         and (streak_gone or consec_gone)
@@ -2342,6 +2375,12 @@ class CameraWorker:
 
                 last_pos = self.last_known_articles.get(a_id)
                 if not last_pos:
+                    continue
+
+                # [FILTRE CORPS — MAIN] Aucune main proche dans les 2s → pas une dissimulation
+                if not self._was_hand_near_article(last_pos):
+                    if DEBUG_LOGS:
+                        print(f"[{self.cam_id}] [CORPS] Article {a_id} disparu sans contact de main → ignoré")
                     continue
 
                 # Filtre anti-erreur de label (article confondu avec un sac)
@@ -2354,24 +2393,19 @@ class CameraWorker:
                         and margin < last_pos[1] < self.height - margin):
                     continue
 
-                # PROTECTION PRINCIPALE contre les faux positifs :
-                # Sans contact de main confirmé dans les 2s → on ignore la disparition.
-                if not self._was_hand_near_article(last_pos):
-                    if DEBUG_LOGS:
-                        print(f"[{self.cam_id}] Disparition objet {a_id} ignorée : aucune main à proximité.")
-                    continue
-
                 # Filtre géométrique : la disparition doit être dans une zone anatomique suspecte
                 # (buste/ventre de la personne, pas les épaules ou le bas des jambes)
                 is_suspect_zone = False
                 for p_id, p_box in self.last_known_person_boxes.items():
+                    if current_time - self.person_last_seen.get(p_id, 0) > 8.0:
+                        continue
                     if is_point_in_box(last_pos, p_box):
                         p_w   = p_box[2] - p_box[0]
                         p_h   = p_box[3] - p_box[1]
                         rel_x = (last_pos[0] - p_box[0]) / p_w if p_w > 0 else 0.5
                         rel_y = (last_pos[1] - p_box[1]) / p_h if p_h > 0 else 0.5
 
-                        if 0.35 <= rel_y <= 0.85 and 0.25 <= rel_x <= 0.75:
+                        if 0.20 <= rel_y <= 0.95 and 0.10 <= rel_x <= 0.90:
                             is_suspect_zone = True
                             target_p_id     = p_id
                             break
@@ -2383,7 +2417,7 @@ class CameraWorker:
                 # le timer de suspicion et potentiellement déclencher une alerte.
                 # Avec 36 frames (3s), seules les vraies disparitions prolongées
                 # entrent en suspicion.
-                frames_absent = self.article_consecutive_miss.get(a_id, 0)
+                frames_absent = self.article_absence_frames.get(a_id, 0)
 
                 # CORRECTIF v8 : on vérifie que l'article n'est pas déjà
                 # en cours de suspicion avant d'en créer une nouvelle.
@@ -2414,7 +2448,7 @@ class CameraWorker:
                 # CORRECTIF v8 : on vérifie _suspicion_logged par article_id, pas en global.
                 if (4.0 <= elapsed < DISAPPEARANCE_TIMEOUT
                         and not self._suspicion_logged.get(a_id, False)
-                        and data["hold_frames"] > 30
+                        and data["hold_frames"] > 12
                         and time.time() - self.last_alert_time > ALERT_COOLDOWN):
 
                     loitering_bonus = 0.25 if (
@@ -2436,7 +2470,7 @@ class CameraWorker:
                     if time.time() - last_alert_this_article > ALERT_COOLDOWN:
                         # CORRECTIF v8 : seuil abaissé de 60 à 30 frames (2.5s)
                         # L'ancien seuil de 60 était trop restrictif en conditions réelles.
-                        if data["hold_frames"] > 30:
+                        if data["hold_frames"] > 12:
                             loitering_bonus = 0.25 if (
                                 target_p_id is not None
                                 and target_p_id in self.person_tracking
