@@ -57,7 +57,7 @@ st.markdown("""
         background-color: #0066b2;
         color: white;
         padding: 18px;
-        border-bottom: 6px solid #f39200;
+        border-bottom: 6px solid #ff6000;
         text-align: center;
         border-radius: 0 0 12px 12px;
         margin-bottom: 20px;
@@ -117,7 +117,7 @@ st.markdown("""
     }
 
     div[data-testid="stExpander"] > details > summary {
-        background-color: #f39200 !important;
+        background-color: #ff6000 !important;
         color: #0066b2 !important;
         border-radius: 10px !important;
         padding: 10px 15px !important;
@@ -203,11 +203,11 @@ function ensureOverlay() {
     `;
 
     div.innerHTML = `
-        <img id="fs-img" src="" alt="flux caméra" style="max-width:95%;max-height:82vh;object-fit:contain;border:3px solid #f39200;border-radius:6px;">
+        <img id="fs-img" src="" alt="flux caméra" style="max-width:95%;max-height:82vh;object-fit:contain;border:3px solid #ff6000;border-radius:6px;">
         <div class="fs-nav" style="display:flex;align-items:center;gap:16px;margin-top:14px;">
             <button id="cap" style="background:rgba(255,255,255,0.15);color:white;border:2px solid white;border-radius:8px;padding:8px 20px;font-size:1.1rem;cursor:pointer;font-weight:bold;">📸 Capture</button>
             <button id="fs-prev" style="background:rgba(255,255,255,0.15);color:white;border:2px solid white;border-radius:8px;padding:8px 20px;font-size:1.1rem;cursor:pointer;font-weight:bold;">◀ Précédent</button>
-            <span id="fs-cam-name" style="color:#f39200;font-size:1rem;font-weight:bold;min-width:200px;text-align:center;"></span>
+            <span id="fs-cam-name" style="color:#ff6000;font-size:1rem;font-weight:bold;min-width:200px;text-align:center;"></span>
             <button id="fs-next" style="background:rgba(255,255,255,0.15);color:white;border:2px solid white;border-radius:8px;padding:8px 20px;font-size:1.1rem;cursor:pointer;font-weight:bold;">Suivant ▶</button>
             <button id="fs-close" style="background:rgba(255,255,255,0.15);color:white;border:2px solid white;border-radius:8px;padding:8px 20px;font-size:1.1rem;cursor:pointer;font-weight:bold;">✕ Fermer</button>
         </div>
@@ -259,7 +259,7 @@ function takeSnapshot(parentDoc) {
 
     // Feedback visuel immédiat pendant la requête
     btn.textContent = "⏳ Capture...";
-    btn.style.borderColor = "#f39200";
+    btn.style.borderColor = "#ff6000";
 
     // Appel vers le serveur IA pour déclencher la capture
     fetch("/snapshot", {
@@ -431,7 +431,12 @@ function broadcastToIframes(msg) {
         } catch(e) {}  // certaines iframes cross-origin peuvent refuser
     });
 }
-
+// Écoute l'injection de ALL_CAMS depuis Python (via un message 'initCams')
+window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'initCams' && e.data.cams) {
+        ALL_CAMS = e.data.cams;
+    }
+});
 // Initialisation immédiate : crée l'overlay dès le chargement
 // pour que le listener clavier soit prêt avant même le premier clic
 ensureOverlay();
@@ -632,7 +637,7 @@ if not is_authenticated():  # Si pas connecté
 # HEADER PRINCIPAL APP
 
 st.markdown(
-    '<div class="header"><h1>🛡️ E.Leclerc - Surveillance IA</h1></div>',
+    '<div class="header"><h1>🛡️ Leclairvoyant - Surveillance IA - E.Leclerc Olivet</h1></div>',
     unsafe_allow_html=True
 )
 
@@ -645,6 +650,9 @@ def gestion_suspicions_fragment():
     # --- 1. LE REFRESH LOCAL ---
     # On définit le refresh à l'intérieur : il ne fera "vibrer" que ce bloc
     st_autorefresh(interval=5000, key="fragment_refresh")
+    fresh_alerts = load_alerts()
+    alerts_count = len(load_alerts())
+    st.metric("Alertes", alerts_count)
 
     # --- 2. RÉCUPÉRATION DES DONNÉES ---
     # On appelle ta fonction (assure-toi qu'elle retourne bien le dict des suspicions)
@@ -670,36 +678,55 @@ def gestion_suspicions_fragment():
             </div>
         """, unsafe_allow_html=True)
 
-        for cam_id, data in suspicions.items():
-            score_pct = int(data.get("score", 0) * 100)
-            color = "#FF8C00" if score_pct < 75 else "#FF0000"
-            st.markdown(f"""
-                <div style="background:{color};color:white;padding:6px 10px;border-radius:8px;margin-bottom:5px;font-size:0.82rem;font-weight:bold;">
-                    👁 {cam_id} — SUSPECT {score_pct}%<br>
-                    <span style="font-weight:normal;">🕒 {data.get('time','?')}</span>
-                </div>
-            """, unsafe_allow_html=True)
-
         # BANNIÈRES PRINCIPALES
         if suspicions_visibles:
             st.markdown("""<style>@keyframes pulse-red {0%,100% {box-shadow: 0 0 0 0 rgba(204,0,0,0.5);} 50% {box-shadow: 0 0 0 8px rgba(204,0,0,0);}}</style>""", unsafe_allow_html=True)
+            
+            flat_cams = []
+            for z, clist in {
+                "🍾 Alcool": [
+                    {"id": "CAM_21", "name": "🥃​ Rayon alcool fort", "url": "/video/CAM_21"},
+                    {"id": "CAM_22", "name": "🍷 Vins", "url": "/video/CAM_22"},
+                    {"id": "CAM_23", "name": "🥂 Champagnes", "url": "/video/CAM_23"},
+                ],
+                "🌍 Espace culturel": [
+                    {"id": "CAM_45", "name": "👀​ Vue Globale", "url": "/video/CAM_45"},
+                    {"id": "CAM_46", "name": "📠​ Electronique/divertissement", "url": "/video/CAM_46"},
+                    {"id": "CAM_47", "name": "🎧​ Audio", "url": "/video/CAM_47"},
+                    {"id": "CAM_49", "name": "🎮​ Jeux Vidéos", "url": "/video/CAM_49"},
+                ],
+                "🏪 Galerie": [
+                    {"id": "CAM_07", "name": "Fleuriste", "url": "http://192.168.0.97:5006/video"},
+                    {"id": "CAM_08", "name": "Bijoux", "url": "http://192.168.0.97:5007/video"},
+                    {"id": "CAM_09", "name": "Adopt", "url": "http://192.168.0.97:5008/video"},
+                ],
+                "🚪 Zones sécurisées": [
+                    {"id": "CAM_10", "name": "Sortie secours", "url": "http://192.168.0.97:5009/video"},
+                    {"id": "CAM_11", "name": "Réserve", "url": "http://192.168.0.97:5010/video"},
+                    {"id": "CAM_12", "name": "Personnel", "url": "http://192.168.0.97:5011/video"},
+                ]
+            }.items():
+                for c in clist:
+                    cc = dict(c); cc["zone"] = z; flat_cams.append(cc)
+            flat_cams_json = json.dumps(flat_cams)
+
             for cam_id, data in suspicions_visibles.items():
                 score_pct = int(data.get("score", 0) * 100)
                 bg_color = "#CC0000" if score_pct >= 75 else "#CC6600"
-                
-                with st.container():
-                    col_banner, col_btn = st.columns([5, 1])
-                    with col_banner:
-                        st.markdown(f"""
-                            <div style="background:{bg_color};border-radius:10px;padding:12px 16px;animation: pulse-red 1.5s ease-in-out infinite;margin-bottom:4px;">
-                                <div style="color:white;font-size:1rem;font-weight:bold;">⚠️ Suspicion — {cam_id}</div>
-                                <div style="color:white;font-size:0.88rem;margin-top:4px;">Suspect {data.get('type','?')} — {score_pct}% — 🕒 {data.get('time','?')}</div>
-                            </div>
-                        """, unsafe_allow_html=True)
-                    with col_btn:
-                        if st.button("✕", key=f"ignore_{cam_id}"):
-                            st.session_state.ignored_suspicions.add(cam_id)
-                            st.rerun(scope="fragment") # Important : on relance juste le fragment
+                idx = next((i for i, c in enumerate(flat_cams) if c["id"] == cam_id), 0)
+
+                col_banner, col_btn = st.columns([5, 1])
+                with col_banner:
+                    st.markdown(f"""
+                        <div style="background:{bg_color};border-radius:10px;padding:12px 16px;animation: pulse-red 1.5s ease-in-out infinite;margin-bottom:4px;">
+                            <div style="color:white;font-size:1rem;font-weight:bold;">⚠️ Suspicion — {cam_id}</div>
+                            <div style="color:white;font-size:0.88rem;margin-top:4px;">Suspect {data.get('type','?')} — {score_pct}% — 🕒 {data.get('time','?')}</div>
+                        </div>
+                    """, unsafe_allow_html=True)
+                with col_btn:
+                    if st.button("✕", key=f"ignore_{cam_id}"):
+                        st.session_state.ignored_suspicions.add(cam_id)
+                        st.rerun(scope="fragment")
     else:
         st.markdown("---")
         st.markdown("<div style='color:white;font-size:0.85rem;opacity:0.7;'>✅ Aucune suspicion active</div>", unsafe_allow_html=True)
@@ -725,9 +752,28 @@ def alertes_fragment():
     cams_available.insert(0, "Toutes")
 
     # Filtres UI
-    type_filter = st.selectbox("Type", ["Tous", "SAC", "CORPS"])
-    time_filter = st.selectbox("Période", ["Toutes", "Dernière heure"])
-    cam_filter = st.selectbox("Caméra", cams_available)
+    col_type, col_cam, col_date, col_time = st.columns([2, 2, 2, 2])
+    
+    with col_type:
+        type_filter = st.selectbox("Type", ["Tous", "SAC", "CORPS"], key="alert_type")
+    with col_cam:
+        cam_filter = st.selectbox("Caméra", cams_available, key="alert_cam")
+    with col_date:
+        alert_date_filter = st.date_input("📅 Jour", value=None, key="alert_date")
+    with col_time:
+        alert_time_mode = st.selectbox(
+            "🕒 Période",
+            ["Tout", "Dernière heure", "Plage horaire personnalisée"],
+            key="alert_time_mode"
+        )
+    # Plage horaire personnalisée
+    alert_heure_debut = alert_heure_fin = None
+    if alert_time_mode == "Plage horaire personnalisée":
+        col_h1, col_h2 = st.columns(2)
+        with col_h1:
+            alert_heure_debut = st.time_input("De", value=None, key="alert_h_debut")
+        with col_h2:
+            alert_heure_fin = st.time_input("À", value=None, key="alert_h_fin")
 
     now = datetime.now()  # Heure actuelle
 
@@ -743,21 +789,31 @@ def alertes_fragment():
         if cam_filter != "Toutes" and alert.get("cam") != cam_filter:
             continue
 
-        if time_filter == "Dernière heure":
+        # Filtre par date
+        if alert_date_filter is not None:
+            if alert.get("date", "") != alert_date_filter.strftime("%Y-%m-%d"):
+                continue
+
+        # Filtre temporel
+        if alert_time_mode == "Dernière heure":
             try:
-                t = datetime.strptime(alert["time"], "%H:%M:%S").replace(
-                    year=now.year,
-                    month=now.month,
-                    day=now.day
-                )
-
-                if now - t > timedelta(hours=1):
-                    continue  # Skip si trop ancien
-
+                date_str = alert.get("date", now.strftime("%Y-%m-%d"))
+                dt = datetime.strptime(f"{date_str} {alert['time']}", "%Y-%m-%d %H:%M:%S")
+                if now - dt > timedelta(hours=1):
+                    continue
             except:
                 pass
 
-        filtered.append(alert)  # Ajout si valide
+        elif alert_time_mode == "Plage horaire personnalisée" and alert_heure_debut and alert_heure_fin:
+            try:
+                date_str = alert.get("date", now.strftime("%Y-%m-%d"))
+                dt = datetime.strptime(f"{date_str} {alert['time']}", "%Y-%m-%d %H:%M:%S")
+                if not (alert_heure_debut <= dt.time() <= alert_heure_fin):
+                    continue
+            except:
+                pass
+
+        filtered.append(alert)
 
     st.write(f"**{len(filtered)} alertes**")  # compteur
 
@@ -800,6 +856,7 @@ def alertes_fragment():
                 align-items: center;
             ">
                 <span>⚠️ ALERTE VOL {alert.get('type')}</span>
+                <span style="background:rgba(255,255,255,0.2);padding:2px 10px;border-radius:12px;font-size:0.95rem;">📷 {alert.get('cam', '?')}</span>
                 <div style="color:white; font-size:1.1rem; padding: 2px 10px;">📅 {alert_date_str} - 🕒 {alert.get("time")}</div>
                 <span style="background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 20px;">
                     {status_text} | {score_percent}%
@@ -929,8 +986,6 @@ def alertes_fragment():
 
 st.sidebar.title("📊 Menu")  # Titre sidebar
 
-st.sidebar.metric("Alertes", len(alerts))  # Nombre alertes
-
 # ==============================================================
 # AFFICHAGE DES SUSPICIONS
 #
@@ -941,22 +996,8 @@ st.sidebar.metric("Alertes", len(alerts))  # Nombre alertes
 # elle s'affiche immédiatement dans la bannière.
 # ==============================================================
 
-suspicions = load_suspicions()
 
-# Initialisation du set des suspicions ignorées par l'agent
-# (réinitialisé à chaque redémarrage de l'app, pas persistant)
-if "ignored_suspicions" not in st.session_state:
-    st.session_state.ignored_suspicions = set()
-
-# Suspicions NON ignorées = celles à afficher
-suspicions_visibles = {
-    cam_id: data
-    for cam_id, data in suspicions.items()
-    if cam_id not in st.session_state.ignored_suspicions
-}
-
-
-page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES", "📘 GUIDE D'AMÉLIORATION"])  # Navigation
+page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES", "📋 LOGS", "📘 GUIDE D'AMÉLIORATION"])  # Navigation
 
 # DÉCONNEXION
 
@@ -1053,7 +1094,7 @@ body {{
 /* Header bleu avec nom en orange */
 .cam-header {{
     background-color: #0066b2;
-    color: #f39200;
+    color: #ff6000;
     padding: 5px 10px;
     border-radius: 10px 10px 0 0;
     font-weight: bold;
@@ -1062,7 +1103,7 @@ body {{
     align-items: center;
     font-size: 0.9rem;
 }}
-.cam-header span {{ color: #f39200; }}
+.cam-header span {{ color: #ff6000; }}
 
 /* Bouton plein écran ⛶ */
 .fs-btn {{
@@ -1103,7 +1144,7 @@ body {{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #f39200;
+    color: #ff6000;
     font-size: 0.85rem;
     text-align: center;
     pointer-events: none;   /* le clic passe à travers vers l'image */
@@ -1139,7 +1180,7 @@ body {{
     max-width: 95%;
     max-height: 82vh;
     object-fit: contain;
-    border: 3px solid #f39200;
+    border: 3px solid #ff6000;
     border-radius: 6px;
 }}
 
@@ -1164,7 +1205,7 @@ body {{
 .fs-nav button:hover {{ background: rgba(255,255,255,0.35); }}
 
 #fs-cam-name {{
-    color: #f39200;
+    color: #ff6000;
     font-size: 1rem;
     font-weight: bold;
     min-width: 280px;   /* agrandi pour afficher zone + position */
@@ -1367,7 +1408,7 @@ function takeSnapshot() {{
 
     // Feedback visuel immédiat
     btn.textContent = "⏳ Capture...";
-    btn.style.borderColor = "#f39200";
+    btn.style.borderColor = "#ff6000";
     btn.disabled = true;
 
     // AbortController pour le timeout de 3 secondes
@@ -1503,6 +1544,13 @@ if page == "📺 LIVE":
             cam_with_zone["zone"] = zone_name  # on ajoute le nom de zone
             all_cams.append(cam_with_zone)
 
+    all_cams_json = json.dumps(all_cams)
+    components.html(f"""
+    <script>
+    window.parent.postMessage({{ type: 'initCams', cams: {all_cams_json} }}, '*');
+    </script>
+    """, height=0)
+
     for zone, cams in cameras.items():
         with st.expander(f"📍 {zone}", expanded=True):
 
@@ -1523,6 +1571,246 @@ if page == "📺 LIVE":
 
 elif page == "🚨 ALERTES":
     alertes_fragment()
+
+elif page == "📋 LOGS":
+
+    st.markdown(
+        '<div class="header"><h1>📋 Logs système en temps réel</h1></div>',
+        unsafe_allow_html=True
+    )
+
+    @st.fragment
+    def logs_fragment():
+        st_autorefresh(interval=5000, key="logs_refresh")
+
+        # ── Filtres ────────────────────────────────────────────────────────
+        col_cam, col_level, col_date, col_time, col_n = st.columns([2, 2, 2, 2, 1])
+
+        cam_ids_log = ["ALL"] + [c["cam_id"] for c in [
+            {"cam_id": "CAM_21"}, {"cam_id": "CAM_22"}, {"cam_id": "CAM_23"},
+            {"cam_id": "CAM_45"}, {"cam_id": "CAM_46"}, {"cam_id": "CAM_47"},
+            {"cam_id": "CAM_49"},
+        ]]
+
+        with col_cam:
+            selected_cam = st.selectbox("📷 Caméra", cam_ids_log, key="log_cam")
+        with col_level:
+            selected_level = st.selectbox(
+                "🎚️ Niveau",
+                ["ALL", "ALERT", "INFO", "DEBUG", "ERROR"],
+                key="log_level"
+            )
+        with col_time:
+            filter_mode = st.selectbox(
+                "🕒 Période",
+                ["Tout", "Dernière heure", "Plage horaire personnalisée"],
+                key="log_time_mode"
+            )
+        with col_n:
+            max_logs = st.number_input("Nb max", min_value=10, max_value=1000,
+                                        value=200, step=50, key="log_max")
+
+        with col_date:
+            date_filter = st.date_input("📅 Jour", value=None, key="log_date")
+
+
+        # Plage horaire personnalisée
+        heure_debut = heure_fin = None
+        if filter_mode == "Plage horaire personnalisée":
+            col_h1, col_h2 = st.columns(2)
+            with col_h1:
+                heure_debut = st.time_input("De", value=None, key="log_h_debut")
+            with col_h2:
+                heure_fin = st.time_input("À", value=None, key="log_h_fin")
+
+        # ── Récupération des logs ──────────────────────────────────────────
+        try:
+            params = {"last": max_logs}
+            if selected_cam != "ALL":
+                params["cam"] = selected_cam
+            if selected_level != "ALL":
+                params["level"] = selected_level
+            resp = requests.get("http://192.168.0.97:5000/logs", params=params, timeout=2)
+            logs = resp.json() if resp.status_code == 200 else []
+        except Exception:
+            logs = []
+            st.warning("⚠️ Serveur de détection injoignable — logs indisponibles.")
+
+
+        # ── Persistance locale des logs ───────────────────────────────────
+        # On fusionne les logs Flask (RAM) avec l'historique disque (logs.jsonl)
+        LOGS_FILE = "logs.jsonl"
+
+        def save_logs_to_disk(new_logs):
+            """Ajoute les nouveaux logs (non déjà présents) dans logs.jsonl"""
+            existing = set()
+            if os.path.exists(LOGS_FILE):
+                with open(LOGS_FILE, "r") as f:
+                    for line in f:
+                        try:
+                            entry = json.loads(line)
+                            # Clé d'unicité : date + heure + cam + msg
+                            existing.add((entry.get("date",""), entry.get("ts",""), entry.get("cam",""), entry.get("msg","")))
+                        except:
+                            pass
+            with open(LOGS_FILE, "a") as f:
+                for log in new_logs:
+                    key = (log.get("date",""), log.get("ts",""), log.get("cam",""), log.get("msg",""))
+                    if key not in existing:
+                        f.write(json.dumps(log, ensure_ascii=False) + "\n")
+                        existing.add(key)
+
+        def load_all_logs():
+            """Charge tous les logs historiques depuis le disque"""
+            if not os.path.exists(LOGS_FILE):
+                return []
+            result = []
+            with open(LOGS_FILE, "r") as f:
+                for line in f:
+                    try:
+                        result.append(json.loads(line.strip()))
+                    except:
+                        pass
+            return result
+
+        # Sauvegarde des logs frais sur disque
+        if logs:
+            save_logs_to_disk(logs)
+
+        # Chargement de TOUT l'historique pour l'affichage
+        logs = load_all_logs()
+
+        # Re-appliquer les filtres cam et niveau sur l'historique complet
+        if selected_cam != "ALL":
+            logs = [l for l in logs if l.get("cam") == selected_cam]
+        if selected_level != "ALL":
+            logs = [l for l in logs if l.get("level") == selected_level]
+        if date_filter is not None:
+            date_str = date_filter.strftime("%Y-%m-%d")
+            logs = [l for l in logs if l.get("date", "") == date_str]
+
+
+
+        # ── Filtrage temporel ──────────────────────────────────────────────
+        now_time = datetime.now()
+
+        if filter_mode == "Dernière heure":
+            filtered_logs = []
+            for log in logs:
+                try:
+                    date_str = log.get("date", now_time.strftime("%Y-%m-%d"))
+                    dt = datetime.strptime(f"{date_str} {log['ts']}", "%Y-%m-%d %H:%M:%S")
+                    if now_time - dt <= timedelta(hours=1):
+                        filtered_logs.append(log)
+                except Exception:
+                    filtered_logs.append(log)
+            logs = filtered_logs
+
+        elif filter_mode == "Plage horaire personnalisée" and heure_debut and heure_fin:
+            filtered_logs = []
+            for log in logs:
+                try:
+                    date_str = log.get("date", now_time.strftime("%Y-%m-%d"))
+                    dt = datetime.strptime(f"{date_str} {log['ts']}", "%Y-%m-%d %H:%M:%S")
+                    t_time = dt.time()
+                    if heure_debut <= t_time <= heure_fin:
+                        filtered_logs.append(log)
+                except Exception:
+                    filtered_logs.append(log)
+            logs = filtered_logs
+
+        elif filter_mode == "Plage horaire personnalisée" and heure_debut and heure_fin:
+            filtered_logs = []
+            for log in logs:
+                try:
+                    t = datetime.strptime(log["ts"], "%H:%M:%S").replace(
+                        year=now_time.year, month=now_time.month, day=now_time.day
+                    )
+                    t_time = t.time()
+                    if heure_debut <= t_time <= heure_fin:
+                        filtered_logs.append(log)
+                except Exception:
+                    filtered_logs.append(log)
+            logs = filtered_logs
+
+        # ── Résumé ────────────────────────────────────────────────────────
+        nb_alert = sum(1 for l in logs if l.get("level") == "ALERT")
+        nb_error = sum(1 for l in logs if l.get("level") == "ERROR")
+        nb_debug = sum(1 for l in logs if l.get("level") == "DEBUG")
+        nb_info  = sum(1 for l in logs if l.get("level") == "INFO")
+
+        col_s1, col_s2, col_s3, col_s4, col_s5 = st.columns(5)
+        col_s1.metric("Total", len(logs))
+        col_s2.metric("🚨 Alertes", nb_alert)
+        col_s3.metric("❌ Erreurs", nb_error)
+        col_s4.metric("ℹ️ Info",    nb_info)
+        col_s5.metric("🔍 Debug",   nb_debug)
+
+        st.markdown("---")
+
+        if not logs:
+            st.info("Aucun log correspondant aux filtres sélectionnés.")
+            return
+
+        # ── Couleurs par niveau ───────────────────────────────────────────
+        level_styles = {
+            "ALERT": {"bg": "#FF0000", "color": "white",   "icon": "🚨"},
+            "ERROR": {"bg": "#CC3300", "color": "white",   "icon": "❌"},
+            "INFO":  {"bg": "#0066b2", "color": "white",   "icon": "ℹ️"},
+            "DEBUG": {"bg": "#444444", "color": "#aaaaaa", "icon": "🔍"},
+        }
+
+        # ── Affichage (du plus récent au plus ancien) ─────────────────────
+        rows_html = ""
+        for log in reversed(logs):
+            level = log.get("level", "INFO")
+            style = level_styles.get(level, level_styles["INFO"])
+            cam   = log.get("cam", "?")
+            ts    = log.get("ts", "?")
+            msg   = log.get("msg", "").replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+
+            rows_html += (
+                '<div style="display:grid;grid-template-columns:70px 90px 80px 1fr;'
+                'border-bottom:1px solid #e8e8e8;min-height:36px;font-size:0.82rem;">'
+                '<div style="background:' + style["bg"] + ';color:' + style["color"] + ';'
+                'text-align:center;padding:6px 4px;font-weight:bold;">'
+                + style["icon"] + ' ' + level + '</div>'
+                '<div style="color:#888;padding:6px 10px;">' + ts + '</div>'
+                '<div style="color:#ff6000;font-weight:bold;padding:6px 10px;">' + cam + '</div>'
+                '<div style="color:#222;padding:6px 12px;">' + msg + '</div>'
+                '</div>'
+            )
+
+        full_html = (
+            '<div style="border:2px solid #0066b2;border-radius:10px;overflow:hidden;background:white;">'
+            '<div style="display:grid;grid-template-columns:70px 90px 80px 1fr;'
+            'background:#0066b2;color:white;font-weight:bold;font-size:0.8rem;">'
+            '<div style="padding:8px 4px;text-align:center;">NIVEAU</div>'
+            '<div style="padding:8px 10px;">HEURE</div>'
+            '<div style="padding:8px 10px;">CAM</div>'
+            '<div style="padding:8px 12px;">MESSAGE</div>'
+            '</div>'
+            '<div>' + rows_html + '</div>'
+            '</div>'
+        )
+        components.html(full_html, height=600, scrolling=True)
+
+        # ── Export CSV ────────────────────────────────────────────────────
+        import csv, io
+        buf = io.StringIO()
+        writer = csv.DictWriter(buf, fieldnames=["ts", "date", "cam", "level", "msg"])
+        writer.writeheader()
+        for log in logs:
+            writer.writerow({k: log.get(k, "") for k in ["ts", "date", "cam", "level", "msg"]})
+        st.download_button(
+            "📥 Exporter les logs (CSV)",
+            buf.getvalue().encode("utf-8"),
+            file_name=f"logs_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+            mime="text/csv",
+            key="log_export"
+        )
+
+    logs_fragment()
 
 elif page == "📘 GUIDE D'AMÉLIORATION":
 
@@ -1571,7 +1859,7 @@ elif page == "📘 GUIDE D'AMÉLIORATION":
 
     .badge {
         display:inline-block;
-        background:#f39200;
+        background:#ff6000;
         color:white;
         padding:3px 8px;
         border-radius:8px;
