@@ -157,65 +157,130 @@ CAMERAS = [
 # ==========================================
 # VARIABLES DE GESTION DES ALERTES
 # ==========================================
+# Délai minimum (en secondes) entre deux alertes pour le même événement.
+# Évite les alertes en rafale sur un même vol.
+ALERT_COOLDOWN = 60
 
-# [v9] 20s — valeur qui donnait un nb d'alertes parfait.
-# v11 avait monté à 90s, trop restrictif sur des événements distincts.
-ALERT_COOLDOWN        = 60
-
+# Durée max (en secondes) pendant laquelle un article peut avoir disparu
+# avant qu'on déclenche l'alerte CORPS.
 DISAPPEARANCE_TIMEOUT = 9.0
-FRAME_THRESHOLD       = 8
-LOITERING_THRESHOLD   = 180.0
+
+# Nombre minimum de frames consécutives pour considérer un article comme "vu".
+FRAME_THRESHOLD = 8
+
+# Durée de présence (en secondes) d'une personne avant de la signaler
+# comme flâneur suspect.
+LOITERING_THRESHOLD = 180.0
+
+# Durée d'affichage (en secondes) du texte d'alerte sur la frame vidéo.
 DISPLAY_TEXT_DURATION = 4.0
-BEFORE_ALERT_SECS     = 13
-AFTER_ALERT_SECS      = 7
 
-TRACKER_MISS_TOLERANCE = 180
+# Secondes de vidéo conservées AVANT le déclenchement de l'alerte (buffer circulaire).
+BEFORE_ALERT_SECS = 13
 
-# [v11] Tolérance tracker personnes — conservé
-PERSON_MISS_TOLERANCE = 12
+# Secondes de vidéo enregistrées APRÈS le déclenchement de l'alerte.
+AFTER_ALERT_SECS = 7
+
+# Nombre de frames pendant lesquelles le tracker peut "rater" une détection
+# sans perdre l'identifiant d'un article (tolérance aux occlusions courtes).
+TRACKER_MISS_TOLERANCE = 134
+
+# Même principe que TRACKER_MISS_TOLERANCE, mais pour les personnes.
+PERSON_MISS_TOLERANCE = 24
+
 
 # ── PARAMÈTRES CONTACT MAIN ──
-HAND_MEMORY_FRAMES    = 30
-HAND_ARTICLE_DIST     = 45
+# Nombre de frames mémorisées pour l'historique des positions de mains.
+# Permet de vérifier rétroactivement si une main était proche d'un article.
+HAND_MEMORY_FRAMES = 45
+
+# Distance en pixels en dessous de laquelle on considère qu'une main
+# touche un article (valeur de base, adaptée dynamiquement selon la taille de la personne).
+HAND_ARTICLE_DIST = 60
+
+# Nombre de frames utilisées pour calculer la corrélation de mouvement
+# entre un article et une personne.
 MOVEMENT_HISTORY_FRAMES = 6
+
+# Corrélation minimale (entre -1 et 1) pour qu'un article soit considéré
+# comme "porté" par une personne (mouvement synchronisé).
 MOVEMENT_CORRELATION_MIN = 0.6
 
-# ── STREAK "TENU" ──
-HOLD_STREAK_THRESHOLD          = 20
-HOLD_STREAK_MISS_MAX           = 10
-ARTICLE_DETECTED_HOLD_THRESHOLD = 12
-CONSECUTIVE_MISS_MAX           = 8
 
-# ── ANTI-FAUX-POSITIFS v9 ──
-HOLD_CONF_MIN         = 0.25
+# ── STREAK "TENU" ──
+# Nombre de frames consécutives de mouvement synchronisé personne/article
+# pour valider qu'un article est activement "tenu".
+HOLD_STREAK_THRESHOLD = 20
+
+# Tolérance : nombre de frames sans synchronisation avant de réinitialiser
+# le compteur de "tenu".
+HOLD_STREAK_MISS_MAX = 10
+
+# Nombre de frames consécutives de détection d'un article dans la bbox
+# d'une personne pour le déclarer tenu par détection directe.
+ARTICLE_DETECTED_HOLD_THRESHOLD = 12
+
+# Nombre de frames consécutives sans détection avant de réinitialiser
+# le compteur de présence d'un article.
+CONSECUTIVE_MISS_MAX = 8
+
+
+# ── ANTI-FAUX-POSITIFS  ──
+# Confiance YOLO moyenne minimale sur l'historique pour qu'un article
+# soit pris en compte dans la logique de vol.
+HOLD_CONF_MIN = 0.25
+
+# Taille de la fenêtre glissante de confiances YOLO mémorisées par article.
 HOLD_CONF_HISTORY_LEN = 20
 
+# Nombre minimum de frames pendant lesquelles un article doit être absent
+# avant qu'on ouvre une suspicion de vol corporel.
 MIN_DISAPPEARANCE_FRAMES = 24
 
-ALERT_SCORE_MIN = 0.4
+# Score de suspicion minimum pour déclencher une vraie alerte.
+# En dessous, la suspicion est loguée mais n'enregistre pas de clip.
+ALERT_SCORE_MIN = 0.3
 
-# [v11] Conservé
-REAPPEARANCE_FRAMES_MIN          = 3
+# Nombre minimum de frames de réapparition consécutives pour annuler
+# une suspicion (évite les annulations sur une détection fugace).
+REAPPEARANCE_FRAMES_MIN = 3
+
+# Nombre de frames de présence consécutives nécessaires pour remettre
+# à zéro le compteur d'absence d'un article.
 PRESENCE_FRAMES_FOR_ABSENCE_RESET = 3
 
-# ── GPU ──
-BATCH_TIMEOUT_SECS = 0.080
-SUSPICION_TTL      = 30
 
-# [v11] Conservé — évite saturation RAM
+# ── GPU ──
+# Délai maximum (en secondes) pendant lequel le worker GPU attend
+# des frames des caméras avant de traiter le batch partiel.
+BATCH_TIMEOUT_SECS = 0.080
+
+# Durée de vie (en secondes) d'une suspicion visible dans /suspicions
+# avant qu'elle expire automatiquement.
+SUSPICION_TTL = 30
+
+# Taille maximale de la queue d'envoi au GPU.
+# Limitée à 2× le nombre de caméras pour éviter la saturation RAM.
 BATCH_QUEUE_MAXSIZE = len(CAMERAS) * 2
 
-# ── SCÉNARIO SAC ──
-SAC_PROXIMITY_FRAMES_MIN    = 8
-SAC_PROXIMITY_DIST          = 40
-SAC_DISAPPEARANCE_TIMEOUT   = 2.0
-SAC_DISAPPEARANCE_PATIENCE = 3.0  # secondes — même ordre de grandeur que CORPS
 
-# [BUG 2 CORRIGÉ] Retour à 20 frames (v9).
-# v11 avait porté à 180 (FIX C) ce qui bloquait TOUS les sacs actifs.
-# Le cache se réinitialise déjà dès qu'un sac bouge (purge seen_keys),
-# donc 20 frames est suffisant pour filtrer les sacs vraiment fixes.
-STATIC_BAG_FRAME_THRESHOLD = 20
+# ── SCÉNARIO SAC ──
+# Nombre minimum de frames pendant lesquelles un article doit avoir
+# été proche d'un sac pour valider la phase de "rapprochement".
+SAC_PROXIMITY_FRAMES_MIN = 8
+
+# Distance en pixels (de base) entre un article et un sac pour
+# considérer qu'ils sont proches (adaptée dynamiquement à la taille de la personne).
+SAC_PROXIMITY_DIST = 40
+
+# Délai (en secondes) après lequel on abandonne un rapprochement article/sac
+# si l'article ne disparaît pas.
+SAC_DISAPPEARANCE_TIMEOUT = 2.0
+
+# Fenêtre de patience (en secondes) avant de confirmer la disparition
+# dans le sac, similaire au timeout CORPS.
+SAC_DISAPPEARANCE_PATIENCE = 3.0
+
 
 
 # ==========================================
@@ -287,8 +352,14 @@ app = Flask(__name__)
 
 def generate_stream(cam_id: str):
     """
-    [v11 — conservé] Lock bloquant + fallback last_sent_id.
-    Évite les coupures MJPEG quand le lock est pris par un worker.
+    Générateur MJPEG pour le flux vidéo Flask d'une caméra.
+    
+    Envoie en continu les frames annotées au format multipart/x-mixed-replace.
+    Utilise last_sent_id (id mémoire de l'objet frame) pour ne pas renvoyer
+    deux fois la même frame — évite les doublons sans polling agressif.
+    
+    Si aucune nouvelle frame n'est disponible, attend 20ms avant de réessayer
+    plutôt que de boucler à vide (limite l'usage CPU).
     """
     last_sent_id = None
     while True:
@@ -310,6 +381,14 @@ def video(cam_id):
 
 @app.route("/snapshot", methods=["POST"])
 def take_snapshot():
+    """
+    Endpoint POST /snapshot — enregistre une capture brute (sans annotations)
+    de la caméra demandée dans le dossier snapshots/.
+    
+    Corps JSON attendu : { "cam_id": "CAM_21" }
+    Utilise raw_frames (frame sans bounding boxes) pour avoir une image propre.
+    Retourne le chemin du fichier créé ou une erreur 500 si aucune frame disponible.
+    """
     data   = request.get_json()
     cam_id = data.get("cam_id", "unknown")
     with frame_lock:
@@ -326,6 +405,14 @@ def take_snapshot():
 
 @app.route("/alerts")
 def get_alerts():
+    """
+    Endpoint GET /alerts — retourne la liste des alertes enregistrées
+    dans alerts.jsonl, du plus ancien au plus récent.
+    
+    Paramètre optionnel : ?last=N → retourne uniquement les N dernières alertes.
+    Chaque alerte est un objet JSON avec cam, type, score, time, date,
+    video_clip et video_raw.
+    """
     last_n = request.args.get("last", default=None, type=int)
     with alerts_file_lock:
         with open(ALERT_FILE, "r") as f:
@@ -343,6 +430,15 @@ def get_alerts():
 
 @app.route("/suspicions")
 def get_suspicions():
+    """
+    Endpoint GET /suspicions — retourne les suspicions actives en temps réel,
+    c'est-à-dire les situations où le système surveille un comportement
+    suspect sans avoir encore déclenché d'alerte.
+    
+    Les suspicions expirées (> SUSPICION_TTL secondes) sont purgées
+    à chaque appel avant de retourner la réponse.
+    Retourne un dict { cam_id: { time, score, type } }.
+    """
     now = time.time()
     with suspicions_lock:
         expired = [c for c, s in active_suspicions.items() if now > s["expires_at"]]
@@ -383,6 +479,17 @@ def _rotate_logs_if_needed():
 
 
 def _log(cam_id: str, level: str, message: str):
+    """
+    Fonction de logging centralisée pour tout le système.
+    
+    Écrit simultanément :
+    - Dans log_buffer (deque en RAM, maxlen=2000) pour l'endpoint /logs.
+    - Dans logs.jsonl sur disque pour la persistance entre redémarrages.
+    
+    Rotation automatique du fichier disque au-delà de LOGS_MAX_LINES lignes
+    (conserve les 50 000 dernières lignes).
+    Si DEBUG_LOGS est True, affiche aussi en console via print().
+    """
     entry = {
         "ts":    datetime.now().strftime("%H:%M:%S"),
         "date":  datetime.now().strftime("%Y-%m-%d"),
@@ -402,6 +509,16 @@ def _log(cam_id: str, level: str, message: str):
 
 @app.route("/logs")
 def get_logs():
+    """
+    Endpoint GET /logs — retourne les logs récents depuis le buffer RAM.
+    
+    Paramètres optionnels :
+    - ?cam=CAM_21   → filtre sur une caméra spécifique (ou ALL pour tout)
+    - ?level=DEBUG  → filtre sur un niveau de log (DEBUG, INFO, ALERT, ERROR)
+    - ?last=200     → nombre de lignes retournées (défaut : 200)
+    
+    Utile pour le debug en production sans accès SSH au serveur.
+    """
     cam_filter   = request.args.get("cam",   default=None)
     level_filter = request.args.get("level", default=None)
     last_n       = request.args.get("last",  default=200, type=int)
@@ -414,7 +531,180 @@ def get_logs():
     return jsonify(entries[-last_n:])
 
 
+
+# ==========================================
+# SYSTÈME SONORE (corrigé v12)
+# ==========================================
+import pygame as _pygame
+import queue as _sound_queue_module
+
+sound_enabled = True
+sound_lock    = threading.Lock()
+
+# Queue dédiée — le son est joué dans UN thread unique
+# évite les crashs PulseAudio depuis les threads worker GPU/caméra
+_sound_q    = _sound_queue_module.Queue(maxsize=8)
+_PYGAME_OK  = False
+_sounds     = {}   # lazy-init : créés au premier appel
+
+
+def _init_pygame_audio():
+    """
+    Initialise pygame.mixer en stéréo (channels=2 obligatoire pour
+    que sndarray.make_sound() fonctionne correctement avec numpy).
+    Appelé une seule fois depuis le thread son dédié.
+    """
+    global _PYGAME_OK
+    try:
+        _pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=512)
+        _PYGAME_OK = True
+        _log("SYSTEM", "INFO", "pygame.mixer initialisé (stéréo 44100Hz)")
+    except Exception as e:
+        _log("SYSTEM", "ERROR", f"Son désactivé (pygame non dispo) : {e}")
+        _PYGAME_OK = False
+
+
+def _make_sound(freqs_durations: list, volume: float = 1.0):
+    """
+    Génère un son composite à partir d'une liste (fréquence_hz, durée_ms).
+    Retourne un objet pygame.Sound ou None.
+
+    CORRECTIF CLÉ : le tableau numpy doit être shape (N, 2) — stéréo —
+    et dtype int16. Avec channels=1 (ancienne config), make_sound()
+    acceptait le tableau mais produisait un son vide ou corrompu.
+    """
+    if not _PYGAME_OK:
+        return None
+    import numpy as np
+    sample_rate = 44100
+    segments    = []
+    for freq, dur_ms in freqs_durations:
+        n_samples = int(sample_rate * dur_ms / 1000)
+        if freq == 0:
+            mono = np.zeros(n_samples, dtype=np.float32)
+        else:
+            t       = np.linspace(0, dur_ms / 1000, n_samples, endpoint=False)
+            mono    = np.sin(2 * np.pi * freq * t).astype(np.float32)
+            attack  = min(int(sample_rate * 0.005), n_samples // 4)
+            release = min(int(sample_rate * 0.030), n_samples // 4)
+            mono[:attack]   *= np.linspace(0, 1, attack)
+            mono[-release:] *= np.linspace(1, 0, release)
+        segments.append(mono)
+
+    mono_full = np.concatenate(segments) * volume
+    # Stéréo obligatoire : shape (N, 2), dtype int16
+    stereo    = np.column_stack([mono_full, mono_full])
+    wave_16   = (stereo * 32767).astype(np.int16)
+    # make_sound attend un tableau C-contigu
+    wave_16   = np.ascontiguousarray(wave_16)
+    try:
+        return _pygame.sndarray.make_sound(wave_16)
+    except Exception as e:
+        _log("SYSTEM", "ERROR", f"make_sound() échoué : {e}")
+        return None
+
+
+def _ensure_sounds():
+    """
+    Initialisation lazy des sons — appelée depuis le thread son dédié,
+    après que pygame.mixer soit prêt. Évite la création au top-level
+    où le device audio peut ne pas être accessible.
+    """
+    if _sounds:
+        return
+    alert_sound = _make_sound([
+        (1046, 120), (0, 40),
+        (880,  120), (0, 40),
+        (698,  250),
+    ], volume=0.9)
+    suspicion_sound = _make_sound([
+        (1800, 12), (0, 8), (2200, 80), (0, 15), (1800, 40),
+], volume=0.55)
+    _sounds["alert"]     = alert_sound
+    _sounds["suspicion"] = suspicion_sound
+    if alert_sound and suspicion_sound:
+        _log("SYSTEM", "INFO", "Sons synthétisés OK (alert + suspicion)")
+    else:
+        _log("SYSTEM", "ERROR", "Échec synthèse sons — vérifie PulseAudio/ALSA")
+
+
+def _sound_worker():
+    """
+    Thread daemon dédié à la lecture audio.
+
+    POURQUOI UN THREAD DÉDIÉ :
+    Sur Linux, PulseAudio/ALSA peut rejeter les appels play() depuis des
+    threads sans contexte audio propre (workers GPU, workers caméra).
+    Ce thread unique initialise pygame depuis son propre contexte,
+    puis consomme la queue _sound_q indéfiniment.
+
+    Lazy-init ici (pas au top-level) pour que pygame soit initialisé
+    APRÈS que l'OS ait fini de démarrer les services audio.
+    """
+    _init_pygame_audio()
+    if _PYGAME_OK:
+        _ensure_sounds()
+    while True:
+        try:
+            kind = _sound_q.get(timeout=1.0)
+        except _sound_queue_module.Empty:
+            continue
+        if not _PYGAME_OK:
+            continue
+        with sound_lock:
+            enabled = sound_enabled
+        if not enabled:
+            continue
+        sound = _sounds.get(kind)
+        if sound is not None:
+            try:
+                sound.play()
+            except Exception as e:
+                _log("SYSTEM", "ERROR", f"sound.play() échoué : {e}")
+
+
+def play_sound(kind: str):
+    """
+    Empile une demande de son dans la queue — non bloquant, thread-safe.
+    kind : "alert" | "suspicion"
+    Si la queue est pleine (8 sons en attente), on ignore silencieusement.
+    """
+    with sound_lock:
+        enabled = sound_enabled
+    if not enabled:
+        return
+    try:
+        _sound_q.put_nowait(kind)
+    except _sound_queue_module.Full:
+        pass
+
+
+def toggle_sound() -> bool:
+    """Bascule l'état du son et retourne le nouvel état (True = activé)."""
+    global sound_enabled
+    with sound_lock:
+        sound_enabled = not sound_enabled
+        state = sound_enabled
+    _log("SYSTEM", "INFO", f"Son {'activé' if state else 'désactivé'} (Ctrl+B)")
+    return state
+
+
+@app.route("/sound/status")
+def sound_status():
+    """Endpoint GET /sound/status — retourne l'état courant du son."""
+    with sound_lock:
+        state = sound_enabled
+    return jsonify({"enabled": state})
+
+
+
 def start_server():
+    """
+    Lance le serveur Flask sur toutes les interfaces réseau (0.0.0.0:5000)
+    dans un thread daemon séparé.
+    Les logs werkzeug sont réduits au niveau ERROR pour ne pas polluer
+    la console avec les requêtes HTTP normales.
+    """
     import logging
     log = logging.getLogger('werkzeug')
     log.setLevel(logging.ERROR)
@@ -425,17 +715,26 @@ def start_server():
 # FONCTIONS UTILITAIRES
 # ==========================================
 def get_center(box):
+    """Retourne le centre (cx, cy) d'une bounding box [x1, y1, x2, y2]."""
     x1, y1, x2, y2 = box
     return (int((x1 + x2) / 2), int((y1 + y2) / 2))
 
 
 def is_point_in_box(point, box):
+    """Retourne True si le point (px, py) est à l'intérieur de la box [x1, y1, x2, y2], bornes incluses."""
     px, py = point
     x1, y1, x2, y2 = box
     return x1 <= px <= x2 and y1 <= py <= y2
 
 
 def read_exactly(pipe, n_bytes):
+    """
+    Lit exactement n_bytes octets depuis un pipe, en plusieurs lectures
+    si nécessaire (un read() peut retourner moins que demandé).
+    
+    Retourne None si le pipe est fermé avant d'avoir lu tous les octets
+    (signal de fin de flux FFmpeg → reconnexion RTSP déclenchée).
+    """
     buf = bytearray()
     while len(buf) < n_bytes:
         remaining = n_bytes - len(buf)
@@ -447,7 +746,16 @@ def read_exactly(pipe, n_bytes):
 
 
 def drain_stderr(process, cam_id: str, stop_event: threading.Event):
-    """[v11 — conservé] Rate-limiting 1 log/seconde pour éviter la saturation."""
+    """
+    Thread dédié à la lecture continue du stderr de FFmpeg.
+    
+    Sans ce drain, le pipe stderr se remplit et bloque FFmpeg quand
+    il tente d'écrire un warning ou une erreur → gel du flux vidéo.
+    
+    Rate-limiting à 1 log/seconde pour éviter de noyer les logs du système
+    avec les messages répétitifs de FFmpeg (perte de paquets, etc.).
+    Seules les lignes contenant "error" sont loggées.
+    """
     last_log_time = 0.0
     try:
         for line in process.stderr:
@@ -464,6 +772,11 @@ def drain_stderr(process, cam_id: str, stop_event: threading.Event):
 
 
 def append_alert_jsonl(alert_dict: dict):
+    """
+    Ajoute une alerte au fichier alerts.jsonl de façon thread-safe
+    (verrou alerts_file_lock partagé avec l'endpoint /alerts).
+    Chaque alerte est écrite sur une ligne JSON distincte (format JSONL).
+    """
     with alerts_file_lock:
         with open(ALERT_FILE, "a") as f:
             f.write(json.dumps(alert_dict, ensure_ascii=False) + "\n")
@@ -487,6 +800,13 @@ def _get_free_gb(path: str = ".") -> float:
 
 
 def emergency_free_space():
+    """
+    Libération d'urgence d'espace disque quand le seuil critique est atteint.
+    Supprime les 30% de clips les plus anciens (tri par date de modification)
+    dans alert_clips/ et alert_clips/raw/.
+    Retourne True si l'espace libre après suppression dépasse DISK_MIN_FREE_GB.
+    """
+
     all_clips = []
     for folder in [alert_vid_dir, raw_dir]:
         if not os.path.isdir(folder):
@@ -520,6 +840,13 @@ def emergency_free_space():
 
 
 def check_disk_space(path: str = ".") -> bool:
+    """
+    Vérifie que l'espace disque disponible dépasse DISK_MIN_FREE_GB.
+    Si l'espace est insuffisant, tente une libération d'urgence via
+    emergency_free_space(). Retourne True si l'espace est suffisant
+    après éventuelle libération, False sinon.
+    Appelée avant chaque démarrage d'enregistrement de clip.
+    """
     free_gb = _get_free_gb(path)
     if free_gb < 0:
         return True
@@ -530,6 +857,12 @@ def check_disk_space(path: str = ".") -> bool:
 
 
 def purge_old_clips():
+    """
+    Purge planifiée des clips anciens, exécutée toutes les PURGE_INTERVAL_SECS
+    secondes par purge_worker().
+    Supprime tous les fichiers .mp4 dont la date de modification dépasse
+    CLIP_RETENTION_DAYS jours dans les dossiers alert_clips/ et raw/.
+    """
     cutoff = time.time() - (CLIP_RETENTION_DAYS * 86400)
     total_deleted = total_freed = 0
     for folder in [alert_vid_dir, raw_dir]:
@@ -562,6 +895,24 @@ def purge_worker():
 # THREAD GPU CENTRALISÉ (v11 — conservé intégralement)
 # ==========================================
 def gpu_batch_worker():
+    """
+    Thread GPU centralisé (unique pour toutes les caméras).
+    
+    Collecte les frames en attente dans gpu_pending_frames pendant
+    BATCH_TIMEOUT_SECS, puis déclenche une inférence en batch sur
+    les deux modèles YOLO :
+    
+    1. model_radar : détecte les personnes sur les frames complètes.
+    2. model_specialist : détecte mains, sacs et articles sur les crops
+       de chaque personne détectée (inférence en batch sur tous les crops
+       de toutes les caméras simultanément).
+    
+    Les résultats sont poussés dans result_queues[cam_id] pour être
+    consommés par chaque CameraWorker indépendamment.
+    
+    Ce design évite les conflits GPU entre threads et maximise l'utilisation
+    du GPU en regroupant les inférences.
+    """
     while True:
         batch    = {}
         deadline = time.time() + BATCH_TIMEOUT_SECS
@@ -649,6 +1000,14 @@ def gpu_batch_worker():
 
 
 def _put_result(cam_id: str, persons: list, frame: np.ndarray):
+    """
+    Pousse le résultat d'inférence GPU dans la queue de résultats
+    de la caméra concernée (result_queues[cam_id], taille max 1).
+    
+    Si la queue est pleine (le CameraWorker n'a pas encore consommé
+    le résultat précédent), l'ancien résultat est éjecté avant l'insertion
+    pour toujours avoir le résultat le plus récent disponible.
+    """
     rq = result_queues.get(cam_id)
     if rq is None:
         return
@@ -690,6 +1049,22 @@ class FFmpegReader:
         )
 
     def run(self):
+        """
+        Boucle principale du lecteur RTSP pour une caméra.
+        
+        Lance FFmpeg en subprocess avec sortie rawvideo BGR24 sur stdout,
+        lit les frames octet par octet via read_exactly(), et les pousse
+        dans self.queue (taille 1 — on ne garde que la frame la plus récente).
+        
+        Mécanismes de robustesse :
+        - Watchdog : thread séparé qui tue FFmpeg si aucune frame n'arrive
+        depuis 5 secondes, forçant une reconnexion.
+        - drain_stderr : thread séparé qui vide le pipe stderr de FFmpeg
+        pour éviter tout blocage.
+        - Reconnexion automatique : en cas de coupure, attend 3s et relance
+        FFmpeg. Lève reconnect_event pour que CameraWorker purge son état.
+        - select() avec timeout 2s : évite le blocage infini sur stdout.
+        """
         import select
         while not self._stop_event.is_set():
             print(f"[{self.cam_id}] Connexion au flux RTSP...")
@@ -813,11 +1188,12 @@ class CameraWorker:
         self.article_consecutive_miss:   dict = {}
         self.article_absence_frames:     dict = {}
         self.article_presence_streak:    dict = {}   # [v11 FIX 2]
+        self.article_raw_presence:       dict = {}
         self.article_conf_history:       dict = {}
+        self.article_holder: dict = {} 
 
         # ── SAC ──
         self.article_near_bag: dict = {}
-        self.static_bag_cache: dict = {}
 
         # ── Logique de vol ──
         self.suspect_disappearance      = {}
@@ -859,6 +1235,15 @@ class CameraWorker:
     # DISTANCE DE MATCHING DYNAMIQUE
     # ======================================================================
     def _get_adaptive_max_distance(self, article_center):
+        """
+        Calcule la distance maximale de matching article↔tracker de façon dynamique.
+        
+        Plus une personne est proche de la caméra (bbox grande), plus la tolérance
+        est grande. Cela évite de perdre le suivi d'articles tenus par des personnes
+        proches, tout en restant strict pour les personnes éloignées.
+        
+        Retourne une distance en pixels (min 60px).
+        """
         best_dist     = float("inf")
         adaptive_dist = 120
         for p_id, p_box in self.last_known_person_boxes.items():
@@ -878,6 +1263,18 @@ class CameraWorker:
     # CORRÉLATION MOUVEMENT
     # ======================================================================
     def _is_article_moving_with_person(self, article_id, person_id):
+        """
+        Vérifie que l'article et la personne se déplacent dans la même direction
+        (corrélation vectorielle sur les N dernières frames).
+        
+        Retourne True si :
+        - L'historique est insuffisant (bénéfice du doute),
+        - La personne est quasi-immobile (article potentiellement posé sur elle),
+        - La corrélation de direction dépasse MOVEMENT_CORRELATION_MIN.
+        
+        Retourne False si l'article est immobile mais la personne bouge
+        (article posé sur une étagère, pas tenu).
+        """
         a_hist = self.article_position_history.get(article_id)
         p_hist = self.person_position_history.get(person_id)
         if not a_hist or not p_hist or len(a_hist) < 3 or len(p_hist) < 3:
@@ -901,6 +1298,20 @@ class CameraWorker:
     # VÉRIFICATION CONTACT MAIN / ARTICLE (Rendu DYNAMIQUE)
     # ======================================================================
     def _was_hand_near_article(self, article_center, p_id=None):
+        """
+        Vérifie rétroactivement si une main était proche d'un article
+        dans les HAND_MEMORY_FRAMES dernières frames.
+        
+        C'est le filtre principal anti-faux-positifs pour les scénarios CORPS et SAC :
+        un article ne peut être signalé volé que si une main l'a approché.
+        
+        La distance de tolérance est proportionnelle à la taille de la personne
+        à l'écran (30% de sa hauteur, min 40px) pour rester pertinente quelle
+        que soit la distance à la caméra.
+        
+        Si p_id est fourni, on ne consulte que l'historique des mains de cette
+        personne. Sinon, on cherche dans toutes les personnes suivies.
+        """
         # 1. Calcul de la distance de tolérance DYNAMIQUE
         # Par défaut on garde l'ancienne valeur si on ne trouve pas la personne
         dynamic_dist = HAND_ARTICLE_DIST 
@@ -922,8 +1333,9 @@ class CameraWorker:
             if has_any_hand:
                 histories = [hist]
             else:
-                histories = self.hands_history.values()
+                return False
         else:
+            # S'il n'y a pas de p_id fourni (ex: vol dans un sac sans suspect identifié)
             histories = self.hands_history.values()
         
         for person_history in histories:
@@ -942,6 +1354,13 @@ class CameraWorker:
     # [v12 FIX H] SIGNATURE VISUELLE ARTICLE
     # ======================================================================
     def _capture_article_signature(self, a_id: int, frame: np.ndarray, bbox: tuple):
+        """
+        [FIX H v12] Enregistre la signature visuelle (histogramme couleur HSV
+        + ratio largeur/hauteur) d'un article tenu, pour pouvoir le reconnaître
+        même s'il change d'identifiant tracker après une occlusion.
+        
+        Conserve un historique glissant de 10 signatures.
+        """
         x1, y1, x2, y2 = map(int, bbox)
         x1 = max(0, x1 - 4); y1 = max(0, y1 - 4)
         x2 = min(frame.shape[1], x2 + 4); y2 = min(frame.shape[0], y2 + 4)
@@ -962,6 +1381,17 @@ class CameraWorker:
             sig["ratios"].pop(0)
 
     def _is_same_article_visual(self, a_id_suspect: int, frame: np.ndarray, new_bbox: tuple) -> bool:
+        """
+        Compare la signature visuelle d'un article suspect à une nouvelle
+        détection pour déterminer si c'est le même objet physique.
+        
+        Critères de match :
+        - Ratio largeur/hauteur similaire (tolérance 35%)
+        - Corrélation d'histogramme HSV ≥ 0.70 avec au moins une signature mémorisée
+        
+        Utilisé pour éviter de déclencher une alerte quand l'article réapparaît
+        sous un nouvel identifiant tracker (pivot, réocclusion brève).
+        """
         sig = self.article_visual_signature.get(a_id_suspect)
         if not sig or not sig["hists"]:
             return False
@@ -982,6 +1412,19 @@ class CameraWorker:
         return best_corr >= 0.70
 
     def _is_duplicate_alert(self, a_id: int, frame: np.ndarray, current_time: float) -> bool:
+        """
+        [FIX I v12] Vérifie si l'alerte sur cet article est un doublon
+        d'une alerte déjà déclenchée récemment (dans la fenêtre ALERT_COOLDOWN).
+        
+        Double critère de déduplication :
+        1. Position : si la dernière position connue est à moins de 100px d'une
+        alerte récente → doublon probable.
+        2. Visuel : si l'histogramme HSV et le ratio de forme correspondent
+        à une alerte récente (corrélation ≥ 0.65) → doublon confirmé.
+        
+        Évite qu'un même article déclenche plusieurs alertes successives
+        à cause d'une réapparition/disparition cyclique.
+        """
         """[v12 FIX I] Vérifie si c'est un doublon visuel d'une alerte récente."""
         self.recent_alert_signatures = [
             s for s in self.recent_alert_signatures
@@ -1013,7 +1456,7 @@ class CameraWorker:
                 for ref_hist in sig["hists"]
                 for h in past["hists"]
             )
-            if best_corr >= 0.55:
+            if best_corr >= 0.70:
                 return True
         return False
 
@@ -1022,6 +1465,21 @@ class CameraWorker:
     # MINI-TRACKER ARTICLES
     # ======================================================================
     def _track_articles_custom(self, current_articles_centers, frame: np.ndarray):
+        """
+        Mini-tracker maison pour les articles détectés.
+        
+        Algorithme en deux passes :
+        - Passe 1 (stricte) : associe chaque détection au track le plus proche
+        dans un rayon adaptatif (proportionnel à la taille de la personne).
+        - Passe 2 (élargie) : si aucun match strict, cherche parmi les tracks
+        en "miss" dans un rayon 2.5× plus large, avec vérification visuelle
+        si une signature existe (évite les rattachements erronés après pivot).
+        
+        Les tracks sans détection incrémentent leur compteur "miss".
+        Ils sont supprimés au-delà de TRACKER_MISS_TOLERANCE frames sans détection.
+        
+        Retourne la liste des articles trackés sous la forme (center, id, conf).
+        """
         new_tracks = {}
         tracked    = []
         remaining  = dict(self.active_article_tracks)
@@ -1047,7 +1505,7 @@ class CameraWorker:
             # Cela couvre le cas où l'article pivote et sort de la fenêtre normale.
             # On prend le candidat le plus proche parmi ceux en miss > 0.
             if best_id is None:
-                extended_dist = adaptive_dist * 3
+                extended_dist = adaptive_dist * 2.5
                 for a_id, track_data in remaining.items():
                     if track_data["miss"] == 0:
                         continue
@@ -1107,6 +1565,16 @@ class CameraWorker:
     # MINI-TRACKER PERSONNES (v11 — avec tolérance PERSON_MISS_TOLERANCE)
     # ======================================================================
     def _track_persons_custom(self, detections):
+        """
+        Mini-tracker maison pour les personnes détectées par le modèle radar.
+        
+        Fonctionne comme _track_articles_custom mais avec une distance adaptive
+        basée sur la hauteur de la bbox personne (40% de sa hauteur, min 60px).
+        
+        Les personnes sans détection sont conservées jusqu'à
+        PERSON_MISS_TOLERANCE frames (plus court que pour les articles car
+        une personne qui quitte le champ doit être oubliée rapidement).
+        """
         new_tracks = {}
         tracked    = []
         remaining  = dict(self.active_person_tracks)
@@ -1155,6 +1623,23 @@ class CameraWorker:
     # ENREGISTREMENT VIDÉO
     # ======================================================================
     def _start_alert_video(self, type_vol: str, score: float, target_p_id: int = None):
+        """
+        Lance deux processus FFmpeg en parallèle pour enregistrer :
+        - Un clip annoté (avec les bounding boxes et textes d'alerte).
+        - Un clip brut (frame originale sans annotations).
+        
+        Le clip inclut BEFORE_ALERT_SECS secondes de pré-buffer (frames déjà
+        capturées en mémoire) + AFTER_ALERT_SECS secondes après l'alerte.
+        
+        Le pré-buffer est écrit dans un thread séparé pour ne pas bloquer
+        la boucle principale. L'événement _pre_alert_done signale la fin
+        de cette écriture avant de commencer les frames live.
+        
+        Vérifie l'espace disque avant de démarrer — annule l'enregistrement
+        si l'espace disponible est insuffisant (< DISK_MIN_FREE_GB).
+        
+        Journalise l'alerte dans alerts.jsonl avec métadonnées et chemins de clips.
+        """
         if not check_disk_space(alert_vid_dir):
             append_alert_jsonl({
                 "cam": self.cam_id, "type": type_vol, "score": round(score, 3),
@@ -1224,27 +1709,21 @@ class CameraWorker:
         })
         return vid_path
 
-    def _zoom_light(self, frame, box, factor=1.4):
-        h, w = frame.shape[:2]
-        x1, y1, x2, y2 = map(int, box)
-        cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
-        crop_w = int(w / factor); crop_h = int(h / factor)
-        cx1 = max(0, cx - crop_w // 2); cy1 = max(0, cy - crop_h // 2)
-        cx2 = min(w, cx1 + crop_w);     cy2 = min(h, cy1 + crop_h)
-        if cx2 - cx1 < crop_w: cx1 = max(0, cx2 - crop_w)
-        if cy2 - cy1 < crop_h: cy1 = max(0, cy2 - crop_h)
-        crop = frame[cy1:cy2, cx1:cx2]
-        if crop.size == 0:
-            return frame
-        return cv2.resize(crop, (w, h), interpolation=cv2.INTER_LINEAR)
-
-
     # ======================================================================
     # SUSPICION
     # ======================================================================
     def _notify_suspicion(self, article_id: int, type_vol: str, score: float):
+        """
+        Enregistre une suspicion active dans le dictionnaire global
+        active_suspicions (visible via GET /suspicions).
+        
+        Les types CORPS et SAC sont loggés mais pas publiés dans /suspicions
+        (ils passent directement en alerte si confirmés).
+        Les autres types (FLÂNERIE) sont publiés et expireront après SUSPICION_TTL.
+        """
         if type_vol in ("CORPS", "SAC"):
             self._suspicion_logged[article_id] = True
+            play_sound("suspicion")
             return
         with suspicions_lock:
             active_suspicions[self.cam_id] = {
@@ -1253,11 +1732,20 @@ class CameraWorker:
                 "type":       type_vol,
                 "expires_at": time.time() + SUSPICION_TTL,
             }
-        if type_vol != "FLÂNERIE":
-            _log(self.cam_id, "ALERT", f"SUSPICION article {article_id} : VOL {type_vol} (score={score:.2f})")
+        # ── Son joué UNE SEULE FOIS : on vérifie le flag avant ──
+        if not self._suspicion_logged.get(article_id, False):
+            if type_vol != "FLÂNERIE":
+                _log(self.cam_id, "ALERT", f"SUSPICION article {article_id} : VOL {type_vol} (score={score:.2f})")
+            play_sound("suspicion")
         self._suspicion_logged[article_id] = True
 
+
     def _clear_suspicion(self, article_id: int = None):
+        """
+        Supprime la suspicion active pour cette caméra du dictionnaire global.
+        Si article_id est fourni, supprime aussi le flag _suspicion_logged
+        pour cet article spécifique.
+        """
         with suspicions_lock:
             active_suspicions.pop(self.cam_id, None)
         if article_id is not None:
@@ -1270,6 +1758,17 @@ class CameraWorker:
     # ZOOM TRACKING
     # ======================================================================
     def _smooth_position(self, new_center, alpha=0.3):
+        """
+        Lissage exponentiel de la position caméra entre deux frames.
+        
+        Au lieu de sauter brutalement vers la nouvelle position du suspect,
+        on interpole entre la position mémorisée (smooth_center) et la nouvelle,
+        avec alpha comme facteur de réactivité :
+        - alpha proche de 0 → mouvement très lent, très stable
+        - alpha proche de 1 → suit immédiatement la nouvelle position
+        
+        Évite l'effet "caméra tremblante" quand la bbox du suspect oscille.
+        """
         if self.smooth_center is None:
             self.smooth_center = new_center
         else:
@@ -1279,30 +1778,21 @@ class CameraWorker:
             )
         return self.smooth_center
 
-    def _zoom_tracking(self, frame, box):
-        h, w = frame.shape[:2]
-        x1, y1, x2, y2 = map(int, box)
-        cx, cy  = self._smooth_position(((x1 + x2) // 2, (y1 + y2) // 2))
-        new_w   = min(int((x2 - x1) + 160), w)
-        new_h   = min(int((y2 - y1) + 160), h)
-        cx1     = int(max(0, cx - new_w // 2)); cy1 = int(max(0, cy - new_h // 2))
-        cx2     = int(min(w, cx + new_w // 2)); cy2 = int(min(h, cy + new_h // 2))
-        if cx2 <= cx1 or cy2 <= cy1:
-            return frame
-        return cv2.resize(frame[cy1:cy2, cx1:cx2], (w, h), interpolation=cv2.INTER_LINEAR)
-
-
-
     # ======================================================================
     # RESET TRACKING (reconnexion RTSP)
     # ======================================================================
     def _reset_tracking_state(self):
         """
-        Purge l'état de tracking après une reconnexion RTSP.
-        Sans ça, article_absence_frames et suspect_disappearance continuent
-        d'accumuler pendant la coupure → fausse alerte au retour du flux.
-        On NE purge PAS person_tracking ni last_known_person_boxes :
-        une reconnexion rapide peut garder les mêmes personnes en vue.
+        Purge complète de l'état de tracking après une reconnexion RTSP.
+        
+        Sans ce reset, les compteurs d'absence (article_absence_frames)
+        et les suspicions (suspect_disappearance) continuent d'accumuler
+        pendant la coupure vidéo, ce qui provoquerait des fausses alertes
+        dès le retour du flux.
+        
+        On conserve intentionnellement person_tracking et last_known_person_boxes :
+        une reconnexion courte peut retrouver les mêmes personnes en vue,
+        et perdre leur historique causerait des faux positifs de flânerie.
         """
         self.suspect_disappearance.clear()
         self.active_article_tracks.clear()
@@ -1310,6 +1800,7 @@ class CameraWorker:
         self.article_consecutive_frames.clear()
         self.article_consecutive_miss.clear()
         self.article_presence_streak.clear()
+        self.article_raw_presence.clear()
         self.hold_durations.clear()
         self.hold_durations_snapshot.clear()
         self.hold_streak.clear()
@@ -1322,6 +1813,7 @@ class CameraWorker:
         self.article_conf_history.clear()  
         self.article_position_history.clear()
         self.article_alert_time.clear()
+        self.article_holder.clear()
         self.hands_history.clear()
         self._suspicion_logged.clear()
         self._clear_suspicion()
@@ -1523,21 +2015,6 @@ class CameraWorker:
                     self.hands_history[p_id] = deque(maxlen=HAND_MEMORY_FRAMES)
                 self.hands_history[p_id].append(person_hands)
 
-            # ── Filtre sacs fixes [v9 : seuil 20 frames] ──
-            bags_pos_filtered = []
-            for b_center in bags_pos:
-                key = (b_center[0] // 15, b_center[1] // 15)
-                if key not in self.static_bag_cache:
-                    self.static_bag_cache[key] = {"count": 0, "center": b_center}
-                self.static_bag_cache[key]["count"] += 1
-                if self.static_bag_cache[key]["count"] < STATIC_BAG_FRAME_THRESHOLD:
-                    bags_pos_filtered.append(b_center)
-            seen_keys = {(b[0] // 15, b[1] // 15) for b in bags_pos}
-            for key in list(self.static_bag_cache.keys()):
-                if key not in seen_keys:
-                    del self.static_bag_cache[key]
-            bags_pos = bags_pos_filtered
-
             # ── Nettoyage personnes ──
             stale_person_ids = [pid for pid, ts in self.person_last_seen.items() if current_time - ts > 30.0]
             for pid in stale_person_ids:
@@ -1564,16 +2041,43 @@ class CameraWorker:
                     self.article_consecutive_frames.pop(a_id, None)
                     self.article_consecutive_miss.pop(a_id, None)
                     self.article_absence_frames.pop(a_id, None)
+                    self.article_raw_presence.pop(a_id, None) 
                     self.article_presence_streak.pop(a_id, None)
                     self.article_position_history.pop(a_id, None)
                     self.article_conf_history.pop(a_id, None)
                     self.article_alert_time.pop(a_id, None)
                     self.article_near_bag.pop(a_id, None)
                     self.article_visual_signature.pop(a_id, None)
+                    self.article_holder.pop(a_id, None)  
                     self.article_last_bbox.pop(a_id, None)
 
+            # ==========================================================
+            # 🛡️ NOUVEAU FILTRE ANTI-FANTÔMES (STABILITÉ)
+            # ==========================================================
             # ── Tracking articles ──
             articles_pos = self._track_articles_custom(raw_articles_pos, detection_frame)
+
+            # 1. On incrémente la présence brute de TOUT ce que le tracker voit
+            for (a_center, a_id, a_conf) in articles_pos:
+                self.article_raw_presence[a_id] = self.article_raw_presence.get(a_id, 0) + 1
+
+            # IDs vus par le tracker avant filtre — utilisé plus bas pour "already_handled"
+            # CRITIQUE : sans ça, les articles filtrés tombent dans la boucle "disparus"
+            # et accumulent article_absence_frames à tort (Absent=135 dans les logs)
+            tracker_seen_ids = {a_id for (_, a_id, _) in articles_pos}
+
+            # 2. On filtre sur cette présence brute
+            stable_articles_pos = []
+            for (a_center, a_id, a_conf) in articles_pos:
+                if self.article_raw_presence[a_id] >= 2:
+                    stable_articles_pos.append((a_center, a_id, a_conf))
+                else:
+                    if DEBUG_LOGS and self.frames_processed % 30 == 0:
+                        _log(self.cam_id, "DEBUG", f"[FILTRE FANTÔME] Article {a_id} ignoré (instable)")
+
+            # On remplace la liste brute par la liste stabilisée
+            articles_pos = stable_articles_pos
+            # ==========================================================
 
             pending = getattr(self, '_pending_bboxes', {})
             for (a_center, a_id, a_conf) in articles_pos:
@@ -1638,6 +2142,7 @@ class CameraWorker:
                         is_held = article_held_by_detection and article_held_by_streak
 
                         if is_held:
+                            self.article_holder[a_id] = p_id 
                             conf_history = self.article_conf_history.get(a_id, deque())
                             mean_conf = sum(conf_history) / len(conf_history) if conf_history else 0.0
                             if mean_conf < HOLD_CONF_MIN:
@@ -1673,12 +2178,15 @@ class CameraWorker:
                     self.article_presence_streak[a_id] = 0
 
             # Articles complètement disparus
-            already_handled = {a_id for (_, a_id, _) in articles_pos}
+            # On utilise tracker_seen_ids (avant filtre fantôme) pour ne pas traiter
+            # comme "disparu" un article qui vient juste d'apparaître (raw_presence=1).
+            # Utiliser articles_pos filtré ici causait Absent=135 sur des articles visibles.
+            already_handled = tracker_seen_ids
             for gone_id in list(self.last_known_articles.keys()):
                 if gone_id in already_handled:
                     continue
                 consec_miss = self.article_consecutive_miss.get(gone_id, 0) + 1
-                self.article_consecutive_miss[gone_id] = consec_miss
+                self.article_consecutive_miss[gone_id] = consec_miss    
                 if consec_miss >= CONSECUTIVE_MISS_MAX:
                     self.article_consecutive_frames[gone_id] = 0
                 self.article_absence_frames[gone_id] = self.article_absence_frames.get(gone_id, 0) + 1
@@ -1695,7 +2203,7 @@ class CameraWorker:
                     self.hold_streak_miss[gone_id] = 0
 
             # Debug
-            if DEBUG_LOGS and self.frames_processed % 30 == 0 and articles_pos:
+            if DEBUG_LOGS and self.frames_processed % 30 == 0:
                 for (_, a_id, _) in articles_pos:
                     streak    = self.hold_streak.get(a_id, 0)
                     consec    = self.article_consecutive_frames.get(a_id, 0)
@@ -1707,6 +2215,12 @@ class CameraWorker:
                         f"Article {a_id} | Streak={streak}/{HOLD_STREAK_THRESHOLD} | "
                         f"Consec={consec}/{ARTICLE_DETECTED_HOLD_THRESHOLD} | "
                         f"Hold={hold_dur} | ConfMoy={mean_conf:.2f} | Absent={absent}/{MIN_DISAPPEARANCE_FRAMES}")
+                for a_id, data in self.suspect_disappearance.items():
+                    elapsed   = current_time - data["start_time"]
+                    hold_snap = self.hold_durations_snapshot.get(a_id, data["hold_frames"])
+                    _log(self.cam_id, "DEBUG",
+                        f"[SUSPICION] Article {a_id} | elapsed={elapsed:.1f}s/{DISAPPEARANCE_TIMEOUT}s | "
+                        f"hold_snap={hold_snap} | last_score={data['last_score']:.2f} | p_id={data['p_id']}")
 
             # ══════════════════════════════════════════════════════════════
             # SCÉNARIO 2 : VOL DANS LE SAC
@@ -1781,7 +2295,7 @@ class CameraWorker:
 
                 data["frames_gone"] = data.get("frames_gone", 0) + 1
 
-                if data["frames_gone"] < 4:
+                if data["frames_gone"] < 8:
                     continue
 
                 if data["frames_near_bag"] < SAC_PROXIMITY_FRAMES_MIN:
@@ -1925,21 +2439,24 @@ class CameraWorker:
                 # Trouver target_p_id d'abord
                 is_suspect_zone = False
                 local_target_p_id = None
+                known_holder = self.article_holder.get(a_id)   # ← AJOUT
                 for p_id, p_box in self.last_known_person_boxes.items():
                     if current_time - self.person_last_seen.get(p_id, 0) > 2.0:
+                        continue
+                    if known_holder is not None and p_id != known_holder:   # ← AJOUT
                         continue
                     if is_point_in_box(last_pos, p_box):
                         p_w   = p_box[2] - p_box[0]
                         p_h   = p_box[3] - p_box[1]
                         rel_x = (last_pos[0] - p_box[0]) / p_w if p_w > 0 else 0.5
                         rel_y = (last_pos[1] - p_box[1]) / p_h if p_h > 0 else 0.5
-                        if 0.25 <= rel_y <= 0.85 and 0.25 <= rel_x <= 0.75:
+                        if 0.25 <= rel_y <= 0.85 and 0.20 <= rel_x <= 0.80:
                             if current_time - self.person_tracking[p_id]["first_seen"] < 3.0:
                                 continue
                             p_cx_rel = 0.5
                             p_cy_rel = 0.55
                             dist_to_center = math.hypot(rel_x - p_cx_rel, rel_y - p_cy_rel)
-                            if dist_to_center > 0.5:
+                            if dist_to_center > 0.7:
                                 if DEBUG_LOGS:
                                     _log(self.cam_id, "DEBUG",
                                         f"[CORPS] Article {a_id} trop excentré (dist={dist_to_center:.2f}) → bras tendu ignoré")
@@ -1980,8 +2497,11 @@ class CameraWorker:
                             # Vérif temporelle : le nouvel ID doit être récent (apparu pendant
                             # la fenêtre d'absence de l'ancien — pas un article tenu depuis longtemps)
                             new_id_age = self.article_consecutive_frames.get(new_a_id, 0)
-                            if new_id_age > frames_absent + 6:
-                                # Ce track existait avant la disparition de a_id → article différent
+                            # [AJUSTEMENT] Passé de +6 à +4 (environ 0.3s à 12 FPS).
+                            # Permet d'accepter la double détection de YOLO pendant qu'un produit pivote,
+                            # tout en évitant qu'un objet voisin bloque une vraie suspicion de vol.
+                            if new_id_age > frames_absent + 4:
+                                # Ce track existait bien avant la disparition de a_id → article différent
                                 continue
                             # Vérif visuelle : même objet ?
                             if self._is_same_article_visual(a_id, detection_frame, new_bbox):
@@ -2024,7 +2544,6 @@ class CameraWorker:
                     _log(self.cam_id, "DEBUG",
                         f"[CORPS] Article {a_id} annulé : personne {target_p_id} partie avec l'article")
                     del self.suspect_disappearance[a_id]
-                    self.hold_durations[a_id] = 0
                     self.hold_durations_snapshot[a_id] = 0
                     self._clear_suspicion(a_id)
                     continue
@@ -2116,6 +2635,7 @@ class CameraWorker:
             if trigger_alert:
                 self.zoom_target_id = target_p_id
                 _log(self.cam_id, "ALERT", f"ALERTE : VOL {vol_type} (score={alert_score:.2f})")
+                play_sound("alert")
                 self._clear_suspicion()
 
                 alert_article_id = None
@@ -2173,6 +2693,18 @@ class CameraWorker:
                     cv2.putText(overlay, msg2, ((self.width - sz2[0]) // 2, self.height // 2 + 30),
                                 font, 0.55, (255, 255, 255), 1, cv2.LINE_AA)
                 annotated_frame = overlay
+
+
+            # ── Indicateur son (overlay bas droite) ──
+            with sound_lock:
+                _snd_on = sound_enabled
+            _snd_label = "SON ON" if _snd_on else "SON OFF"
+            _snd_color = (0, 200, 80) if _snd_on else (80, 80, 80)
+            cv2.putText(
+                annotated_frame, _snd_label,
+                (self.width - 90, self.height - 12),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.45, _snd_color, 1, cv2.LINE_AA
+            )
 
             # ── Publication Flask ──
             with frame_lock:
@@ -2243,6 +2775,38 @@ class CameraWorker:
             self.object_hold_counter = {k: v - 1 for k, v in self.object_hold_counter.items() if v > 1}
 
 
+
+def keyboard_listener():
+    import sys, tty, termios, select
+    if not sys.stdin.isatty():
+        print("[SON] Pas de terminal interactif — utilisez POST /sound/toggle")
+        return
+    fd  = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        while True:
+            r, _, _ = select.select([sys.stdin], [], [], 0.2)
+            if r:
+                ch = sys.stdin.read(1)
+                if ch == '\x02':        # Ctrl+B
+                    state = toggle_sound()
+                    status = "ON" if state else "OFF"
+                    sys.stdout.write(f"\r[SON] {status}            \r")
+                    sys.stdout.flush()
+                elif ch == '\x03':      # Ctrl+C
+                    import signal as _sig
+                    _sig.raise_signal(_sig.SIGINT)
+                    break
+    except Exception:
+        pass
+    finally:
+        try:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old)
+        except Exception:
+            pass
+
+
 # ==========================================
 # POINT D'ENTRÉE
 # ==========================================
@@ -2267,9 +2831,11 @@ if __name__ == "__main__":
 
     threading.Thread(target=gpu_batch_worker, daemon=True, name="gpu_batch_worker").start()
     print("🖥️  Thread GPU centralisé démarré")
+    threading.Thread(target=_sound_worker, daemon=True, name="sound_worker").start()
+    print("🔊 Thread son démarré")
 
     threading.Thread(target=purge_worker, daemon=True, name="purge_worker").start()
-
+    threading.Thread(target=keyboard_listener, daemon=True, name="keyboard_listener").start()
     for cam_cfg in CAMERAS:
         cam_id = cam_cfg["cam_id"]
         reader = FFmpegReader(cam_cfg["cam_id"], cam_cfg["rtsp_url"], cam_cfg["width"], cam_cfg["height"])
