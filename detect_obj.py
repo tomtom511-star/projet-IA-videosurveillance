@@ -1,74 +1,3 @@
-"""
-╔══════════════════════════════════════════════════════════════════════════╗
-║         SYSTÈME DE DÉTECTION DE VOL MULTI-CAMÉRAS — YOLO + Flask        ║
-║                    VERSION 12 — FUSION v9 (SAC+CORPS) + v11 (ARCH)      ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║                                                                          ║
-║  POURQUOI CETTE VERSION :                                                ║
-║  v9  → SAC fonctionnel, nb d'alertes parfait, CORPS ne marche pas       ║
-║  v11 → CORPS tenté, SAC complètement cassé, 65 fausses alertes/nuit     ║
-║                                                                          ║
-║  CAUSES RACINES IDENTIFIÉES (v11 → cassé) :                             ║
-║                                                                          ║
-║  [BUG 1] FIX 6 v10 : _was_hand_near_article() retiré du CORPS.         ║
-║    Ce filtre était LA protection principale contre les faux positifs.    ║
-║    En v9 il bloquait ~80% des cas ambigus. Sans lui, tout article        ║
-║    qui disparaît dans la zone corporelle déclenche une alerte.           ║
-║    CORRECTION : réintroduction de _was_hand_near() dans CORPS.          ║
-║    NOTE : il reste retiré du SAC (justifié — main occultée par le sac). ║
-║                                                                          ║
-║  [BUG 2] FIX C v11 : STATIC_BAG_FRAME_THRESHOLD 20 → 180 frames.       ║
-║    EFFET RÉEL INVERSE : tous les sacs "actifs" passent 15s dans         ║
-║    static_bag_cache et sont donc EXCLUS de bags_pos_filtered.           ║
-║    Résultat : le scénario SAC ne voit plus jamais aucun sac → 0 alerte. ║
-║    CORRECTION : retour à 20 frames (v9). Le problème que FIX C          ║
-║    tentait de résoudre (sac posé brièvement filtré) n'existait pas :    ║
-║    le cache se réinitialise dès que le sac bouge (purge seen_keys).     ║
-║                                                                          ║
-║  [BUG 3] frames_gone < 18 en v11 vs < 4 en v9 pour le SAC.             ║
-║    Délai trop long : combiné au timeout SAC_DISAPPEARANCE_TIMEOUT,      ║
-║    l'alerte SAC n'arrive presque jamais dans la fenêtre valide.          ║
-║    CORRECTION : retour à 4 frames (v9).                                  ║
-║                                                                          ║
-║  [BUG 4] _was_hand_near() retiré du SAC aussi (FIX 6 v10).             ║
-║    En v9 ce filtre validait le contact avant l'insertion dans le sac.   ║
-║    CORRECTION : réintroduction dans SAC (commentaire mis à jour).        ║
-║                                                                          ║
-║  [BUG 5] ALERT_COOLDOWN 20s (v9) → 90s (v11).                          ║
-║    Trop long, un même événement peut dépasser la fenêtre d'analyse.     ║
-║    CORRECTION : retour à 20s.                                            ║
-║                                                                          ║
-║  CE QUI EST CONSERVÉ DE v11 (améliorations valides) :                   ║
-║  ──────────────────────────────────────────────────                       ║
-║  [OK] Architecture GPU : request_id sync frame↔résultat                 ║
-║  [OK] batch_input_queue avec maxsize (évite saturation RAM)             ║
-║  [OK] generate_stream : lock bloquant + fallback last_sent              ║
-║  [OK] PERSON_MISS_TOLERANCE : tracker personnes avec tolérance ratés    ║
-║  [OK] drain_stderr : rate-limiting 1 log/seconde                        ║
-║  [OK] Fuite mémoire : nettoyage article_conf_history + position_history ║
-║  [OK] FIX 2 v10 : article_presence_streak reset absence conditionné     ║
-║  [OK] FIX 3 v10 : annulation suspicion sur réapparition ≥ 3 frames     ║
-║  [OK] FIX D v10 : alert_article_id correctement récupéré pour CORPS    ║
-║  [OK] TRACKER_MISS_TOLERANCE : 60 frames (v11) conservé                 ║
-║  [OK] FIX H v12 : signature visuelle article (doublon visuel)           ║
-║  [OK] FIX I v12 : déduplication des alertes par signature               ║
-║  [OK] Endpoint /logs pour debug en production                            ║
-║                                                                          ║
-║  CE QUI EST CONSERVÉ DE v9 (fondamentaux qui fonctionnaient) :          ║
-║  ──────────────────────────────────────────────────────────               ║
-║  [OK] _was_hand_near_article() présent dans CORPS                        ║
-║  [OK] _was_hand_near_article() présent dans SAC                          ║
-║  [OK] STATIC_BAG_FRAME_THRESHOLD = 20 frames                            ║
-║  [OK] frames_gone < 4 avant déclenchement SAC                           ║
-║  [OK] ALERT_COOLDOWN = 20 secondes                                       ║
-║  [OK] Score CORPS = 0.4 * last_score + 0.6 * hold_norm (v9)             ║
-║       → plus stable que hold_only v11 (badges conf=0.9 → score élevé)   ║
-║  [OK] Zone suspecte v9 : rel_y ∈ [0.20,0.95] rel_x ∈ [0.10,0.90]     ║
-║       → élargi mais compensé par _was_hand_near() qui filtre vraiment   ║
-║                                                                          ║
-╚══════════════════════════════════════════════════════════════════════════╝
-"""
-
 import os
 
 # ==========================================
@@ -253,7 +182,7 @@ PRESENCE_FRAMES_FOR_ABSENCE_RESET = 3
 # ── GPU ──
 # Délai maximum (en secondes) pendant lequel le worker GPU attend
 # des frames des caméras avant de traiter le batch partiel.
-BATCH_TIMEOUT_SECS = 0.080
+BATCH_TIMEOUT_SECS = 0.060
 
 # Durée de vie (en secondes) d'une suspicion visible dans /suspicions
 # avant qu'elle expire automatiquement.
@@ -1041,10 +970,14 @@ class FFmpegReader:
 
     def _start_ffmpeg(self):
         return subprocess.Popen(
-            ["ffmpeg", "-loglevel", "warning", "-rtsp_flags", "prefer_tcp",
-             "-rtsp_transport", "tcp", "-timeout", "10000000", "-max_delay", "500000",
-             "-i", self.rtsp_url, "-vf", f"scale={self.width}:{self.height}",
-             "-f", "image2pipe", "-pix_fmt", "bgr24", "-vcodec", "rawvideo", "-"],
+            ["ffmpeg", "-loglevel", "warning",
+            "-rtsp_transport", "tcp",
+            "-rtsp_flags", "prefer_tcp",
+            "-timeout", "5000000",
+            "-max_delay", "500000",
+            "-i", self.rtsp_url,
+            "-vf", f"scale={self.width}:{self.height}",
+            "-f", "image2pipe", "-pix_fmt", "bgr24", "-vcodec", "rawvideo", "-"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=self._bufsize,
         )
 
@@ -1409,7 +1342,7 @@ class CameraWorker:
         hist_new = cv2.calcHist([hsv_new], [0, 1], None, [16, 8], [0, 180, 0, 256])
         cv2.normalize(hist_new, hist_new, 0, 1, cv2.NORM_MINMAX)
         best_corr = max(cv2.compareHist(ref_hist, hist_new, cv2.HISTCMP_CORREL) for ref_hist in sig["hists"])
-        return best_corr >= 0.70
+        return best_corr >= 0.82
 
     def _is_duplicate_alert(self, a_id: int, frame: np.ndarray, current_time: float) -> bool:
         """
@@ -2061,10 +1994,17 @@ class CameraWorker:
             for (a_center, a_id, a_conf) in articles_pos:
                 self.article_raw_presence[a_id] = self.article_raw_presence.get(a_id, 0) + 1
 
-            # IDs vus par le tracker avant filtre — utilisé plus bas pour "already_handled"
-            # CRITIQUE : sans ça, les articles filtrés tombent dans la boucle "disparus"
-            # et accumulent article_absence_frames à tort (Absent=135 dans les logs)
-            tracker_seen_ids = {a_id for (_, a_id, _) in articles_pos}
+            # IDs réellement détectés par YOLO cette frame (centres bruts → IDs tracker)
+            # CRITIQUE : on utilise les détections YOLO brutes, PAS ce que le tracker
+            # maintient vivant artificiellement (TRACKER_MISS_TOLERANCE).
+            # Un article absent de YOLO mais maintenu par le tracker ne doit PAS
+            # bloquer l'incrémentation de article_absence_frames.
+            raw_centers_this_frame = {item[0] for item in raw_articles_pos}
+            yolo_seen_ids = {
+                a_id for (a_center, a_id, _) in articles_pos
+                if a_center in raw_centers_this_frame
+            }
+            tracker_seen_ids = yolo_seen_ids  # garde le nom pour compatibilité avec le reste
 
             # 2. On filtre sur cette présence brute
             stable_articles_pos = []
@@ -2295,7 +2235,7 @@ class CameraWorker:
 
                 data["frames_gone"] = data.get("frames_gone", 0) + 1
 
-                if data["frames_gone"] < 8:
+                if data["frames_gone"] < 4:
                     continue
 
                 if data["frames_near_bag"] < SAC_PROXIMITY_FRAMES_MIN:
@@ -2532,6 +2472,8 @@ class CameraWorker:
                 elapsed     = current_time - data["start_time"]
                 target_p_id = data["p_id"]
 
+                if trigger_alert:   # une alerte a déjà été décidée cette frame → on skip
+                    continue
                 # si la personne n'est plus vue depuis > 2s au moment où
                 # la suspicion a été créée, c'est qu'article et personne sont partis ensemble
                 # → annulation immédiate, pas un vol

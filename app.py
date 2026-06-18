@@ -2,7 +2,7 @@ import streamlit as st  # Interface web Streamlit
 import json  # Lecture / écriture JSON (alertes)
 import os  # Gestion fichiers système
 from datetime import datetime, timedelta  # Gestion des heures
-from streamlit_cookies_manager import EncryptedCookieManager  # Cookies persistants sécurisés
+import time
 import requests
 import streamlit.components.v1 as components  # Pour injecter le récepteur postMessage dans la page principale
 from streamlit_autorefresh import st_autorefresh # AUTO-REFRESH TOUTES LES 5 SECONDES (méthode propre)
@@ -12,16 +12,86 @@ from streamlit_autorefresh import st_autorefresh # AUTO-REFRESH TOUTES LES 5 SEC
 ADMIN_USER = "admin"  # Identifiant de connexion
 ADMIN_PASSWORD = "admin"  # Mot de passe (à changer en prod)
 
-# INITIALISATION COOKIES (PERSISTANCE AUTH)
+import secrets
+import hashlib
 
-cookies = EncryptedCookieManager(
-    prefix="leclerc_security_",  # Préfixe des cookies (évite conflits)
-    password="CHANGE_THIS_SECRET_KEY"  # Clé de chiffrement obligatoire
-)
+if "server_sessions" not in st.session_state:
+    st.session_state.server_sessions = {}
 
-# On bloque l'app tant que les cookies ne sont pas prfts
-if not cookies.ready():
-    st.stop()
+SESSION_COOKIE_NAME = "leclerc_session"
+SESSION_MAX_AGE     = 28800  # 8h max
+
+def _get_token_from_cookie() -> str | None:
+    try:
+        cookie_header = st.context.headers.get("Cookie", "")
+        for part in cookie_header.split(";"):
+            part = part.strip()
+            if part.startswith(SESSION_COOKIE_NAME + "="):
+                return part[len(SESSION_COOKIE_NAME) + 1:]
+    except Exception:
+        pass
+    return None
+
+def _set_session_cookie(token: str):
+    st.markdown(
+        f"""<script>
+        document.cookie = "{SESSION_COOKIE_NAME}={token}; path=/; SameSite=Strict";
+        </script>""",
+        unsafe_allow_html=True
+    )
+
+def _delete_session_cookie():
+    st.markdown(
+        f"""<script>
+        document.cookie = "{SESSION_COOKIE_NAME}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict";
+        </script>""",
+        unsafe_allow_html=True
+    )
+
+def is_authenticated() -> bool:
+    # ── Priorité 1 : session_state (cycle immédiat après login) ──
+    # Évite le problème de timing où le cookie JS n'est pas encore
+    # posé quand Streamlit re-exécute la page après st.rerun()
+    if st.session_state.get("_auth_token"):
+        token      = st.session_state["_auth_token"]
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+        sessions   = st.session_state.server_sessions
+        if token_hash in sessions:
+            if time.time() - sessions[token_hash] <= SESSION_MAX_AGE:
+                return True
+        # Token invalide → on nettoie
+        st.session_state.pop("_auth_token", None)
+
+    # ── Priorité 2 : cookie HTTP (rechargements de page, F5) ──
+    token = _get_token_from_cookie()
+    if not token:
+        return False
+    token_hash = hashlib.sha256(token.encode()).hexdigest()
+    sessions   = st.session_state.server_sessions
+    if token_hash not in sessions:
+        return False
+    if time.time() - sessions[token_hash] > SESSION_MAX_AGE:
+        del sessions[token_hash]
+        return False
+    # On met en cache dans session_state pour les cycles suivants
+    st.session_state["_auth_token"] = token
+    return True
+
+def create_session() -> str:
+    token      = secrets.token_urlsafe(32)
+    token_hash = hashlib.sha256(token.encode()).hexdigest()
+    st.session_state.server_sessions[token_hash] = time.time()
+    # Cache immédiat dans session_state
+    st.session_state["_auth_token"] = token
+    return token
+
+def destroy_session():
+    token = st.session_state.get("_auth_token") or _get_token_from_cookie()
+    if token:
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+        st.session_state.server_sessions.pop(token_hash, None)
+    st.session_state.pop("_auth_token", None)
+    _delete_session_cookie()
 
 # CONFIGURATION PAGE STREAMLIT
 
@@ -488,20 +558,6 @@ def load_suspicions():
         pass  # Serveur éteint ou inaccessible → on ignore silencieusement
     return {}
 
-# 1. On stocke les suspicions dans session_state
-if "current_suspicions" not in st.session_state:
-    st.session_state.current_suspicions = {}
-
-# 2. On fetch les nouvelles suspicions
-new_suspicions = load_suspicions()
-
-# 3. On met à jour SEULEMENT si elles ont changé
-if new_suspicions != st.session_state.current_suspicions:
-    st.session_state.current_suspicions = new_suspicions
-    # PAS de st.rerun() ici — le cycle courant continue normalement
-
-# 4. On utilise session_state partout au lieu de `suspicions` direct
-suspicions = st.session_state.current_suspicions
 
 # SUPPRESSION D'ALERTE
 
@@ -591,42 +647,23 @@ def _classify_alert(index_to_classify, video_path, raw_path, label: str):
 
     st.rerun()
 
-# VERIFICATION AUTHENTIFICATION
-
-def is_authenticated():
-    """Vérifie si utilisateur est connecté via cookie"""
-
-    return cookies.get("auth") == "true"  # True si cookie actif
 
 # PAGE LOGIN
 def login_page():
-
-    st.markdown(
-        '<div class="header"><h2>🔐 Accès Sécurisé</h2></div>',
-        unsafe_allow_html=True
-    )
-
-    col1, col2, col3 = st.columns([1, 2, 1])  # Centrage UI
-
+    st.markdown('<div class="header"><h2>🔐 Accès Sécurisé</h2></div>', unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        user = st.text_input("Identifiant")  # Champ user
-        password = st.text_input("Mot de passe", type="password")  # Champ password
-
+        user     = st.text_input("Identifiant")
+        password = st.text_input("Mot de passe", type="password")
         if st.button("Connexion", use_container_width=True):
-
-            # Vérification credentials
             if user == ADMIN_USER and password == ADMIN_PASSWORD:
-
-                cookies["auth"] = "true"  # Stocke cookie login
-                cookies.save()  # Sauvegarde persistante
-
-                st.success("Connexion réussie")  # Message succès
-                st.rerun()  # Recharge app
-
+                token = create_session()   # stocke dans server_sessions + session_state
+                _set_session_cookie(token) # pose le cookie JS (asynchrone)
+                st.success("Connexion réussie")
+                st.rerun()                 # is_authenticated() trouve le token en session_state ✓
             else:
-                st.error("Identifiants incorrects")  # Erreur login
-
-    st.stop()  # Bloque accès page principale
+                st.error("Identifiants incorrects")
+    st.stop()
 
 
 # GATE D'ACCÈS GLOBAL (IMPORTANT)
@@ -634,8 +671,24 @@ def login_page():
 if not is_authenticated():  # Si pas connecté
     login_page()  # Affiche login
 
-# HEADER PRINCIPAL APP
+# 1. On stocke les suspicions dans session_state
+if "current_suspicions" not in st.session_state:
+    st.session_state.current_suspicions = {}
 
+# 2. On fetch les nouvelles suspicions
+new_suspicions = load_suspicions()
+
+# 3. On met à jour SEULEMENT si elles ont changé
+if new_suspicions != st.session_state.current_suspicions:
+    st.session_state.current_suspicions = new_suspicions
+    # PAS de st.rerun() ici — le cycle courant continue normalement
+
+# 4. On utilise session_state partout au lieu de `suspicions` direct
+suspicions = st.session_state.current_suspicions
+
+
+
+# HEADER PRINCIPAL APP
 st.markdown(
     '<div class="header"><h1>🛡️ Leclairvoyant - Surveillance IA - E.Leclerc Olivet</h1></div>',
     unsafe_allow_html=True
@@ -1000,13 +1053,9 @@ st.sidebar.title("📊 Menu")  # Titre sidebar
 page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES", "📋 LOGS", "📘 GUIDE D'AMÉLIORATION"])  # Navigation
 
 # DÉCONNEXION
-
 if st.sidebar.button("🚪 Déconnexion"):
-
-    cookies["auth"] = "false"  # Supprime auth
-    cookies.save()  # Sauvegarde cookie
-
-    st.rerun()  # Recharge app
+    destroy_session()
+    st.rerun()
 
 
 def render_camera_zone(zone_name: str, cams: list, all_cams: list):
