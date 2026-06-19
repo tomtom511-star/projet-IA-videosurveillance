@@ -386926,3 +386926,2068 @@ Traceback (most recent call last):
   File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
     raise MediaFileStorageError(
 streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f4ab60e87da0440bdeb212e5bb1683e1140d3498de91662534258358.bin'. (No media file with id 'f4ab60e87da0440bdeb212e5bb1683e1140d3498de91662534258358')
+2026-06-19 08:18:20.611 Port 8501 is not available
+2026-06-19 08:24:37.970 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:24:46.911 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:24:50.008 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:24:50.094 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:24:50.131 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:24:50.156 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:24:50.157 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:24:50.158 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:24:50.159 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:24:50.159 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:24:52.690 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:29:47.822 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:29:47.843 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:29:47.845 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:29:47.846 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:29:47.847 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 08:29:47.849 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:27:26.472 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:27:36.605 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:27:36.615 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:27:36.615 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:27:36.616 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:27:36.616 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:27:36.617 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:51:27.078 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:51:28.932 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:51:28.962 MediaFileHandler: Missing file 40b6c861886250b754e7e411fb55225ca3036e4de5deb3cafc4ab9cf.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '40b6c861886250b754e7e411fb55225ca3036e4de5deb3cafc4ab9cf'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '40b6c861886250b754e7e411fb55225ca3036e4de5deb3cafc4ab9cf.mp4'. (No media file with id '40b6c861886250b754e7e411fb55225ca3036e4de5deb3cafc4ab9cf')
+2026-06-19 10:51:28.966 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:51:28.967 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:51:28.967 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:51:28.968 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:51:28.969 MediaFileHandler: Missing file adb5e20b35bc52cbb1662f5a66838f842c9460eb92166ccbc4a0be6a.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'adb5e20b35bc52cbb1662f5a66838f842c9460eb92166ccbc4a0be6a'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'adb5e20b35bc52cbb1662f5a66838f842c9460eb92166ccbc4a0be6a.mp4'. (No media file with id 'adb5e20b35bc52cbb1662f5a66838f842c9460eb92166ccbc4a0be6a')
+2026-06-19 10:51:28.969 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 10:51:28.991 MediaFileHandler: Missing file 93838de2cae50a40b41ee09e01cee9dc4702a9cd3c25f250623acbd6.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '93838de2cae50a40b41ee09e01cee9dc4702a9cd3c25f250623acbd6'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '93838de2cae50a40b41ee09e01cee9dc4702a9cd3c25f250623acbd6.mp4'. (No media file with id '93838de2cae50a40b41ee09e01cee9dc4702a9cd3c25f250623acbd6')
+2026-06-19 10:51:28.992 MediaFileHandler: Missing file 5f9770fcb7d9d04d2db50baabae521754f1dd4e18bbde4679be5dd4f.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '5f9770fcb7d9d04d2db50baabae521754f1dd4e18bbde4679be5dd4f'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '5f9770fcb7d9d04d2db50baabae521754f1dd4e18bbde4679be5dd4f.mp4'. (No media file with id '5f9770fcb7d9d04d2db50baabae521754f1dd4e18bbde4679be5dd4f')
+2026-06-19 10:51:28.993 MediaFileHandler: Missing file fd87559a0ba00159e5fbbf46ef7562e73d6ac74197351218c3a3a53b.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'fd87559a0ba00159e5fbbf46ef7562e73d6ac74197351218c3a3a53b'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'fd87559a0ba00159e5fbbf46ef7562e73d6ac74197351218c3a3a53b.mp4'. (No media file with id 'fd87559a0ba00159e5fbbf46ef7562e73d6ac74197351218c3a3a53b')
+2026-06-19 10:51:28.994 MediaFileHandler: Missing file c233e578e88a4674b803a51b3d582d8cda151d30bdc3c6bab900f237.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'c233e578e88a4674b803a51b3d582d8cda151d30bdc3c6bab900f237'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'c233e578e88a4674b803a51b3d582d8cda151d30bdc3c6bab900f237.mp4'. (No media file with id 'c233e578e88a4674b803a51b3d582d8cda151d30bdc3c6bab900f237')
+2026-06-19 10:51:28.995 MediaFileHandler: Missing file 2ed836c7bfc0b1df6f3a4d02f3c70d7334d22e1a358ad1746aeca7d9.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '2ed836c7bfc0b1df6f3a4d02f3c70d7334d22e1a358ad1746aeca7d9'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '2ed836c7bfc0b1df6f3a4d02f3c70d7334d22e1a358ad1746aeca7d9.mp4'. (No media file with id '2ed836c7bfc0b1df6f3a4d02f3c70d7334d22e1a358ad1746aeca7d9')
+2026-06-19 10:51:28.996 MediaFileHandler: Missing file 12bf678199ff5d7d6641229e7c7cdc1170044353ecd392edfa8c9df3.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '12bf678199ff5d7d6641229e7c7cdc1170044353ecd392edfa8c9df3'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '12bf678199ff5d7d6641229e7c7cdc1170044353ecd392edfa8c9df3.mp4'. (No media file with id '12bf678199ff5d7d6641229e7c7cdc1170044353ecd392edfa8c9df3')
+2026-06-19 10:51:29.264 MediaFileHandler: Missing file f452935841836516ae9a0ea39b3b026ec98dbee38ffeda3272690004.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f452935841836516ae9a0ea39b3b026ec98dbee38ffeda3272690004'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f452935841836516ae9a0ea39b3b026ec98dbee38ffeda3272690004.bin'. (No media file with id 'f452935841836516ae9a0ea39b3b026ec98dbee38ffeda3272690004')
+2026-06-19 10:51:29.265 MediaFileHandler: Missing file aa05093bd01b522568265a7464cde6e25d7e6f9e169969731cc595c5.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'aa05093bd01b522568265a7464cde6e25d7e6f9e169969731cc595c5'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'aa05093bd01b522568265a7464cde6e25d7e6f9e169969731cc595c5.bin'. (No media file with id 'aa05093bd01b522568265a7464cde6e25d7e6f9e169969731cc595c5')
+2026-06-19 10:51:29.266 MediaFileHandler: Missing file 305c13e21b4cf4cd64fe7c6115faf1a8443793f21bd4e9b5a8eec0e6.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '305c13e21b4cf4cd64fe7c6115faf1a8443793f21bd4e9b5a8eec0e6'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '305c13e21b4cf4cd64fe7c6115faf1a8443793f21bd4e9b5a8eec0e6.bin'. (No media file with id '305c13e21b4cf4cd64fe7c6115faf1a8443793f21bd4e9b5a8eec0e6')
+2026-06-19 10:51:29.271 MediaFileHandler: Missing file 89a64afefd6ae47033e1cf73c6fe6036a6d7dfd829e9cb45927e2d1c.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '89a64afefd6ae47033e1cf73c6fe6036a6d7dfd829e9cb45927e2d1c'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '89a64afefd6ae47033e1cf73c6fe6036a6d7dfd829e9cb45927e2d1c.bin'. (No media file with id '89a64afefd6ae47033e1cf73c6fe6036a6d7dfd829e9cb45927e2d1c')
+2026-06-19 10:51:29.272 MediaFileHandler: Missing file 3c636e531519c15b06d5f31dcf6bfc92bbc5a56e05163d7e44aa9534.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '3c636e531519c15b06d5f31dcf6bfc92bbc5a56e05163d7e44aa9534'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '3c636e531519c15b06d5f31dcf6bfc92bbc5a56e05163d7e44aa9534.bin'. (No media file with id '3c636e531519c15b06d5f31dcf6bfc92bbc5a56e05163d7e44aa9534')
+2026-06-19 10:51:29.274 MediaFileHandler: Missing file 1de9cba89e178c66dd13d51667500e6e4c739a4a38e49f16a52ea4a5.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '1de9cba89e178c66dd13d51667500e6e4c739a4a38e49f16a52ea4a5'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '1de9cba89e178c66dd13d51667500e6e4c739a4a38e49f16a52ea4a5.bin'. (No media file with id '1de9cba89e178c66dd13d51667500e6e4c739a4a38e49f16a52ea4a5')
+2026-06-19 10:51:29.275 MediaFileHandler: Missing file 3fd6692992c2a1185b6e22ac7914922e6b259955945db1cf8c6b8540.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '3fd6692992c2a1185b6e22ac7914922e6b259955945db1cf8c6b8540'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '3fd6692992c2a1185b6e22ac7914922e6b259955945db1cf8c6b8540.bin'. (No media file with id '3fd6692992c2a1185b6e22ac7914922e6b259955945db1cf8c6b8540')
+2026-06-19 10:51:29.276 MediaFileHandler: Missing file 72c542f5392ec3aece67afd6a1f46a2e7f57d038b8390482d4e6db47.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '72c542f5392ec3aece67afd6a1f46a2e7f57d038b8390482d4e6db47'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '72c542f5392ec3aece67afd6a1f46a2e7f57d038b8390482d4e6db47.bin'. (No media file with id '72c542f5392ec3aece67afd6a1f46a2e7f57d038b8390482d4e6db47')
+2026-06-19 10:51:29.277 MediaFileHandler: Missing file f68b85ec19b5c76b2c9d342895a10d05e0d591ab9e2171deb446655d.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f68b85ec19b5c76b2c9d342895a10d05e0d591ab9e2171deb446655d'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f68b85ec19b5c76b2c9d342895a10d05e0d591ab9e2171deb446655d.bin'. (No media file with id 'f68b85ec19b5c76b2c9d342895a10d05e0d591ab9e2171deb446655d')
+2026-06-19 10:51:29.278 MediaFileHandler: Missing file 6b0c188e37f533c298ea5b2439f36fb06fcc60624b5ff6270f871e98.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '6b0c188e37f533c298ea5b2439f36fb06fcc60624b5ff6270f871e98'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '6b0c188e37f533c298ea5b2439f36fb06fcc60624b5ff6270f871e98.bin'. (No media file with id '6b0c188e37f533c298ea5b2439f36fb06fcc60624b5ff6270f871e98')
+2026-06-19 10:51:29.279 MediaFileHandler: Missing file 47b384e4ac616ec12c9c663303f301815cfb1bec37f3cf147172fc6a.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '47b384e4ac616ec12c9c663303f301815cfb1bec37f3cf147172fc6a'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '47b384e4ac616ec12c9c663303f301815cfb1bec37f3cf147172fc6a.bin'. (No media file with id '47b384e4ac616ec12c9c663303f301815cfb1bec37f3cf147172fc6a')
+2026-06-19 10:51:29.280 MediaFileHandler: Missing file 5efad3448e283ef6cf0bd8fdd6c1a12cc2b14d57a825bb8e34c68508.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '5efad3448e283ef6cf0bd8fdd6c1a12cc2b14d57a825bb8e34c68508'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '5efad3448e283ef6cf0bd8fdd6c1a12cc2b14d57a825bb8e34c68508.bin'. (No media file with id '5efad3448e283ef6cf0bd8fdd6c1a12cc2b14d57a825bb8e34c68508')
+2026-06-19 10:51:29.281 MediaFileHandler: Missing file f1671b91af9f826111dfb4a46c04d101eca1950cdbcc99f9e77b0033.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f1671b91af9f826111dfb4a46c04d101eca1950cdbcc99f9e77b0033'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f1671b91af9f826111dfb4a46c04d101eca1950cdbcc99f9e77b0033.bin'. (No media file with id 'f1671b91af9f826111dfb4a46c04d101eca1950cdbcc99f9e77b0033')
+2026-06-19 10:51:29.292 MediaFileHandler: Missing file c09e95ce34e94f396b906200014bff0937f85d9e00474cc80cbea5a4.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'c09e95ce34e94f396b906200014bff0937f85d9e00474cc80cbea5a4'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'c09e95ce34e94f396b906200014bff0937f85d9e00474cc80cbea5a4.mp4'. (No media file with id 'c09e95ce34e94f396b906200014bff0937f85d9e00474cc80cbea5a4')
+2026-06-19 10:51:29.294 MediaFileHandler: Missing file 4a3a7472ad2a8129c46859e3fe7f14f8f9d2151e93a4a634ae547455.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '4a3a7472ad2a8129c46859e3fe7f14f8f9d2151e93a4a634ae547455'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '4a3a7472ad2a8129c46859e3fe7f14f8f9d2151e93a4a634ae547455.mp4'. (No media file with id '4a3a7472ad2a8129c46859e3fe7f14f8f9d2151e93a4a634ae547455')
+2026-06-19 10:51:29.296 MediaFileHandler: Missing file 4109e30ba7062ef60da551dfeb0287bb2a2b5d3c6fd3a2a634a893b2.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '4109e30ba7062ef60da551dfeb0287bb2a2b5d3c6fd3a2a634a893b2'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '4109e30ba7062ef60da551dfeb0287bb2a2b5d3c6fd3a2a634a893b2.mp4'. (No media file with id '4109e30ba7062ef60da551dfeb0287bb2a2b5d3c6fd3a2a634a893b2')
+2026-06-19 10:51:29.297 MediaFileHandler: Missing file 9ee11b9d920af023b88a0b3fbf7449f428f4ab55f462e2bfa897bd1c.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '9ee11b9d920af023b88a0b3fbf7449f428f4ab55f462e2bfa897bd1c'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '9ee11b9d920af023b88a0b3fbf7449f428f4ab55f462e2bfa897bd1c.mp4'. (No media file with id '9ee11b9d920af023b88a0b3fbf7449f428f4ab55f462e2bfa897bd1c')
+2026-06-19 10:51:29.298 MediaFileHandler: Missing file 0b80d035c16e8073721a60530746effc57badba1f772caf676fc1714.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '0b80d035c16e8073721a60530746effc57badba1f772caf676fc1714'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '0b80d035c16e8073721a60530746effc57badba1f772caf676fc1714.mp4'. (No media file with id '0b80d035c16e8073721a60530746effc57badba1f772caf676fc1714')
+2026-06-19 10:51:29.301 MediaFileHandler: Missing file 9af1f3fd23640eb2c66ae9a499cdc9df878d7dfde50d7b539eed9fd5.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '9af1f3fd23640eb2c66ae9a499cdc9df878d7dfde50d7b539eed9fd5'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '9af1f3fd23640eb2c66ae9a499cdc9df878d7dfde50d7b539eed9fd5.mp4'. (No media file with id '9af1f3fd23640eb2c66ae9a499cdc9df878d7dfde50d7b539eed9fd5')
+2026-06-19 10:51:29.304 MediaFileHandler: Missing file 0da61c9080a98d3de3d93cfe67bed19498b7f6349ad3b2f720541528.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '0da61c9080a98d3de3d93cfe67bed19498b7f6349ad3b2f720541528'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '0da61c9080a98d3de3d93cfe67bed19498b7f6349ad3b2f720541528.mp4'. (No media file with id '0da61c9080a98d3de3d93cfe67bed19498b7f6349ad3b2f720541528')
+2026-06-19 10:51:29.305 MediaFileHandler: Missing file d2ce482d22472e152cdfbacb1bed4f94e5ca029eaadc18dcaf5c8634.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'd2ce482d22472e152cdfbacb1bed4f94e5ca029eaadc18dcaf5c8634'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'd2ce482d22472e152cdfbacb1bed4f94e5ca029eaadc18dcaf5c8634.mp4'. (No media file with id 'd2ce482d22472e152cdfbacb1bed4f94e5ca029eaadc18dcaf5c8634')
+2026-06-19 10:51:29.307 MediaFileHandler: Missing file fa6eddc3deafbfd36ccc81c0e8884476931b1235ecb7f9f13af46399.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'fa6eddc3deafbfd36ccc81c0e8884476931b1235ecb7f9f13af46399'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'fa6eddc3deafbfd36ccc81c0e8884476931b1235ecb7f9f13af46399.mp4'. (No media file with id 'fa6eddc3deafbfd36ccc81c0e8884476931b1235ecb7f9f13af46399')
+2026-06-19 10:51:29.308 MediaFileHandler: Missing file 1046a11545ef6a235885239293155689539b17a738d5334e93dd57b3.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '1046a11545ef6a235885239293155689539b17a738d5334e93dd57b3'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '1046a11545ef6a235885239293155689539b17a738d5334e93dd57b3.mp4'. (No media file with id '1046a11545ef6a235885239293155689539b17a738d5334e93dd57b3')
+2026-06-19 10:51:29.310 MediaFileHandler: Missing file 4634cd555cbad8bc0e5b802377fcf54973e4c1e1d912d19e753efa47.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '4634cd555cbad8bc0e5b802377fcf54973e4c1e1d912d19e753efa47'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '4634cd555cbad8bc0e5b802377fcf54973e4c1e1d912d19e753efa47.mp4'. (No media file with id '4634cd555cbad8bc0e5b802377fcf54973e4c1e1d912d19e753efa47')
+2026-06-19 10:51:29.311 MediaFileHandler: Missing file e9fc463c13c661d1989a2016b3839c9de91e0a4be98ae057948237b4.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'e9fc463c13c661d1989a2016b3839c9de91e0a4be98ae057948237b4'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'e9fc463c13c661d1989a2016b3839c9de91e0a4be98ae057948237b4.mp4'. (No media file with id 'e9fc463c13c661d1989a2016b3839c9de91e0a4be98ae057948237b4')
+2026-06-19 10:51:29.314 MediaFileHandler: Missing file ba8d396a0e60876ba829183e939328084b9826d96182abd768426784.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'ba8d396a0e60876ba829183e939328084b9826d96182abd768426784'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'ba8d396a0e60876ba829183e939328084b9826d96182abd768426784.mp4'. (No media file with id 'ba8d396a0e60876ba829183e939328084b9826d96182abd768426784')
+2026-06-19 10:51:29.316 MediaFileHandler: Missing file 805c2cf0d76f8a7a4b5f79fee5a384bf20ada7079c8293d46846a952.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '805c2cf0d76f8a7a4b5f79fee5a384bf20ada7079c8293d46846a952'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '805c2cf0d76f8a7a4b5f79fee5a384bf20ada7079c8293d46846a952.mp4'. (No media file with id '805c2cf0d76f8a7a4b5f79fee5a384bf20ada7079c8293d46846a952')
+2026-06-19 10:51:29.317 MediaFileHandler: Missing file 34a629ee02fec3f5b36a83ce9e9de65d4883286604a4ada8796c56bb.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '34a629ee02fec3f5b36a83ce9e9de65d4883286604a4ada8796c56bb'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '34a629ee02fec3f5b36a83ce9e9de65d4883286604a4ada8796c56bb.mp4'. (No media file with id '34a629ee02fec3f5b36a83ce9e9de65d4883286604a4ada8796c56bb')
+2026-06-19 10:51:29.319 MediaFileHandler: Missing file f479f54a5479b209a13f980902c3adc39dfbce64623130be4d903750.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f479f54a5479b209a13f980902c3adc39dfbce64623130be4d903750'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f479f54a5479b209a13f980902c3adc39dfbce64623130be4d903750.mp4'. (No media file with id 'f479f54a5479b209a13f980902c3adc39dfbce64623130be4d903750')
+2026-06-19 10:51:29.321 MediaFileHandler: Missing file 5ac91c77b1dbe368aa09a0c61949587d829b9f315068da7bd0ab2964.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '5ac91c77b1dbe368aa09a0c61949587d829b9f315068da7bd0ab2964'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '5ac91c77b1dbe368aa09a0c61949587d829b9f315068da7bd0ab2964.mp4'. (No media file with id '5ac91c77b1dbe368aa09a0c61949587d829b9f315068da7bd0ab2964')
+2026-06-19 10:51:29.322 MediaFileHandler: Missing file 8dfdf0ccb47afea9110e3529480cdee134aa66d8e5b3f9be0d08f0ae.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '8dfdf0ccb47afea9110e3529480cdee134aa66d8e5b3f9be0d08f0ae'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '8dfdf0ccb47afea9110e3529480cdee134aa66d8e5b3f9be0d08f0ae.mp4'. (No media file with id '8dfdf0ccb47afea9110e3529480cdee134aa66d8e5b3f9be0d08f0ae')
+2026-06-19 10:51:29.323 MediaFileHandler: Missing file 620a78fb1fcdb6198627db2b8af6bb1c19bc9c76f4847e187b45f934.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '620a78fb1fcdb6198627db2b8af6bb1c19bc9c76f4847e187b45f934'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '620a78fb1fcdb6198627db2b8af6bb1c19bc9c76f4847e187b45f934.mp4'. (No media file with id '620a78fb1fcdb6198627db2b8af6bb1c19bc9c76f4847e187b45f934')
+2026-06-19 10:51:29.329 MediaFileHandler: Missing file 6124dea5ef21fb765468b06e0145f43244aa036e8673fa323cc5a7f0.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '6124dea5ef21fb765468b06e0145f43244aa036e8673fa323cc5a7f0'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '6124dea5ef21fb765468b06e0145f43244aa036e8673fa323cc5a7f0.mp4'. (No media file with id '6124dea5ef21fb765468b06e0145f43244aa036e8673fa323cc5a7f0')
+2026-06-19 10:51:29.330 MediaFileHandler: Missing file f92362e0b7b8162ad9a2dc91e972aa950878e9c74a2c3104e68802bb.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f92362e0b7b8162ad9a2dc91e972aa950878e9c74a2c3104e68802bb'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f92362e0b7b8162ad9a2dc91e972aa950878e9c74a2c3104e68802bb.mp4'. (No media file with id 'f92362e0b7b8162ad9a2dc91e972aa950878e9c74a2c3104e68802bb')
+2026-06-19 10:51:29.334 MediaFileHandler: Missing file 69dcedca609a7cd6386667a05dbcb1a8d9eb68cd1c4c2197c3b9decb.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '69dcedca609a7cd6386667a05dbcb1a8d9eb68cd1c4c2197c3b9decb'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '69dcedca609a7cd6386667a05dbcb1a8d9eb68cd1c4c2197c3b9decb.mp4'. (No media file with id '69dcedca609a7cd6386667a05dbcb1a8d9eb68cd1c4c2197c3b9decb')
+2026-06-19 10:51:29.340 MediaFileHandler: Missing file 5a260268abb2cbf42125e6283ca5340f64abc7ad55ba39a31ecf7e8f.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '5a260268abb2cbf42125e6283ca5340f64abc7ad55ba39a31ecf7e8f'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '5a260268abb2cbf42125e6283ca5340f64abc7ad55ba39a31ecf7e8f.mp4'. (No media file with id '5a260268abb2cbf42125e6283ca5340f64abc7ad55ba39a31ecf7e8f')
+2026-06-19 10:51:29.997 MediaFileHandler: Missing file 24aa2f1ec5e37407c22a11b35880d6f2eacd58df5bbe44997c0ce677.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '24aa2f1ec5e37407c22a11b35880d6f2eacd58df5bbe44997c0ce677'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '24aa2f1ec5e37407c22a11b35880d6f2eacd58df5bbe44997c0ce677.bin'. (No media file with id '24aa2f1ec5e37407c22a11b35880d6f2eacd58df5bbe44997c0ce677')
+2026-06-19 10:51:30.000 MediaFileHandler: Missing file a4e3739a4fc6769a2060abe9e26f26e43c68d5bd624c5d55fa5c7ee7.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'a4e3739a4fc6769a2060abe9e26f26e43c68d5bd624c5d55fa5c7ee7'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'a4e3739a4fc6769a2060abe9e26f26e43c68d5bd624c5d55fa5c7ee7.bin'. (No media file with id 'a4e3739a4fc6769a2060abe9e26f26e43c68d5bd624c5d55fa5c7ee7')
+2026-06-19 10:51:30.004 MediaFileHandler: Missing file 41df7816663dc727e6c7d7fd4a07dd401623499263a8c9222460f772.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '41df7816663dc727e6c7d7fd4a07dd401623499263a8c9222460f772'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '41df7816663dc727e6c7d7fd4a07dd401623499263a8c9222460f772.bin'. (No media file with id '41df7816663dc727e6c7d7fd4a07dd401623499263a8c9222460f772')
+2026-06-19 10:51:30.005 MediaFileHandler: Missing file fd27afaa467f4b49a5c80c1636923ea53b39fbb923ef04ae4cd01127.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'fd27afaa467f4b49a5c80c1636923ea53b39fbb923ef04ae4cd01127'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'fd27afaa467f4b49a5c80c1636923ea53b39fbb923ef04ae4cd01127.bin'. (No media file with id 'fd27afaa467f4b49a5c80c1636923ea53b39fbb923ef04ae4cd01127')
+2026-06-19 10:51:30.008 MediaFileHandler: Missing file e056a46fe8a1c8bd70be6357865362f34487f11dca54a53b067d2251.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'e056a46fe8a1c8bd70be6357865362f34487f11dca54a53b067d2251'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'e056a46fe8a1c8bd70be6357865362f34487f11dca54a53b067d2251.bin'. (No media file with id 'e056a46fe8a1c8bd70be6357865362f34487f11dca54a53b067d2251')
+2026-06-19 10:51:30.009 MediaFileHandler: Missing file 4252f8d3903dff19e7118a550b8f40e0673fb8ef59e1e340010c72ca.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '4252f8d3903dff19e7118a550b8f40e0673fb8ef59e1e340010c72ca'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '4252f8d3903dff19e7118a550b8f40e0673fb8ef59e1e340010c72ca.bin'. (No media file with id '4252f8d3903dff19e7118a550b8f40e0673fb8ef59e1e340010c72ca')
+2026-06-19 10:51:30.011 MediaFileHandler: Missing file d640e64191d71a37408c165da8401c0977f5f91db0e7d5f592c4f063.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'd640e64191d71a37408c165da8401c0977f5f91db0e7d5f592c4f063'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'd640e64191d71a37408c165da8401c0977f5f91db0e7d5f592c4f063.bin'. (No media file with id 'd640e64191d71a37408c165da8401c0977f5f91db0e7d5f592c4f063')
+2026-06-19 10:51:30.012 MediaFileHandler: Missing file 614cfd6b1c1f12836fdda56ce960bca1dbfb4604620bb61e00afd194.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '614cfd6b1c1f12836fdda56ce960bca1dbfb4604620bb61e00afd194'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '614cfd6b1c1f12836fdda56ce960bca1dbfb4604620bb61e00afd194.bin'. (No media file with id '614cfd6b1c1f12836fdda56ce960bca1dbfb4604620bb61e00afd194')
+2026-06-19 10:51:30.015 MediaFileHandler: Missing file 487320e45bb2be42611ad23f07f5fcbf9fcc44c90a05c0a8e0f58ca7.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '487320e45bb2be42611ad23f07f5fcbf9fcc44c90a05c0a8e0f58ca7'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '487320e45bb2be42611ad23f07f5fcbf9fcc44c90a05c0a8e0f58ca7.bin'. (No media file with id '487320e45bb2be42611ad23f07f5fcbf9fcc44c90a05c0a8e0f58ca7')
+2026-06-19 10:51:30.016 MediaFileHandler: Missing file 9cc7457269ada8e5aa1e42126f82e6a58b03c638277703e47b00b13f.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '9cc7457269ada8e5aa1e42126f82e6a58b03c638277703e47b00b13f'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '9cc7457269ada8e5aa1e42126f82e6a58b03c638277703e47b00b13f.bin'. (No media file with id '9cc7457269ada8e5aa1e42126f82e6a58b03c638277703e47b00b13f')
+2026-06-19 10:51:30.017 MediaFileHandler: Missing file 7d24e782618458ce8584ffe705a911d780c8f26e91c6af73fa0bfc84.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '7d24e782618458ce8584ffe705a911d780c8f26e91c6af73fa0bfc84'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '7d24e782618458ce8584ffe705a911d780c8f26e91c6af73fa0bfc84.bin'. (No media file with id '7d24e782618458ce8584ffe705a911d780c8f26e91c6af73fa0bfc84')
+2026-06-19 10:51:30.021 MediaFileHandler: Missing file d29f8abf7441059d5ab51378bff624560412a45edb7b71a453e61ac6.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'd29f8abf7441059d5ab51378bff624560412a45edb7b71a453e61ac6'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'd29f8abf7441059d5ab51378bff624560412a45edb7b71a453e61ac6.bin'. (No media file with id 'd29f8abf7441059d5ab51378bff624560412a45edb7b71a453e61ac6')
+2026-06-19 10:51:30.022 MediaFileHandler: Missing file ba2af7db39a724362c90f7bc7664378a792f9aebda6c4bfaed1fb715.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'ba2af7db39a724362c90f7bc7664378a792f9aebda6c4bfaed1fb715'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'ba2af7db39a724362c90f7bc7664378a792f9aebda6c4bfaed1fb715.bin'. (No media file with id 'ba2af7db39a724362c90f7bc7664378a792f9aebda6c4bfaed1fb715')
+2026-06-19 10:51:30.023 MediaFileHandler: Missing file 638fd54e056fbbebf0ee2dc87b32bdb8f63f883819ce465731062d5b.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '638fd54e056fbbebf0ee2dc87b32bdb8f63f883819ce465731062d5b'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '638fd54e056fbbebf0ee2dc87b32bdb8f63f883819ce465731062d5b.bin'. (No media file with id '638fd54e056fbbebf0ee2dc87b32bdb8f63f883819ce465731062d5b')
+2026-06-19 10:51:30.024 MediaFileHandler: Missing file c5bc57eee90dfc34fb38a2d99377131e9a52cd6b7e9e38665c6b2278.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'c5bc57eee90dfc34fb38a2d99377131e9a52cd6b7e9e38665c6b2278'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'c5bc57eee90dfc34fb38a2d99377131e9a52cd6b7e9e38665c6b2278.bin'. (No media file with id 'c5bc57eee90dfc34fb38a2d99377131e9a52cd6b7e9e38665c6b2278')
+2026-06-19 10:51:30.024 MediaFileHandler: Missing file a368c4dfd46dfa724a8e91f2caa41231235bacd595c74cd25e088632.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'a368c4dfd46dfa724a8e91f2caa41231235bacd595c74cd25e088632'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'a368c4dfd46dfa724a8e91f2caa41231235bacd595c74cd25e088632.bin'. (No media file with id 'a368c4dfd46dfa724a8e91f2caa41231235bacd595c74cd25e088632')
+2026-06-19 10:51:30.026 MediaFileHandler: Missing file 5ff207323a1f281ac88a7d70ec4cb28554ce36792d43e2a8fb38815d.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '5ff207323a1f281ac88a7d70ec4cb28554ce36792d43e2a8fb38815d'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '5ff207323a1f281ac88a7d70ec4cb28554ce36792d43e2a8fb38815d.bin'. (No media file with id '5ff207323a1f281ac88a7d70ec4cb28554ce36792d43e2a8fb38815d')
+2026-06-19 10:51:30.026 MediaFileHandler: Missing file 39c9ec91775cfcefabb9cbd3bdc1206fd177b64a1886d8a7a485f6a2.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '39c9ec91775cfcefabb9cbd3bdc1206fd177b64a1886d8a7a485f6a2'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '39c9ec91775cfcefabb9cbd3bdc1206fd177b64a1886d8a7a485f6a2.bin'. (No media file with id '39c9ec91775cfcefabb9cbd3bdc1206fd177b64a1886d8a7a485f6a2')
+2026-06-19 10:51:30.027 MediaFileHandler: Missing file d6b70feef4cea4c2c7fdb28df1fa4323090b3656485554563bbb20a6.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'd6b70feef4cea4c2c7fdb28df1fa4323090b3656485554563bbb20a6'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'd6b70feef4cea4c2c7fdb28df1fa4323090b3656485554563bbb20a6.bin'. (No media file with id 'd6b70feef4cea4c2c7fdb28df1fa4323090b3656485554563bbb20a6')
+2026-06-19 10:51:30.027 MediaFileHandler: Missing file 80abe7d6a8f3f5d6968cf1910d89ff0c211fcff63c04642037225d70.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '80abe7d6a8f3f5d6968cf1910d89ff0c211fcff63c04642037225d70'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '80abe7d6a8f3f5d6968cf1910d89ff0c211fcff63c04642037225d70.bin'. (No media file with id '80abe7d6a8f3f5d6968cf1910d89ff0c211fcff63c04642037225d70')
+2026-06-19 10:51:30.028 MediaFileHandler: Missing file 2de59ee370ed1d476249f2641efb562835e71183317b77727d55f8fc.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '2de59ee370ed1d476249f2641efb562835e71183317b77727d55f8fc'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '2de59ee370ed1d476249f2641efb562835e71183317b77727d55f8fc.bin'. (No media file with id '2de59ee370ed1d476249f2641efb562835e71183317b77727d55f8fc')
+2026-06-19 10:51:30.029 MediaFileHandler: Missing file f2bc205278f7dc21533816b629c33d3938da8cc0ea6cce7d508901bb.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f2bc205278f7dc21533816b629c33d3938da8cc0ea6cce7d508901bb'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f2bc205278f7dc21533816b629c33d3938da8cc0ea6cce7d508901bb.bin'. (No media file with id 'f2bc205278f7dc21533816b629c33d3938da8cc0ea6cce7d508901bb')
+2026-06-19 10:51:30.029 MediaFileHandler: Missing file d360e194b4522798703ada7c913df94812091e413b646f614f38cb83.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'd360e194b4522798703ada7c913df94812091e413b646f614f38cb83'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'd360e194b4522798703ada7c913df94812091e413b646f614f38cb83.bin'. (No media file with id 'd360e194b4522798703ada7c913df94812091e413b646f614f38cb83')
+2026-06-19 10:51:30.030 MediaFileHandler: Missing file ce479a42ddd99b3c24e82cc5700521ae933a72b8e9c6e7d927f8063e.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'ce479a42ddd99b3c24e82cc5700521ae933a72b8e9c6e7d927f8063e'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'ce479a42ddd99b3c24e82cc5700521ae933a72b8e9c6e7d927f8063e.bin'. (No media file with id 'ce479a42ddd99b3c24e82cc5700521ae933a72b8e9c6e7d927f8063e')
+2026-06-19 10:51:30.031 MediaFileHandler: Missing file ca3fdf11c1f67e78cb31e7c4632d440382ef7be8baa0d0401fb3abba.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'ca3fdf11c1f67e78cb31e7c4632d440382ef7be8baa0d0401fb3abba'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'ca3fdf11c1f67e78cb31e7c4632d440382ef7be8baa0d0401fb3abba.bin'. (No media file with id 'ca3fdf11c1f67e78cb31e7c4632d440382ef7be8baa0d0401fb3abba')
+2026-06-19 10:51:30.032 MediaFileHandler: Missing file 856a8c8afaa9b7fc9c444131782e62e8e1119fc10354531e43dd1c70.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '856a8c8afaa9b7fc9c444131782e62e8e1119fc10354531e43dd1c70'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '856a8c8afaa9b7fc9c444131782e62e8e1119fc10354531e43dd1c70.bin'. (No media file with id '856a8c8afaa9b7fc9c444131782e62e8e1119fc10354531e43dd1c70')
+2026-06-19 10:51:30.034 MediaFileHandler: Missing file 215655c0beaad4d817ede9174a86f5cd260bd719534ee71fded46ef4.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '215655c0beaad4d817ede9174a86f5cd260bd719534ee71fded46ef4'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '215655c0beaad4d817ede9174a86f5cd260bd719534ee71fded46ef4.bin'. (No media file with id '215655c0beaad4d817ede9174a86f5cd260bd719534ee71fded46ef4')
+2026-06-19 10:51:30.034 MediaFileHandler: Missing file 73b9c84b33ba46c0a328b168f1820ff6277803c2b3e0e5138a1dec31.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '73b9c84b33ba46c0a328b168f1820ff6277803c2b3e0e5138a1dec31'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '73b9c84b33ba46c0a328b168f1820ff6277803c2b3e0e5138a1dec31.bin'. (No media file with id '73b9c84b33ba46c0a328b168f1820ff6277803c2b3e0e5138a1dec31')
+2026-06-19 10:51:30.035 MediaFileHandler: Missing file 8f21525641e577e0ffd6ada1b872e1fbcf88f29a49972fe2656e728e.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '8f21525641e577e0ffd6ada1b872e1fbcf88f29a49972fe2656e728e'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '8f21525641e577e0ffd6ada1b872e1fbcf88f29a49972fe2656e728e.bin'. (No media file with id '8f21525641e577e0ffd6ada1b872e1fbcf88f29a49972fe2656e728e')
+2026-06-19 10:51:30.036 MediaFileHandler: Missing file 1dd09a373e0d3778619ac858cc7fa5886eb4efee0c24b2a7b9d65e98.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '1dd09a373e0d3778619ac858cc7fa5886eb4efee0c24b2a7b9d65e98'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '1dd09a373e0d3778619ac858cc7fa5886eb4efee0c24b2a7b9d65e98.bin'. (No media file with id '1dd09a373e0d3778619ac858cc7fa5886eb4efee0c24b2a7b9d65e98')
+2026-06-19 10:51:30.036 MediaFileHandler: Missing file d96217853b1f55517627f926dbba71134b32f12a6a46f1c922cabb31.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'd96217853b1f55517627f926dbba71134b32f12a6a46f1c922cabb31'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'd96217853b1f55517627f926dbba71134b32f12a6a46f1c922cabb31.bin'. (No media file with id 'd96217853b1f55517627f926dbba71134b32f12a6a46f1c922cabb31')
+2026-06-19 10:51:30.037 MediaFileHandler: Missing file 37dd67df494c82996954aa3416e3d3464f707b25d2ca7e41a1a6014e.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '37dd67df494c82996954aa3416e3d3464f707b25d2ca7e41a1a6014e'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '37dd67df494c82996954aa3416e3d3464f707b25d2ca7e41a1a6014e.bin'. (No media file with id '37dd67df494c82996954aa3416e3d3464f707b25d2ca7e41a1a6014e')
+2026-06-19 10:51:30.037 MediaFileHandler: Missing file a773b42102a7a9bcaba760c927d1b9005099753865c19040e5300fb7.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'a773b42102a7a9bcaba760c927d1b9005099753865c19040e5300fb7'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'a773b42102a7a9bcaba760c927d1b9005099753865c19040e5300fb7.bin'. (No media file with id 'a773b42102a7a9bcaba760c927d1b9005099753865c19040e5300fb7')
+2026-06-19 10:51:30.038 MediaFileHandler: Missing file acab1f6576ec89a0c578901d4a5f41987e32a389b4625c6bfd82194f.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'acab1f6576ec89a0c578901d4a5f41987e32a389b4625c6bfd82194f'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'acab1f6576ec89a0c578901d4a5f41987e32a389b4625c6bfd82194f.bin'. (No media file with id 'acab1f6576ec89a0c578901d4a5f41987e32a389b4625c6bfd82194f')
+2026-06-19 10:51:30.066 MediaFileHandler: Missing file 4d287e9c9321b9d31439ba0c74685b6b63674763d263423f4210be69.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '4d287e9c9321b9d31439ba0c74685b6b63674763d263423f4210be69'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '4d287e9c9321b9d31439ba0c74685b6b63674763d263423f4210be69.mp4'. (No media file with id '4d287e9c9321b9d31439ba0c74685b6b63674763d263423f4210be69')
+2026-06-19 10:51:30.067 MediaFileHandler: Missing file 7aff7d2328136ef7c9e3e32c37fcaf8588a862a11f3751dacb549fe5.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '7aff7d2328136ef7c9e3e32c37fcaf8588a862a11f3751dacb549fe5'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '7aff7d2328136ef7c9e3e32c37fcaf8588a862a11f3751dacb549fe5.mp4'. (No media file with id '7aff7d2328136ef7c9e3e32c37fcaf8588a862a11f3751dacb549fe5')
+2026-06-19 10:51:30.068 MediaFileHandler: Missing file 43932ecfacef5211afa00989e635230a92fc829c0b03c5372899708c.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '43932ecfacef5211afa00989e635230a92fc829c0b03c5372899708c'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '43932ecfacef5211afa00989e635230a92fc829c0b03c5372899708c.mp4'. (No media file with id '43932ecfacef5211afa00989e635230a92fc829c0b03c5372899708c')
+2026-06-19 10:51:30.073 MediaFileHandler: Missing file 1b13367d32b6cea7a828649ce7fc6b228008f92c51ef51c7acd7d3eb.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '1b13367d32b6cea7a828649ce7fc6b228008f92c51ef51c7acd7d3eb'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '1b13367d32b6cea7a828649ce7fc6b228008f92c51ef51c7acd7d3eb.mp4'. (No media file with id '1b13367d32b6cea7a828649ce7fc6b228008f92c51ef51c7acd7d3eb')
+2026-06-19 10:51:30.074 MediaFileHandler: Missing file 338bd3c4ee5eda78ecb7b8b9a7b0696a5d5fa1bbd5aa163d61597fc2.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '338bd3c4ee5eda78ecb7b8b9a7b0696a5d5fa1bbd5aa163d61597fc2'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '338bd3c4ee5eda78ecb7b8b9a7b0696a5d5fa1bbd5aa163d61597fc2.mp4'. (No media file with id '338bd3c4ee5eda78ecb7b8b9a7b0696a5d5fa1bbd5aa163d61597fc2')
+2026-06-19 10:51:30.075 MediaFileHandler: Missing file fee2e54272b926df95d1caca043294f6c841e9f1d99dadfff2d50fb6.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'fee2e54272b926df95d1caca043294f6c841e9f1d99dadfff2d50fb6'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'fee2e54272b926df95d1caca043294f6c841e9f1d99dadfff2d50fb6.mp4'. (No media file with id 'fee2e54272b926df95d1caca043294f6c841e9f1d99dadfff2d50fb6')
+2026-06-19 10:51:30.078 MediaFileHandler: Missing file 6326a444fcaec29725151cfd7b8eef681dd2c29b679ecfe8a0858506.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '6326a444fcaec29725151cfd7b8eef681dd2c29b679ecfe8a0858506'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '6326a444fcaec29725151cfd7b8eef681dd2c29b679ecfe8a0858506.mp4'. (No media file with id '6326a444fcaec29725151cfd7b8eef681dd2c29b679ecfe8a0858506')
+2026-06-19 10:51:30.082 MediaFileHandler: Missing file 35ea8e957ec6b9963bacde3153be7294ab6152f73f086279af059fcc.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '35ea8e957ec6b9963bacde3153be7294ab6152f73f086279af059fcc'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '35ea8e957ec6b9963bacde3153be7294ab6152f73f086279af059fcc.mp4'. (No media file with id '35ea8e957ec6b9963bacde3153be7294ab6152f73f086279af059fcc')
+2026-06-19 10:51:30.082 MediaFileHandler: Missing file df166b002f661b99d3baea2bec9de5be5b97e6f360caadd86b11a0c0.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'df166b002f661b99d3baea2bec9de5be5b97e6f360caadd86b11a0c0'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'df166b002f661b99d3baea2bec9de5be5b97e6f360caadd86b11a0c0.mp4'. (No media file with id 'df166b002f661b99d3baea2bec9de5be5b97e6f360caadd86b11a0c0')
+2026-06-19 10:51:30.083 MediaFileHandler: Missing file b5be470ced8cc1d8cd9e0c69ec2a7af65a86e4e1e979a104ffedfb32.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'b5be470ced8cc1d8cd9e0c69ec2a7af65a86e4e1e979a104ffedfb32'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'b5be470ced8cc1d8cd9e0c69ec2a7af65a86e4e1e979a104ffedfb32.mp4'. (No media file with id 'b5be470ced8cc1d8cd9e0c69ec2a7af65a86e4e1e979a104ffedfb32')
+2026-06-19 10:51:30.083 MediaFileHandler: Missing file bfb7bb5d62b9c82ced355389edd4c2ebd6b529896ad1b92a8ea7b0a8.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'bfb7bb5d62b9c82ced355389edd4c2ebd6b529896ad1b92a8ea7b0a8'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'bfb7bb5d62b9c82ced355389edd4c2ebd6b529896ad1b92a8ea7b0a8.mp4'. (No media file with id 'bfb7bb5d62b9c82ced355389edd4c2ebd6b529896ad1b92a8ea7b0a8')
+2026-06-19 10:51:30.085 MediaFileHandler: Missing file 10ae8acdc44fbc9a55af1dc57be5049947b7f8c2a08b04137adffe87.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '10ae8acdc44fbc9a55af1dc57be5049947b7f8c2a08b04137adffe87'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '10ae8acdc44fbc9a55af1dc57be5049947b7f8c2a08b04137adffe87.mp4'. (No media file with id '10ae8acdc44fbc9a55af1dc57be5049947b7f8c2a08b04137adffe87')
+2026-06-19 10:51:30.085 MediaFileHandler: Missing file 33d1989bab26209b6a493d5cbabc33b8528c5d73717d44358a2f65fa.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '33d1989bab26209b6a493d5cbabc33b8528c5d73717d44358a2f65fa'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '33d1989bab26209b6a493d5cbabc33b8528c5d73717d44358a2f65fa.mp4'. (No media file with id '33d1989bab26209b6a493d5cbabc33b8528c5d73717d44358a2f65fa')
+2026-06-19 10:51:30.091 MediaFileHandler: Missing file 9554815e345d3e2afef8540b0a79c59d01c506c4259047c8a661337d.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '9554815e345d3e2afef8540b0a79c59d01c506c4259047c8a661337d'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '9554815e345d3e2afef8540b0a79c59d01c506c4259047c8a661337d.mp4'. (No media file with id '9554815e345d3e2afef8540b0a79c59d01c506c4259047c8a661337d')
+2026-06-19 10:51:30.267 MediaFileHandler: Missing file 456f90cb168f3e6c2fcbfa5f3c9f905cb047db1371ce268c388fd9f8.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '456f90cb168f3e6c2fcbfa5f3c9f905cb047db1371ce268c388fd9f8'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '456f90cb168f3e6c2fcbfa5f3c9f905cb047db1371ce268c388fd9f8.mp4'. (No media file with id '456f90cb168f3e6c2fcbfa5f3c9f905cb047db1371ce268c388fd9f8')
+2026-06-19 10:51:30.270 MediaFileHandler: Missing file a0cb5e727262b0440de2c747cedc95417792839c0faca105c83e2558.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'a0cb5e727262b0440de2c747cedc95417792839c0faca105c83e2558'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'a0cb5e727262b0440de2c747cedc95417792839c0faca105c83e2558.mp4'. (No media file with id 'a0cb5e727262b0440de2c747cedc95417792839c0faca105c83e2558')
+2026-06-19 10:51:30.274 MediaFileHandler: Missing file 79384c41bbc2f7b7d1a064bc0cdc312cd5249969626b451b74d6aaca.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '79384c41bbc2f7b7d1a064bc0cdc312cd5249969626b451b74d6aaca'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '79384c41bbc2f7b7d1a064bc0cdc312cd5249969626b451b74d6aaca.mp4'. (No media file with id '79384c41bbc2f7b7d1a064bc0cdc312cd5249969626b451b74d6aaca')
+2026-06-19 10:51:30.275 MediaFileHandler: Missing file 474bee0eb95827bd8ca091e00de6a26e25180df71367487fe64ff2c6.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '474bee0eb95827bd8ca091e00de6a26e25180df71367487fe64ff2c6'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '474bee0eb95827bd8ca091e00de6a26e25180df71367487fe64ff2c6.mp4'. (No media file with id '474bee0eb95827bd8ca091e00de6a26e25180df71367487fe64ff2c6')
+2026-06-19 10:51:30.277 MediaFileHandler: Missing file 7011da997620369b0fa518c04e7d8a39452f8d847b3e09d61ed24400.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '7011da997620369b0fa518c04e7d8a39452f8d847b3e09d61ed24400'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '7011da997620369b0fa518c04e7d8a39452f8d847b3e09d61ed24400.mp4'. (No media file with id '7011da997620369b0fa518c04e7d8a39452f8d847b3e09d61ed24400')
+2026-06-19 10:51:30.278 MediaFileHandler: Missing file 8803b3e0956a763cc1665d05951e3071d776825fff9079025f9500a2.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '8803b3e0956a763cc1665d05951e3071d776825fff9079025f9500a2'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '8803b3e0956a763cc1665d05951e3071d776825fff9079025f9500a2.mp4'. (No media file with id '8803b3e0956a763cc1665d05951e3071d776825fff9079025f9500a2')
+2026-06-19 10:51:30.278 MediaFileHandler: Missing file 093d6fd769ec02dabb2f90bc19d1bb126028a9735cc1170812319da1.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '093d6fd769ec02dabb2f90bc19d1bb126028a9735cc1170812319da1'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '093d6fd769ec02dabb2f90bc19d1bb126028a9735cc1170812319da1.mp4'. (No media file with id '093d6fd769ec02dabb2f90bc19d1bb126028a9735cc1170812319da1')
+2026-06-19 10:51:30.281 MediaFileHandler: Missing file b1d6f197b85b0b88d1313ca43f3cda78e54ffa426aecee52752d4711.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'b1d6f197b85b0b88d1313ca43f3cda78e54ffa426aecee52752d4711'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'b1d6f197b85b0b88d1313ca43f3cda78e54ffa426aecee52752d4711.mp4'. (No media file with id 'b1d6f197b85b0b88d1313ca43f3cda78e54ffa426aecee52752d4711')
+2026-06-19 10:51:30.282 MediaFileHandler: Missing file 092063fbbf8140f2c76f8e3cb4b10292bf935b36c7e636465812b973.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '092063fbbf8140f2c76f8e3cb4b10292bf935b36c7e636465812b973'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '092063fbbf8140f2c76f8e3cb4b10292bf935b36c7e636465812b973.mp4'. (No media file with id '092063fbbf8140f2c76f8e3cb4b10292bf935b36c7e636465812b973')
+2026-06-19 10:51:30.282 MediaFileHandler: Missing file 286d91d3bdafb4cf8f56f34a1804f562ed76d6b7a73e0f8e863952da.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '286d91d3bdafb4cf8f56f34a1804f562ed76d6b7a73e0f8e863952da'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '286d91d3bdafb4cf8f56f34a1804f562ed76d6b7a73e0f8e863952da.mp4'. (No media file with id '286d91d3bdafb4cf8f56f34a1804f562ed76d6b7a73e0f8e863952da')
+2026-06-19 10:51:30.288 MediaFileHandler: Missing file c5d8bca9636f9dc0aaadbfef49ecdc3965b902635f0ffb503ec49820.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'c5d8bca9636f9dc0aaadbfef49ecdc3965b902635f0ffb503ec49820'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'c5d8bca9636f9dc0aaadbfef49ecdc3965b902635f0ffb503ec49820.mp4'. (No media file with id 'c5d8bca9636f9dc0aaadbfef49ecdc3965b902635f0ffb503ec49820')
+2026-06-19 10:51:30.289 MediaFileHandler: Missing file a44ae2aec1e8ae5cfed2e1befbda462a558b721e4c8ec04f2ce93d98.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'a44ae2aec1e8ae5cfed2e1befbda462a558b721e4c8ec04f2ce93d98'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'a44ae2aec1e8ae5cfed2e1befbda462a558b721e4c8ec04f2ce93d98.mp4'. (No media file with id 'a44ae2aec1e8ae5cfed2e1befbda462a558b721e4c8ec04f2ce93d98')
+2026-06-19 10:51:30.289 MediaFileHandler: Missing file 3946f86ed1587968d38028e2ce4e1ca79d3c6af4851e768b1581027c.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '3946f86ed1587968d38028e2ce4e1ca79d3c6af4851e768b1581027c'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '3946f86ed1587968d38028e2ce4e1ca79d3c6af4851e768b1581027c.mp4'. (No media file with id '3946f86ed1587968d38028e2ce4e1ca79d3c6af4851e768b1581027c')
+2026-06-19 10:51:30.290 MediaFileHandler: Missing file 3f1955bb7913c94758616eb854080180aa347330853154f58c563a40.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '3f1955bb7913c94758616eb854080180aa347330853154f58c563a40'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '3f1955bb7913c94758616eb854080180aa347330853154f58c563a40.mp4'. (No media file with id '3f1955bb7913c94758616eb854080180aa347330853154f58c563a40')
+2026-06-19 10:51:30.291 MediaFileHandler: Missing file 89d831a5518b509c00bdd821dd1b0fae1fb09ff98c0ba3a374af48ab.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '89d831a5518b509c00bdd821dd1b0fae1fb09ff98c0ba3a374af48ab'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '89d831a5518b509c00bdd821dd1b0fae1fb09ff98c0ba3a374af48ab.mp4'. (No media file with id '89d831a5518b509c00bdd821dd1b0fae1fb09ff98c0ba3a374af48ab')
+2026-06-19 10:51:30.291 MediaFileHandler: Missing file f532fd30794e52653bae937fcc38c1364d983cb6ba7c436696fafe3f.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f532fd30794e52653bae937fcc38c1364d983cb6ba7c436696fafe3f'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f532fd30794e52653bae937fcc38c1364d983cb6ba7c436696fafe3f.mp4'. (No media file with id 'f532fd30794e52653bae937fcc38c1364d983cb6ba7c436696fafe3f')
+2026-06-19 10:51:30.292 MediaFileHandler: Missing file 4b309e601b329ec42c290f53879f68ade4f1253282411e241047375b.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '4b309e601b329ec42c290f53879f68ade4f1253282411e241047375b'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '4b309e601b329ec42c290f53879f68ade4f1253282411e241047375b.mp4'. (No media file with id '4b309e601b329ec42c290f53879f68ade4f1253282411e241047375b')
+2026-06-19 10:51:30.292 MediaFileHandler: Missing file 63773f00a8e38918bce6528bbfbfefb313b848916c01d6d1bc03e17a.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '63773f00a8e38918bce6528bbfbfefb313b848916c01d6d1bc03e17a'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '63773f00a8e38918bce6528bbfbfefb313b848916c01d6d1bc03e17a.mp4'. (No media file with id '63773f00a8e38918bce6528bbfbfefb313b848916c01d6d1bc03e17a')
+2026-06-19 10:51:30.293 MediaFileHandler: Missing file 6f1b87ba67044e646858e8f871bbb75c4db69c079564353bd936ce35.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '6f1b87ba67044e646858e8f871bbb75c4db69c079564353bd936ce35'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '6f1b87ba67044e646858e8f871bbb75c4db69c079564353bd936ce35.mp4'. (No media file with id '6f1b87ba67044e646858e8f871bbb75c4db69c079564353bd936ce35')
+2026-06-19 10:51:30.294 MediaFileHandler: Missing file 47047d1bdd2112ee61d0a76fa3f50b248b298f2dc6315961ffba9a94.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '47047d1bdd2112ee61d0a76fa3f50b248b298f2dc6315961ffba9a94'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '47047d1bdd2112ee61d0a76fa3f50b248b298f2dc6315961ffba9a94.mp4'. (No media file with id '47047d1bdd2112ee61d0a76fa3f50b248b298f2dc6315961ffba9a94')
+2026-06-19 10:51:30.294 MediaFileHandler: Missing file f8ce98f02c51a41be535046bdd7ae72305b6fa56320dee8367b5190f.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f8ce98f02c51a41be535046bdd7ae72305b6fa56320dee8367b5190f'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f8ce98f02c51a41be535046bdd7ae72305b6fa56320dee8367b5190f.mp4'. (No media file with id 'f8ce98f02c51a41be535046bdd7ae72305b6fa56320dee8367b5190f')
+2026-06-19 10:51:30.295 MediaFileHandler: Missing file 1dd3cd4818e55508ce857899e075dc0d3c1fb6924c55a5c2fe3830cc.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '1dd3cd4818e55508ce857899e075dc0d3c1fb6924c55a5c2fe3830cc'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '1dd3cd4818e55508ce857899e075dc0d3c1fb6924c55a5c2fe3830cc.mp4'. (No media file with id '1dd3cd4818e55508ce857899e075dc0d3c1fb6924c55a5c2fe3830cc')
+2026-06-19 10:51:30.295 MediaFileHandler: Missing file 1ea347504c0a583aa2c82a9339a250667df47e3f458d6eebbdda76cf.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '1ea347504c0a583aa2c82a9339a250667df47e3f458d6eebbdda76cf'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '1ea347504c0a583aa2c82a9339a250667df47e3f458d6eebbdda76cf.mp4'. (No media file with id '1ea347504c0a583aa2c82a9339a250667df47e3f458d6eebbdda76cf')
+2026-06-19 10:51:30.300 MediaFileHandler: Missing file 5c523271d8ffd4e4baf6bed5597dc561d553b107acb00ee9b2980621.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '5c523271d8ffd4e4baf6bed5597dc561d553b107acb00ee9b2980621'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '5c523271d8ffd4e4baf6bed5597dc561d553b107acb00ee9b2980621.mp4'. (No media file with id '5c523271d8ffd4e4baf6bed5597dc561d553b107acb00ee9b2980621')
+2026-06-19 10:51:30.301 MediaFileHandler: Missing file 0152ddecfc1d0ca6bdb3d0e7b460db7cdcf09a162b270138d526f821.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '0152ddecfc1d0ca6bdb3d0e7b460db7cdcf09a162b270138d526f821'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '0152ddecfc1d0ca6bdb3d0e7b460db7cdcf09a162b270138d526f821.mp4'. (No media file with id '0152ddecfc1d0ca6bdb3d0e7b460db7cdcf09a162b270138d526f821')
+2026-06-19 10:51:30.302 MediaFileHandler: Missing file c168a7cd3040f927615a8e5ddc4f0e3d89421b815e6ffd95bd8fee83.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'c168a7cd3040f927615a8e5ddc4f0e3d89421b815e6ffd95bd8fee83'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'c168a7cd3040f927615a8e5ddc4f0e3d89421b815e6ffd95bd8fee83.mp4'. (No media file with id 'c168a7cd3040f927615a8e5ddc4f0e3d89421b815e6ffd95bd8fee83')
+2026-06-19 10:51:30.302 MediaFileHandler: Missing file 26d0a02ad71b3e50575f5f368fa2593ab3ba2eb10ea7f50bc49f5663.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '26d0a02ad71b3e50575f5f368fa2593ab3ba2eb10ea7f50bc49f5663'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '26d0a02ad71b3e50575f5f368fa2593ab3ba2eb10ea7f50bc49f5663.mp4'. (No media file with id '26d0a02ad71b3e50575f5f368fa2593ab3ba2eb10ea7f50bc49f5663')
+2026-06-19 10:51:30.303 MediaFileHandler: Missing file 38d698b90e774ddbc6a674e865e7c4d83ddf741f9d84f9d55a125a8b.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '38d698b90e774ddbc6a674e865e7c4d83ddf741f9d84f9d55a125a8b'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '38d698b90e774ddbc6a674e865e7c4d83ddf741f9d84f9d55a125a8b.mp4'. (No media file with id '38d698b90e774ddbc6a674e865e7c4d83ddf741f9d84f9d55a125a8b')
+2026-06-19 10:51:30.304 MediaFileHandler: Missing file f207e8153956df270bc31856f2b23e8f9b9dfa58e2976c3c67700683.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f207e8153956df270bc31856f2b23e8f9b9dfa58e2976c3c67700683'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f207e8153956df270bc31856f2b23e8f9b9dfa58e2976c3c67700683.mp4'. (No media file with id 'f207e8153956df270bc31856f2b23e8f9b9dfa58e2976c3c67700683')
+2026-06-19 10:51:30.304 MediaFileHandler: Missing file 24d2e5f5ffa406869b998cc5d1ee07a07a3b07b3b5a27ba533e98eca.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '24d2e5f5ffa406869b998cc5d1ee07a07a3b07b3b5a27ba533e98eca'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '24d2e5f5ffa406869b998cc5d1ee07a07a3b07b3b5a27ba533e98eca.mp4'. (No media file with id '24d2e5f5ffa406869b998cc5d1ee07a07a3b07b3b5a27ba533e98eca')
+2026-06-19 10:51:30.305 MediaFileHandler: Missing file 7c65b3bf62a93402fdec1d1ac0f7bc1dc1fd2f80c371afc7b13c3871.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '7c65b3bf62a93402fdec1d1ac0f7bc1dc1fd2f80c371afc7b13c3871'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '7c65b3bf62a93402fdec1d1ac0f7bc1dc1fd2f80c371afc7b13c3871.mp4'. (No media file with id '7c65b3bf62a93402fdec1d1ac0f7bc1dc1fd2f80c371afc7b13c3871')
+2026-06-19 10:51:30.305 MediaFileHandler: Missing file 2b6d939dc621baa37276a817b85035cd9f5e891332cb71e631b5db06.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '2b6d939dc621baa37276a817b85035cd9f5e891332cb71e631b5db06'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '2b6d939dc621baa37276a817b85035cd9f5e891332cb71e631b5db06.mp4'. (No media file with id '2b6d939dc621baa37276a817b85035cd9f5e891332cb71e631b5db06')
+2026-06-19 10:51:30.306 MediaFileHandler: Missing file dccd600989814d1185967617057497fbd3d9f993331ac7f4b87a3358.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'dccd600989814d1185967617057497fbd3d9f993331ac7f4b87a3358'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'dccd600989814d1185967617057497fbd3d9f993331ac7f4b87a3358.mp4'. (No media file with id 'dccd600989814d1185967617057497fbd3d9f993331ac7f4b87a3358')
+2026-06-19 10:51:30.323 MediaFileHandler: Missing file 6124dea5ef21fb765468b06e0145f43244aa036e8673fa323cc5a7f0.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '6124dea5ef21fb765468b06e0145f43244aa036e8673fa323cc5a7f0'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '6124dea5ef21fb765468b06e0145f43244aa036e8673fa323cc5a7f0.mp4'. (No media file with id '6124dea5ef21fb765468b06e0145f43244aa036e8673fa323cc5a7f0')
+2026-06-19 10:51:30.325 MediaFileHandler: Missing file f92362e0b7b8162ad9a2dc91e972aa950878e9c74a2c3104e68802bb.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f92362e0b7b8162ad9a2dc91e972aa950878e9c74a2c3104e68802bb'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f92362e0b7b8162ad9a2dc91e972aa950878e9c74a2c3104e68802bb.mp4'. (No media file with id 'f92362e0b7b8162ad9a2dc91e972aa950878e9c74a2c3104e68802bb')
+2026-06-19 10:51:30.328 MediaFileHandler: Missing file 554e4197d8e956e3770ce686f53181b4b5eeacd9f8ad8118b91a9653.mp4
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '554e4197d8e956e3770ce686f53181b4b5eeacd9f8ad8118b91a9653'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '554e4197d8e956e3770ce686f53181b4b5eeacd9f8ad8118b91a9653.mp4'. (No media file with id '554e4197d8e956e3770ce686f53181b4b5eeacd9f8ad8118b91a9653')
+2026-06-19 10:57:42.359 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 11:00:27.278 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 11:00:27.305 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 11:00:27.306 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 11:00:27.306 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 11:00:27.306 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 11:00:27.307 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 14:02:06.373 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 14:17:47.343 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 14:17:47.356 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 14:17:47.358 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 14:17:47.358 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 14:17:47.360 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 14:17:47.361 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 14:36:34.235 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 15:41:12.997 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-19 15:41:13.676 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.

@@ -842,7 +842,9 @@ def gpu_batch_worker():
     Ce design évite les conflits GPU entre threads et maximise l'utilisation
     du GPU en regroupant les inférences.
     """
+    cycle_count = 0
     while True:
+        cycle_start = time.time()
         batch    = {}
         deadline = time.time() + BATCH_TIMEOUT_SECS
         while time.time() < deadline:
@@ -854,6 +856,7 @@ def gpu_batch_worker():
             if len(batch) >= len(CAMERAS):
                 break
             time.sleep(0.005)
+        collect_duration = time.time() - cycle_start
 
         if not batch:
             continue
@@ -866,7 +869,9 @@ def gpu_batch_worker():
 
         try:
             with torch.no_grad():
+                t0 = time.time()
                 radar_results = model_radar.predict(frames, verbose=False, conf=0.15, imgsz=416, half=True)
+                radar_time = time.time() - t0
         except Exception as e:
             print(f"[GPU] ❌ Erreur Radar batch : {e}")
             for cam_id in cam_ids:
@@ -912,14 +917,25 @@ def gpu_batch_worker():
             radar_data[cam_id] = persons_this_cam
 
         spec_by_idx = {}
+        spec_time   = 0.0
         if all_crops:
             try:
                 with torch.no_grad():
+                    t1 = time.time()
                     spec_results = model_specialist.predict(all_crops, verbose=False, conf=0.15, half=True)
+                    spec_time = time.time() - t1
                 for idx, res in enumerate(spec_results):
                     spec_by_idx[idx] = res
             except Exception as e:
                 print(f"[GPU] ❌ Erreur Spécialiste : {e}")
+
+        cycle_count += 1
+        total_cycle = time.time() - cycle_start
+        if cycle_count % 50 == 0:
+            _log("GPU", "DEBUG",
+                 f"Batch={len(batch)}/{len(CAMERAS)} | Collecte={collect_duration*1000:.0f}ms | "
+                 f"Radar={radar_time*1000:.0f}ms | Spec={spec_time*1000:.0f}ms ({len(all_crops)} crops) | "
+                 f"Total={total_cycle*1000:.0f}ms")
 
         for i, cam_id in enumerate(cam_ids):
             persons = radar_data.get(cam_id, [])
@@ -1098,6 +1114,7 @@ class CameraWorker:
         self.height           = height
         self.fps              = fps
         self.frames_processed = 0
+        self.gpu_miss_count = 0
 
         self._record_stdin_lock   = threading.Lock()
         self._pre_alert_done      = threading.Event()
@@ -1841,6 +1858,10 @@ class CameraWorker:
                     persons_data    = gpu_result
                     detection_frame = clean_frame
             except queue.Empty:
+                self.gpu_miss_count += 1
+                if self.frames_processed % 200 == 0 and self.frames_processed > 0:
+                    miss_pct = 100 * self.gpu_miss_count / self.frames_processed
+                    _log(self.cam_id, "DEBUG", f"GPU miss: {self.gpu_miss_count}/{self.frames_processed} frames ({miss_pct:.1f}%)")
                 with frame_lock:
                     output_frames[self.cam_id] = annotated_frame
                     raw_frames[self.cam_id]    = clean_frame
@@ -2079,7 +2100,16 @@ class CameraWorker:
                             self.object_hold_counter.get(key, 0) >= FRAME_THRESHOLD
                             and self.hold_streak.get(a_id, 0) >= HOLD_STREAK_THRESHOLD
                         )
-                        is_held = article_held_by_detection and article_held_by_streak
+
+                        if article_held_by_detection and article_held_by_streak and not self._was_hand_near_article(a_center, p_id=p_id):
+                            if DEBUG_LOGS:
+                                _log(self.cam_id, "DEBUG", f"[FILTRE ATTRIBUTION] Article {a_id} bloqué pour p_id={p_id} : pas de main proche")
+
+                        is_held = (
+                            article_held_by_detection
+                            and article_held_by_streak
+                            and self._was_hand_near_article(a_center, p_id=p_id)
+                        )
 
                         if is_held:
                             self.article_holder[a_id] = p_id 
@@ -2178,7 +2208,7 @@ class CameraWorker:
                 for (a_center, a_id, a_conf) in articles_pos:
                     if not is_point_in_box(a_center, p_box):
                         continue
-                    if self.hold_durations.get(a_id, 0) < FRAME_THRESHOLD:
+                    if self.object_hold_counter.get(f"article_{a_id}", 0) < FRAME_THRESHOLD:
                         continue
                     for b_center in bags_pos:
                         dist = math.hypot(a_center[0] - b_center[0], a_center[1] - b_center[1])
@@ -2251,7 +2281,7 @@ class CameraWorker:
                     del self.article_near_bag[a_id]
                     continue
 
-                if self.hold_durations.get(a_id, 0) == 0:
+                if self.object_hold_counter.get(f"article_{a_id}", 0) == 0:
                     if DEBUG_LOGS:
                         _log(self.cam_id, "DEBUG", f"[SAC] Article {a_id} jamais tenu → ignoré")
                     del self.article_near_bag[a_id]
