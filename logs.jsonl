@@ -51372,3 +51372,9 @@
 {"ts": "09:45:50", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=56ms | Radar=30ms | Spec=50ms (5 crops) | Total=136ms"}
 {"ts": "09:45:56", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=30ms | Spec=69ms (7 crops) | Total=105ms"}
 {"ts": "09:46:02", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=36ms | Radar=30ms | Spec=61ms (6 crops) | Total=128ms"}
+{"ts": "09:46:09", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=30ms | Spec=111ms (11 crops) | Total=147ms"}
+{"ts": "09:46:16", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=10ms | Radar=31ms | Spec=100ms (10 crops) | Total=142ms"}
+{"ts": "09:46:22", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=56ms | Radar=31ms | Spec=60ms (6 crops) | Total=148ms"}
+{"ts": "09:46:28", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=56ms | Radar=32ms | Spec=50ms (5 crops) | Total=139ms"}
+{"ts": "09:46:34", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=5/7 | Collecte=61ms | Radar=22ms | Spec=50ms (5 crops) | Total=134ms"}
+{"ts": "09:46:40", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=5/7 | Collecte=61ms | Radar=25ms | Spec=71ms (7 crops) | Total=157ms"}
