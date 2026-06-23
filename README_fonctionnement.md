@@ -22,6 +22,12 @@ Le système repose sur deux services qui tournent **automatiquement au démarrag
 
 ---
 
+## Accès au DATASET
+
+Se rendre sur le site https://app.roboflow.com et se connecter avec l'adresse email : `info.olivetdis@yahoo.com`
+
+---
+
 ## Commandes de diagnostic (via SSH)
 
 Se connecter en SSH sur la machine :
