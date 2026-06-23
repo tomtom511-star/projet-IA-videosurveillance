@@ -1,4 +1,4 @@
-# 🔒 Système de Détection de Vol — Documentation
+# 🔒 Système de Détection de Vol — Principe de fonctionnement
 
 ## Architecture
 

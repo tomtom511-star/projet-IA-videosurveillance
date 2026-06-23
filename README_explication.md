@@ -1,4 +1,4 @@
-# 🔒 Système de Détection de Vol Multi-Caméras - Leclairvoyant
+# 🔒 Système de Détection de Vol —  Explication du code
 
 > Système de surveillance intelligent capable de détecter automatiquement des vols en magasin via l'analyse vidéo en temps réel sur plusieurs caméras IP simultanées.
 

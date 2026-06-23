@@ -51378,3 +51378,243 @@
 {"ts": "09:46:28", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=56ms | Radar=32ms | Spec=50ms (5 crops) | Total=139ms"}
 {"ts": "09:46:34", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=5/7 | Collecte=61ms | Radar=22ms | Spec=50ms (5 crops) | Total=134ms"}
 {"ts": "09:46:40", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=5/7 | Collecte=61ms | Radar=25ms | Spec=71ms (7 crops) | Total=157ms"}
+{"ts": "09:46:46", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=76ms (8 crops) | Total=115ms"}
+{"ts": "09:46:52", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=30ms | Spec=70ms (7 crops) | Total=106ms"}
+{"ts": "09:46:58", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=41ms | Radar=29ms | Spec=49ms (5 crops) | Total=120ms"}
+{"ts": "09:47:05", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=30ms | Spec=87ms (9 crops) | Total=123ms"}
+{"ts": "09:47:11", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=10ms | Radar=31ms | Spec=63ms (6 crops) | Total=104ms"}
+{"ts": "09:47:17", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=79ms (8 crops) | Total=116ms"}
+{"ts": "09:47:24", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=30ms | Spec=69ms (7 crops) | Total=105ms"}
+{"ts": "09:47:30", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=103ms (10 crops) | Total=139ms"}
+{"ts": "09:47:36", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=25ms | Radar=30ms | Spec=61ms (6 crops) | Total=117ms"}
+{"ts": "09:47:42", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=26ms | Radar=32ms | Spec=71ms (7 crops) | Total=129ms"}
+{"ts": "09:47:49", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=32ms | Spec=107ms (11 crops) | Total=145ms"}
+{"ts": "09:47:57", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=128ms (13 crops) | Total=165ms"}
+{"ts": "09:48:04", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=81ms (8 crops) | Total=118ms"}
+{"ts": "09:48:05", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "Article 69 | Streak=16/20 | Consec=21/12 | Hold=0 | ConfMoy=0.48 | Absent=0/24"}
+{"ts": "09:48:06", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "[FILTRE ATTRIBUTION] Article 71 bloqué pour p_id=460 : pas de main proche"}
+{"ts": "09:48:06", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "[FILTRE ATTRIBUTION] Article 71 bloqué pour p_id=460 : pas de main proche"}
+{"ts": "09:48:06", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "[FILTRE ATTRIBUTION] Article 71 bloqué pour p_id=460 : pas de main proche"}
+{"ts": "09:48:11", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=32ms | Spec=80ms (8 crops) | Total=117ms"}
+{"ts": "09:48:16", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=28ms | Spec=49ms (5 crops) | Total=139ms"}
+{"ts": "09:48:23", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=33ms | Spec=74ms (7 crops) | Total=112ms"}
+{"ts": "09:48:27", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "Article 72 | Streak=10/20 | Consec=10/12 | Hold=0 | ConfMoy=0.68 | Absent=0/24"}
+{"ts": "09:48:29", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=15ms | Radar=40ms | Spec=49ms (5 crops) | Total=106ms"}
+{"ts": "09:48:35", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=90ms (9 crops) | Total=127ms"}
+{"ts": "09:48:42", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=71ms (7 crops) | Total=107ms"}
+{"ts": "09:48:48", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=31ms | Radar=30ms | Spec=57ms (6 crops) | Total=118ms"}
+{"ts": "09:48:55", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=25ms | Radar=30ms | Spec=52ms (5 crops) | Total=109ms"}
+{"ts": "09:49:00", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=3/7 | Collecte=61ms | Radar=14ms | Spec=0ms (0 crops) | Total=75ms"}
+{"ts": "09:49:06", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=5/7 | Collecte=61ms | Radar=23ms | Spec=31ms (3 crops) | Total=115ms"}
+{"ts": "09:49:07", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "FFmpeg : [in#0/rtsp @ 0x6410734eae00] Error during demuxing: Connection timed out"}
+{"ts": "09:49:07", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "FFmpeg : [in#0/rtsp @ 0x57d664f6de00] Error during demuxing: Connection timed out"}
+{"ts": "09:49:07", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:49:07", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:49:07", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:49:07", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:49:07", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:49:07", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:49:11", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=5/7 | Collecte=61ms | Radar=22ms | Spec=31ms (3 crops) | Total=115ms"}
+{"ts": "09:49:15", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "Watchdog : aucune frame depuis 5s"}
+{"ts": "09:49:15", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:49:15", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:49:15", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Watchdog : aucune frame depuis 5s"}
+{"ts": "09:49:15", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:49:15", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:49:15", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:49:15", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:49:17", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=5/7 | Collecte=61ms | Radar=23ms | Spec=49ms (5 crops) | Total=133ms"}
+{"ts": "09:49:23", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "FFmpeg : [in#0 @ 0x5984a172ee00] Error opening input: Connection timed out"}
+{"ts": "09:49:23", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:49:23", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Watchdog : aucune frame depuis 5s"}
+{"ts": "09:49:23", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:49:23", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:49:23", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=43ms | Spec=51ms (5 crops) | Total=157ms"}
+{"ts": "09:49:30", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=20ms | Radar=31ms | Spec=60ms (6 crops) | Total=113ms"}
+{"ts": "09:49:36", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=20ms | Radar=32ms | Spec=70ms (7 crops) | Total=123ms"}
+{"ts": "09:49:42", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=35ms | Radar=31ms | Spec=51ms (5 crops) | Total=118ms"}
+{"ts": "09:49:43", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 122 | Streak=8/20 | Consec=11/12 | Hold=0 | ConfMoy=0.66 | Absent=0/24"}
+{"ts": "09:49:46", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 123 | Streak=0/20 | Consec=0/12 | Hold=0 | ConfMoy=0.74 | Absent=1/24"}
+{"ts": "09:49:49", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=33ms | Spec=61ms (6 crops) | Total=100ms"}
+{"ts": "09:49:50", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 122 | Streak=1/20 | Consec=1/12 | Hold=0 | ConfMoy=0.63 | Absent=32/24"}
+{"ts": "09:49:50", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 123 | Streak=1/20 | Consec=1/12 | Hold=0 | ConfMoy=0.75 | Absent=12/24"}
+{"ts": "09:49:55", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=32ms | Spec=108ms (11 crops) | Total=145ms"}
+{"ts": "09:49:56", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "Article 73 | Streak=0/20 | Consec=1/12 | Hold=0 | ConfMoy=0.51 | Absent=114/24"}
+{"ts": "09:49:59", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 123 | Streak=2/20 | Consec=4/12 | Hold=0 | ConfMoy=0.62 | Absent=66/24"}
+{"ts": "09:49:59", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 126 | Streak=0/20 | Consec=0/12 | Hold=0 | ConfMoy=0.38 | Absent=0/24"}
+{"ts": "09:50:03", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=32ms | Spec=80ms (8 crops) | Total=118ms"}
+{"ts": "09:50:03", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 123 | Streak=13/20 | Consec=13/12 | Hold=0 | ConfMoy=0.56 | Absent=0/24"}
+{"ts": "09:50:03", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 125 | Streak=13/20 | Consec=16/12 | Hold=0 | ConfMoy=0.60 | Absent=0/24"}
+{"ts": "09:50:07", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 125 | Streak=11/20 | Consec=12/12 | Hold=0 | ConfMoy=0.58 | Absent=0/24"}
+{"ts": "09:50:07", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 123 | Streak=31/20 | Consec=34/12 | Hold=0 | ConfMoy=0.58 | Absent=4/24"}
+{"ts": "09:50:10", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=10ms | Radar=31ms | Spec=110ms (11 crops) | Total=152ms"}
+{"ts": "09:50:11", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 122 | Streak=11/20 | Consec=30/12 | Hold=0 | ConfMoy=0.51 | Absent=2/24"}
+{"ts": "09:50:11", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 124 | Streak=2/20 | Consec=3/12 | Hold=0 | ConfMoy=0.49 | Absent=0/24"}
+{"ts": "09:50:17", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=107ms (11 crops) | Total=144ms"}
+{"ts": "09:50:20", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 125 | Streak=4/20 | Consec=9/12 | Hold=0 | ConfMoy=0.54 | Absent=0/24"}
+{"ts": "09:50:24", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=30ms | Spec=120ms (12 crops) | Total=156ms"}
+{"ts": "09:50:25", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 127 | Streak=0/20 | Consec=0/12 | Hold=0 | ConfMoy=0.54 | Absent=70/24"}
+{"ts": "09:50:32", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=101ms (10 crops) | Total=138ms"}
+{"ts": "09:50:38", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 122 | Streak=2/20 | Consec=2/12 | Hold=0 | ConfMoy=0.39 | Absent=66/24"}
+{"ts": "09:50:39", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "[FILTRE ATTRIBUTION] Article 126 bloqué pour p_id=501 : pas de main proche"}
+{"ts": "09:50:39", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=30ms | Spec=73ms (7 crops) | Total=109ms"}
+{"ts": "09:50:42", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 126 | Streak=49/20 | Consec=42/12 | Hold=35 | ConfMoy=0.63 | Absent=0/24"}
+{"ts": "09:50:42", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 122 | Streak=12/20 | Consec=5/12 | Hold=0 | ConfMoy=0.34 | Absent=0/24"}
+{"ts": "09:50:46", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=35ms | Spec=79ms (8 crops) | Total=115ms"}
+{"ts": "09:50:46", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 129 | Streak=5/20 | Consec=9/12 | Hold=0 | ConfMoy=0.52 | Absent=0/24"}
+{"ts": "09:50:51", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "Article 73 | Streak=4/20 | Consec=6/12 | Hold=0 | ConfMoy=0.42 | Absent=1/24"}
+{"ts": "09:50:52", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=61ms (6 crops) | Total=98ms"}
+{"ts": "09:50:53", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 130 | Streak=24/20 | Consec=25/12 | Hold=5 | ConfMoy=0.44 | Absent=0/24"}
+{"ts": "09:50:54", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "[PASS2] Article 130 refusé : signature visuelle différente"}
+{"ts": "09:50:54", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "[PASS2] Article 126 refusé : signature visuelle différente"}
+{"ts": "09:50:58", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=33ms | Spec=102ms (10 crops) | Total=137ms"}
+{"ts": "09:51:03", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "Article 74 | Streak=1/20 | Consec=4/12 | Hold=0 | ConfMoy=0.35 | Absent=63/24"}
+{"ts": "09:51:04", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=25ms | Radar=30ms | Spec=70ms (7 crops) | Total=126ms"}
+{"ts": "09:51:10", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=20ms | Radar=30ms | Spec=68ms (7 crops) | Total=120ms"}
+{"ts": "09:51:17", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=10ms | Radar=30ms | Spec=76ms (8 crops) | Total=117ms"}
+{"ts": "09:51:18", "date": "2026-06-23", "cam": "CAM_49", "level": "DEBUG", "msg": "[FILTRE FANTÔME] Article 25 ignoré (instable)"}
+{"ts": "09:51:18", "date": "2026-06-23", "cam": "CAM_49", "level": "DEBUG", "msg": "[FILTRE FANTÔME] Article 26 ignoré (instable)"}
+{"ts": "09:51:19", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 129 | Streak=0/20 | Consec=2/12 | Hold=0 | ConfMoy=0.59 | Absent=32/24"}
+{"ts": "09:51:23", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=30ms | Radar=30ms | Spec=58ms (6 crops) | Total=120ms"}
+{"ts": "09:51:29", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=27ms | Spec=59ms (6 crops) | Total=147ms"}
+{"ts": "09:51:35", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=27ms | Spec=59ms (6 crops) | Total=148ms"}
+{"ts": "09:51:38", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 132 | Streak=9/20 | Consec=12/12 | Hold=0 | ConfMoy=0.35 | Absent=0/24"}
+{"ts": "09:51:41", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=31ms | Radar=30ms | Spec=50ms (5 crops) | Total=111ms"}
+{"ts": "09:51:48", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=10ms | Radar=31ms | Spec=70ms (7 crops) | Total=112ms"}
+{"ts": "09:51:52", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "[PASS2] Article 129 refusé : signature visuelle différente"}
+{"ts": "09:51:53", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 134 | Streak=1/20 | Consec=1/12 | Hold=0 | ConfMoy=0.25 | Absent=0/24"}
+{"ts": "09:51:54", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=34ms | Spec=102ms (10 crops) | Total=137ms"}
+{"ts": "09:51:57", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 132 | Streak=0/20 | Consec=0/12 | Hold=0 | ConfMoy=0.47 | Absent=123/24"}
+{"ts": "09:51:57", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 129 | Streak=14/20 | Consec=21/12 | Hold=1 | ConfMoy=0.41 | Absent=0/24"}
+{"ts": "09:51:58", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "[FILTRE ATTRIBUTION] Article 129 bloqué pour p_id=549 : pas de main proche"}
+{"ts": "09:51:58", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "[FILTRE ATTRIBUTION] Article 129 bloqué pour p_id=549 : pas de main proche"}
+{"ts": "09:52:00", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=41ms | Radar=31ms | Spec=50ms (5 crops) | Total=122ms"}
+{"ts": "09:52:06", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=28ms | Spec=49ms (5 crops) | Total=138ms"}
+{"ts": "09:52:08", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 132 | Streak=0/20 | Consec=0/12 | Hold=0 | ConfMoy=0.52 | Absent=209/24"}
+{"ts": "09:52:11", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 129 | Streak=6/20 | Consec=8/12 | Hold=4 | ConfMoy=0.38 | Absent=4/24"}
+{"ts": "09:52:11", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 138 | Streak=8/20 | Consec=9/12 | Hold=0 | ConfMoy=0.44 | Absent=0/24"}
+{"ts": "09:52:13", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=51ms | Radar=32ms | Spec=61ms (6 crops) | Total=145ms"}
+{"ts": "09:52:19", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=27ms | Spec=55ms (5 crops) | Total=144ms"}
+{"ts": "09:52:25", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=20ms | Radar=31ms | Spec=68ms (7 crops) | Total=120ms"}
+{"ts": "09:52:30", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 140 | Streak=9/20 | Consec=18/12 | Hold=0 | ConfMoy=0.60 | Absent=2/24"}
+{"ts": "09:52:31", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=32ms | Spec=77ms (8 crops) | Total=115ms"}
+{"ts": "09:52:37", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=21ms | Radar=30ms | Spec=80ms (8 crops) | Total=131ms"}
+{"ts": "09:52:44", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=33ms | Spec=107ms (11 crops) | Total=141ms"}
+{"ts": "09:52:51", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=34ms | Spec=111ms (11 crops) | Total=145ms"}
+{"ts": "09:52:54", "date": "2026-06-23", "cam": "CAM_49", "level": "DEBUG", "msg": "Article 29 | Streak=1/20 | Consec=1/12 | Hold=0 | ConfMoy=0.48 | Absent=0/24"}
+{"ts": "09:52:58", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=35ms | Spec=105ms (11 crops) | Total=141ms"}
+{"ts": "09:53:03", "date": "2026-06-23", "cam": "CAM_49", "level": "DEBUG", "msg": "Article 29 | Streak=1/20 | Consec=1/12 | Hold=0 | ConfMoy=0.36 | Absent=29/24"}
+{"ts": "09:53:05", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=33ms | Spec=91ms (9 crops) | Total=125ms"}
+{"ts": "09:53:06", "date": "2026-06-23", "cam": "CAM_49", "level": "DEBUG", "msg": "Article 29 | Streak=2/20 | Consec=7/12 | Hold=0 | ConfMoy=0.34 | Absent=52/24"}
+{"ts": "09:53:11", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=33ms | Spec=70ms (7 crops) | Total=103ms"}
+{"ts": "09:53:17", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=32ms | Spec=99ms (10 crops) | Total=132ms"}
+{"ts": "09:53:24", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=32ms | Spec=93ms (9 crops) | Total=125ms"}
+{"ts": "09:53:30", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=32ms | Spec=100ms (10 crops) | Total=132ms"}
+{"ts": "09:53:37", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=36ms | Spec=98ms (10 crops) | Total=135ms"}
+{"ts": "09:53:44", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=0ms | Radar=33ms | Spec=72ms (7 crops) | Total=106ms"}
+{"ts": "09:53:50", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=10ms | Radar=33ms | Spec=51ms (5 crops) | Total=95ms"}
+{"ts": "09:53:56", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=20ms | Radar=32ms | Spec=77ms (8 crops) | Total=130ms"}
+{"ts": "09:54:01", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=3/7 | Collecte=61ms | Radar=17ms | Spec=21ms (2 crops) | Total=100ms"}
+{"ts": "09:54:06", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=4/7 | Collecte=61ms | Radar=18ms | Spec=7ms (1 crops) | Total=86ms"}
+{"ts": "09:54:06", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "FFmpeg : [in#0/rtsp @ 0x59a43e9afe00] Error during demuxing: Connection timed out"}
+{"ts": "09:54:06", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "FFmpeg : [in#0/rtsp @ 0x63f051bf4e00] Error during demuxing: Connection timed out"}
+{"ts": "09:54:06", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:54:06", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:54:06", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:54:06", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:54:06", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:54:06", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:54:11", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=3/7 | Collecte=61ms | Radar=15ms | Spec=7ms (1 crops) | Total=83ms"}
+{"ts": "09:54:14", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Watchdog : aucune frame depuis 5s"}
+{"ts": "09:54:14", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "Watchdog : aucune frame depuis 5s"}
+{"ts": "09:54:14", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:54:14", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:54:14", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:54:14", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:54:15", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:54:15", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:54:17", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=5/7 | Collecte=61ms | Radar=22ms | Spec=40ms (4 crops) | Total=124ms"}
+{"ts": "09:54:22", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Watchdog : aucune frame depuis 5s"}
+{"ts": "09:54:22", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:54:22", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:54:23", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:54:23", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=25ms | Spec=30ms (3 crops) | Total=116ms"}
+{"ts": "09:54:29", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=56ms | Radar=32ms | Spec=58ms (6 crops) | Total=146ms"}
+{"ts": "09:54:35", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=26ms | Radar=29ms | Spec=40ms (4 crops) | Total=95ms"}
+{"ts": "09:54:35", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "[FILTRE FANTÔME] Article 88 ignoré (instable)"}
+{"ts": "09:54:41", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=36ms | Radar=31ms | Spec=40ms (4 crops) | Total=108ms"}
+{"ts": "09:54:46", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=46ms | Radar=30ms | Spec=40ms (4 crops) | Total=116ms"}
+{"ts": "09:54:49", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "Article 88 | Streak=5/20 | Consec=6/12 | Hold=0 | ConfMoy=0.41 | Absent=66/24"}
+{"ts": "09:54:52", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=30ms | Spec=50ms (5 crops) | Total=87ms"}
+{"ts": "09:54:53", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "Article 88 | Streak=0/20 | Consec=2/12 | Hold=0 | ConfMoy=0.40 | Absent=94/24"}
+{"ts": "09:54:58", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=31ms | Radar=29ms | Spec=40ms (4 crops) | Total=100ms"}
+{"ts": "09:55:04", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=26ms | Spec=59ms (6 crops) | Total=147ms"}
+{"ts": "09:55:10", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=36ms | Radar=42ms | Spec=59ms (6 crops) | Total=138ms"}
+{"ts": "09:55:16", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=41ms | Radar=30ms | Spec=49ms (5 crops) | Total=121ms"}
+{"ts": "09:55:18", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "Article 88 | Streak=0/20 | Consec=1/12 | Hold=0 | ConfMoy=0.46 | Absent=190/24"}
+{"ts": "09:55:22", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=25ms | Radar=31ms | Spec=72ms (7 crops) | Total=128ms"}
+{"ts": "09:55:28", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=33ms | Spec=59ms (6 crops) | Total=98ms"}
+{"ts": "09:55:34", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=26ms | Radar=32ms | Spec=63ms (6 crops) | Total=121ms"}
+{"ts": "09:55:40", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=41ms | Radar=29ms | Spec=49ms (5 crops) | Total=120ms"}
+{"ts": "09:55:46", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=30ms | Spec=82ms (8 crops) | Total=117ms"}
+{"ts": "09:55:53", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=30ms | Spec=90ms (9 crops) | Total=126ms"}
+{"ts": "09:56:00", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=32ms | Spec=81ms (8 crops) | Total=119ms"}
+{"ts": "09:56:06", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=25ms | Radar=30ms | Spec=59ms (6 crops) | Total=116ms"}
+{"ts": "09:56:12", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=36ms | Radar=30ms | Spec=49ms (5 crops) | Total=116ms"}
+{"ts": "09:56:18", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=41ms | Radar=31ms | Spec=58ms (6 crops) | Total=130ms"}
+{"ts": "09:56:24", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=46ms | Radar=31ms | Spec=81ms (8 crops) | Total=159ms"}
+{"ts": "09:56:30", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=10ms | Radar=30ms | Spec=50ms (5 crops) | Total=91ms"}
+{"ts": "09:56:37", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=31ms | Radar=31ms | Spec=103ms (10 crops) | Total=166ms"}
+{"ts": "09:56:43", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=25ms | Radar=30ms | Spec=70ms (7 crops) | Total=127ms"}
+{"ts": "09:56:43", "date": "2026-06-23", "cam": "CAM_49", "level": "DEBUG", "msg": "[FILTRE FANTÔME] Article 34 ignoré (instable)"}
+{"ts": "09:56:49", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=36ms | Radar=32ms | Spec=50ms (5 crops) | Total=118ms"}
+{"ts": "09:56:55", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=15ms | Radar=30ms | Spec=69ms (7 crops) | Total=116ms"}
+{"ts": "09:57:01", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=36ms | Radar=30ms | Spec=50ms (5 crops) | Total=116ms"}
+{"ts": "09:57:07", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=30ms | Spec=50ms (5 crops) | Total=142ms"}
+{"ts": "09:57:13", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=31ms | Radar=41ms | Spec=59ms (6 crops) | Total=131ms"}
+{"ts": "09:57:15", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 159 | Streak=2/20 | Consec=4/12 | Hold=0 | ConfMoy=0.45 | Absent=7/24"}
+{"ts": "09:57:19", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=46ms | Radar=30ms | Spec=40ms (4 crops) | Total=116ms"}
+{"ts": "09:57:25", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=36ms | Radar=30ms | Spec=51ms (5 crops) | Total=117ms"}
+{"ts": "09:57:31", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=10ms | Radar=30ms | Spec=71ms (7 crops) | Total=111ms"}
+{"ts": "09:57:32", "date": "2026-06-23", "cam": "CAM_49", "level": "DEBUG", "msg": "[FILTRE FANTÔME] Article 37 ignoré (instable)"}
+{"ts": "09:57:37", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=89ms (9 crops) | Total=126ms"}
+{"ts": "09:57:41", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 161 | Streak=4/20 | Consec=8/12 | Hold=0 | ConfMoy=0.45 | Absent=0/24"}
+{"ts": "09:57:41", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 162 | Streak=3/20 | Consec=3/12 | Hold=0 | ConfMoy=0.39 | Absent=0/24"}
+{"ts": "09:57:41", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 159 | Streak=2/20 | Consec=3/12 | Hold=0 | ConfMoy=0.43 | Absent=0/24"}
+{"ts": "09:57:44", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=32ms | Spec=132ms (13 crops) | Total=170ms"}
+{"ts": "09:57:46", "date": "2026-06-23", "cam": "CAM_22", "level": "DEBUG", "msg": "Article 96 | Streak=4/20 | Consec=8/12 | Hold=0 | ConfMoy=0.55 | Absent=4/24"}
+{"ts": "09:57:48", "date": "2026-06-23", "cam": "CAM_49", "level": "DEBUG", "msg": "Article 38 | Streak=0/20 | Consec=0/12 | Hold=0 | ConfMoy=0.54 | Absent=47/24"}
+{"ts": "09:57:50", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=5ms | Radar=31ms | Spec=82ms (8 crops) | Total=118ms"}
+{"ts": "09:57:52", "date": "2026-06-23", "cam": "CAM_21", "level": "DEBUG", "msg": "Article 164 | Streak=6/20 | Consec=15/12 | Hold=0 | ConfMoy=0.53 | Absent=0/24"}
+{"ts": "09:57:56", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=36ms | Radar=30ms | Spec=49ms (5 crops) | Total=115ms"}
+{"ts": "09:58:02", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=52ms | Radar=32ms | Spec=43ms (4 crops) | Total=127ms"}
+{"ts": "09:58:08", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=51ms | Radar=31ms | Spec=40ms (4 crops) | Total=123ms"}
+{"ts": "09:58:14", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=31ms | Radar=32ms | Spec=49ms (5 crops) | Total=112ms"}
+{"ts": "09:58:19", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=27ms | Spec=32ms (3 crops) | Total=121ms"}
+{"ts": "09:58:25", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=27ms | Spec=50ms (5 crops) | Total=138ms"}
+{"ts": "09:58:31", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=6/7 | Collecte=61ms | Radar=27ms | Spec=41ms (4 crops) | Total=129ms"}
+{"ts": "09:58:37", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=36ms | Radar=30ms | Spec=50ms (5 crops) | Total=116ms"}
+{"ts": "09:58:43", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=36ms | Radar=32ms | Spec=41ms (4 crops) | Total=109ms"}
+{"ts": "09:58:49", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=10ms | Radar=38ms | Spec=78ms (8 crops) | Total=127ms"}
+{"ts": "09:58:55", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=7/7 | Collecte=10ms | Radar=32ms | Spec=62ms (6 crops) | Total=105ms"}
+{"ts": "09:58:59", "date": "2026-06-23", "cam": "CAM_23", "level": "DEBUG", "msg": "GPU miss: 174/15000 frames (1.2%)"}
+{"ts": "09:58:59", "date": "2026-06-23", "cam": "CAM_46", "level": "DEBUG", "msg": "GPU miss: 182/15000 frames (1.2%)"}
+{"ts": "09:59:01", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=5/7 | Collecte=61ms | Radar=22ms | Spec=22ms (2 crops) | Total=106ms"}
+{"ts": "09:59:05", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "FFmpeg : [in#0/rtsp @ 0x6127ee17ee00] Error during demuxing: Connection timed out"}
+{"ts": "09:59:05", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "FFmpeg : [in#0/rtsp @ 0x56085b8a9e00] Error during demuxing: Connection timed out"}
+{"ts": "09:59:05", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:59:05", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:59:05", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:59:05", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:59:06", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:59:06", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:59:07", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=3/7 | Collecte=61ms | Radar=15ms | Spec=0ms (0 crops) | Total=76ms"}
+{"ts": "09:59:13", "date": "2026-06-23", "cam": "GPU", "level": "DEBUG", "msg": "Batch=3/7 | Collecte=61ms | Radar=14ms | Spec=8ms (1 crops) | Total=84ms"}
+{"ts": "09:59:13", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "Watchdog : aucune frame depuis 5s"}
+{"ts": "09:59:13", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Watchdog : aucune frame depuis 5s"}
+{"ts": "09:59:13", "date": "2026-06-23", "cam": "CAM_22", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:59:13", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:59:13", "date": "2026-06-23", "cam": "CAM_21", "level": "ERROR", "msg": "Flux interrompu — pipe fermé"}
+{"ts": "09:59:13", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion RTSP dans 3s..."}
+{"ts": "09:59:14", "date": "2026-06-23", "cam": "CAM_22", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
+{"ts": "09:59:14", "date": "2026-06-23", "cam": "CAM_21", "level": "INFO", "msg": "Reset tracking après reconnexion RTSP"}
