@@ -1,3 +1,5 @@
+#======Code pour vérifier la bonne notation des classes========
+
 import cv2
 import os
 from pathlib import Path

@@ -1,3 +1,5 @@
+#====Code pour tester la synchronisation caméra=====
+
 from onvif import ONVIFCamera
 from datetime import datetime, timezone
 import os

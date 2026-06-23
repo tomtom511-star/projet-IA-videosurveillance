@@ -388991,3 +388991,1326 @@ streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '554e41
 2026-06-19 15:41:13.676 Please replace `st.components.v1.html` with `st.iframe`.
 
 `st.components.v1.html` will be removed after 2026-06-01.
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://127.0.0.1:8501
+
+2026-06-22 08:05:19.993 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 08:05:24.641 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 08:05:26.504 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 08:05:28.207 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 08:05:28.226 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 08:05:28.841 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 08:05:28.842 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 08:05:28.843 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 08:05:28.843 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 08:05:28.844 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 08:05:32.956 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:38:08.194 Port 8501 is not available
+2026-06-22 15:39:02.565 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:39:07.158 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:39:08.838 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:39:10.264 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:39:10.283 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:39:10.292 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:39:10.293 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:39:10.294 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:39:10.294 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:39:10.295 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:39:12.300 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:52:57.632 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:52:58.913 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:52:59.208 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:53:04.021 The fragment with id 70ad3d958b66a48324795cda0f47e7ae does not exist anymore - it might have been removed during a preceding full-app rerun.
+2026-06-22 15:53:32.887 MediaFileHandler: Missing file d478f74e9fb0bcbbe402865dba60ca89689067186b0a991a6eaa9e29.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'd478f74e9fb0bcbbe402865dba60ca89689067186b0a991a6eaa9e29'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'd478f74e9fb0bcbbe402865dba60ca89689067186b0a991a6eaa9e29.csv'. (No media file with id 'd478f74e9fb0bcbbe402865dba60ca89689067186b0a991a6eaa9e29')
+2026-06-22 15:56:17.581 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:57:35.520 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:57:42.621 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:57:49.125 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:57:49.155 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:57:49.156 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:57:49.157 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:57:49.157 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:57:49.158 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:57:56.775 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:57:57.354 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+Task exception was never retrieved
+future: <Task finished name='Task-2173507' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173511' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173512' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173513' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173514' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173515' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173699' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173700' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173701' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173702' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173705' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173708' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173709' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173710' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173711' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173712' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173937' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173938' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173939' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173940' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173943' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173944' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173945' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173946' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173947' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2173948' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2174189' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2174190' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2174191' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2174192' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2174195' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2174211' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2174212' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2174213' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2174214' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+Task exception was never retrieved
+future: <Task finished name='Task-2174215' coro=<WebSocketProtocol13.write_message.<locals>.wrapper() done, defined at /home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py:1111> exception=WebSocketClosedError()>
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1113, in wrapper
+    await fut
+tornado.iostream.StreamClosedError: Stream is closed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/tornado/websocket.py", line 1115, in wrapper
+    raise WebSocketClosedError()
+tornado.websocket.WebSocketClosedError
+2026-06-22 15:58:15.892 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:20.735 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:22.497 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:23.846 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:23.865 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:23.874 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:23.875 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:23.875 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:23.875 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:23.876 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:25.394 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:25.995 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:31.638 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:33.640 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:34.108 MediaFileHandler: Missing file 219c73f210fabe7da03010c16e5935aa3fabe2037c736570bba616d3.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '219c73f210fabe7da03010c16e5935aa3fabe2037c736570bba616d3'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '219c73f210fabe7da03010c16e5935aa3fabe2037c736570bba616d3.csv'. (No media file with id '219c73f210fabe7da03010c16e5935aa3fabe2037c736570bba616d3')
+2026-06-22 15:58:36.750 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:42.154 MediaFileHandler: Missing file d84a9ae8e417297eaba05bc472758018f746482db6bc924eb5907b1e.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'd84a9ae8e417297eaba05bc472758018f746482db6bc924eb5907b1e'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'd84a9ae8e417297eaba05bc472758018f746482db6bc924eb5907b1e.csv'. (No media file with id 'd84a9ae8e417297eaba05bc472758018f746482db6bc924eb5907b1e')
+2026-06-22 15:58:42.426 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:50.750 MediaFileHandler: Missing file db2ce726e15aaba4d1fd5587642a9025cca089d3e6a7daae70d274b9.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'db2ce726e15aaba4d1fd5587642a9025cca089d3e6a7daae70d274b9'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'db2ce726e15aaba4d1fd5587642a9025cca089d3e6a7daae70d274b9.csv'. (No media file with id 'db2ce726e15aaba4d1fd5587642a9025cca089d3e6a7daae70d274b9')
+2026-06-22 15:58:51.081 MediaFileHandler: Missing file 625b4f6acf630787ab678855a85019524ae34d656d9f0eede21cdb76.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '625b4f6acf630787ab678855a85019524ae34d656d9f0eede21cdb76'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '625b4f6acf630787ab678855a85019524ae34d656d9f0eede21cdb76.csv'. (No media file with id '625b4f6acf630787ab678855a85019524ae34d656d9f0eede21cdb76')
+2026-06-22 15:58:51.354 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:58:55.841 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:59:00.995 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:59:01.725 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:59:06.503 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:59:13.876 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:59:15.867 MediaFileHandler: Missing file 33ced0c92ee3b59d830c8171746046ad349756fe28937ff9091bd134.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '33ced0c92ee3b59d830c8171746046ad349756fe28937ff9091bd134'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '33ced0c92ee3b59d830c8171746046ad349756fe28937ff9091bd134.csv'. (No media file with id '33ced0c92ee3b59d830c8171746046ad349756fe28937ff9091bd134')
+2026-06-22 15:59:22.252 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:59:23.983 MediaFileHandler: Missing file 01427983c09bef6266bbe236268c69597b38a7e70f8c5f7a747b65e3.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '01427983c09bef6266bbe236268c69597b38a7e70f8c5f7a747b65e3'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '01427983c09bef6266bbe236268c69597b38a7e70f8c5f7a747b65e3.csv'. (No media file with id '01427983c09bef6266bbe236268c69597b38a7e70f8c5f7a747b65e3')
+2026-06-22 15:59:24.423 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:59:34.565 MediaFileHandler: Missing file 1ecb9fc17ea73f4848ea7086139cf069b7553e8b979b650cf6da7831.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '1ecb9fc17ea73f4848ea7086139cf069b7553e8b979b650cf6da7831'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '1ecb9fc17ea73f4848ea7086139cf069b7553e8b979b650cf6da7831.csv'. (No media file with id '1ecb9fc17ea73f4848ea7086139cf069b7553e8b979b650cf6da7831')
+2026-06-22 15:59:35.406 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:59:38.354 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:59:42.418 MediaFileHandler: Missing file 88f83b051bc20fb4916e7b43246de735c523dc9c96688896e4436486.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '88f83b051bc20fb4916e7b43246de735c523dc9c96688896e4436486'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '88f83b051bc20fb4916e7b43246de735c523dc9c96688896e4436486.csv'. (No media file with id '88f83b051bc20fb4916e7b43246de735c523dc9c96688896e4436486')
+2026-06-22 15:59:42.708 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 15:59:49.197 MediaFileHandler: Missing file fc190d8e3783ca0f8763253d2997ec99eec20f9f0d21d5cd6240f2d8.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'fc190d8e3783ca0f8763253d2997ec99eec20f9f0d21d5cd6240f2d8'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'fc190d8e3783ca0f8763253d2997ec99eec20f9f0d21d5cd6240f2d8.csv'. (No media file with id 'fc190d8e3783ca0f8763253d2997ec99eec20f9f0d21d5cd6240f2d8')
+2026-06-22 15:59:59.714 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:00:02.012 MediaFileHandler: Missing file 928ea24f648d22beb04c554dbb15ff43e2e8d835d6374d123fa758e9.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '928ea24f648d22beb04c554dbb15ff43e2e8d835d6374d123fa758e9'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '928ea24f648d22beb04c554dbb15ff43e2e8d835d6374d123fa758e9.csv'. (No media file with id '928ea24f648d22beb04c554dbb15ff43e2e8d835d6374d123fa758e9')
+2026-06-22 16:00:02.391 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:00:10.633 MediaFileHandler: Missing file 79526791279a21df5607e3df3adca62e268ec7bb51074fc7ec17ae69.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '79526791279a21df5607e3df3adca62e268ec7bb51074fc7ec17ae69'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '79526791279a21df5607e3df3adca62e268ec7bb51074fc7ec17ae69.csv'. (No media file with id '79526791279a21df5607e3df3adca62e268ec7bb51074fc7ec17ae69')
+2026-06-22 16:00:11.281 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:00:16.048 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:00:27.831 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:00:39.548 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:00:41.672 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:00:47.353 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:00:47.673 MediaFileHandler: Missing file e496f042749cacb69fcb2985cb3b141ab2ed7b94bf0d404ffc009e41.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'e496f042749cacb69fcb2985cb3b141ab2ed7b94bf0d404ffc009e41'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'e496f042749cacb69fcb2985cb3b141ab2ed7b94bf0d404ffc009e41.csv'. (No media file with id 'e496f042749cacb69fcb2985cb3b141ab2ed7b94bf0d404ffc009e41')
+2026-06-22 16:01:00.955 MediaFileHandler: Missing file 1f10e1ffecccae18e96a6c23ffc2e37320fef9d8715cf6e9be855296.csv
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '1f10e1ffecccae18e96a6c23ffc2e37320fef9d8715cf6e9be855296'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '1f10e1ffecccae18e96a6c23ffc2e37320fef9d8715cf6e9be855296.csv'. (No media file with id '1f10e1ffecccae18e96a6c23ffc2e37320fef9d8715cf6e9be855296')
+2026-06-22 16:01:01.561 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:01:02.051 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:01:02.491 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-22 16:01:16.848 The fragment with id 70ad3d958b66a48324795cda0f47e7ae does not exist anymore - it might have been removed during a preceding full-app rerun.
+2026-06-22 16:14:36.258 MediaFileHandler: Missing file 496e2f06aae9eec30bd1fc6974a628a0a3acf287208ed5fba0056216.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '496e2f06aae9eec30bd1fc6974a628a0a3acf287208ed5fba0056216'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '496e2f06aae9eec30bd1fc6974a628a0a3acf287208ed5fba0056216.bin'. (No media file with id '496e2f06aae9eec30bd1fc6974a628a0a3acf287208ed5fba0056216')
+2026-06-22 16:14:45.938 MediaFileHandler: Missing file e3df75d02cc5124fa5c928ad6ed8bed6d2803bb04e96402e82e48849.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'e3df75d02cc5124fa5c928ad6ed8bed6d2803bb04e96402e82e48849'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'e3df75d02cc5124fa5c928ad6ed8bed6d2803bb04e96402e82e48849.bin'. (No media file with id 'e3df75d02cc5124fa5c928ad6ed8bed6d2803bb04e96402e82e48849')
+2026-06-22 17:23:13.775 MediaFileHandler: Missing file f8505eea90dafd3ba9bc0e1fced1d1eac4c2459ae73ef8ab21b0fdae.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f8505eea90dafd3ba9bc0e1fced1d1eac4c2459ae73ef8ab21b0fdae'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f8505eea90dafd3ba9bc0e1fced1d1eac4c2459ae73ef8ab21b0fdae.bin'. (No media file with id 'f8505eea90dafd3ba9bc0e1fced1d1eac4c2459ae73ef8ab21b0fdae')
+2026-06-22 17:23:33.803 MediaFileHandler: Missing file 27324d1a5b85b6a39dfdca1fb995ef172d33eb4a2c5cb827a42983b6.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '27324d1a5b85b6a39dfdca1fb995ef172d33eb4a2c5cb827a42983b6'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '27324d1a5b85b6a39dfdca1fb995ef172d33eb4a2c5cb827a42983b6.bin'. (No media file with id '27324d1a5b85b6a39dfdca1fb995ef172d33eb4a2c5cb827a42983b6')
+2026-06-22 17:23:33.858 MediaFileHandler: Missing file f8505eea90dafd3ba9bc0e1fced1d1eac4c2459ae73ef8ab21b0fdae.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f8505eea90dafd3ba9bc0e1fced1d1eac4c2459ae73ef8ab21b0fdae'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f8505eea90dafd3ba9bc0e1fced1d1eac4c2459ae73ef8ab21b0fdae.bin'. (No media file with id 'f8505eea90dafd3ba9bc0e1fced1d1eac4c2459ae73ef8ab21b0fdae')
+2026-06-22 17:38:03.178 MediaFileHandler: Missing file dcd9b5a35ccb59b7afce4efaa5c5ea5d9d22698c183868c34f0f27c7.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'dcd9b5a35ccb59b7afce4efaa5c5ea5d9d22698c183868c34f0f27c7'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'dcd9b5a35ccb59b7afce4efaa5c5ea5d9d22698c183868c34f0f27c7.bin'. (No media file with id 'dcd9b5a35ccb59b7afce4efaa5c5ea5d9d22698c183868c34f0f27c7')
+2026-06-22 17:38:03.178 MediaFileHandler: Missing file 75867423e394c6a4f95be531bfab23d737a1833369060dae36da6958.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '75867423e394c6a4f95be531bfab23d737a1833369060dae36da6958'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '75867423e394c6a4f95be531bfab23d737a1833369060dae36da6958.bin'. (No media file with id '75867423e394c6a4f95be531bfab23d737a1833369060dae36da6958')
+2026-06-22 17:38:03.376 MediaFileHandler: Missing file f06ba630cda5e67287124a432f632750b4b2ee36d5383b0fea007a3a.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'f06ba630cda5e67287124a432f632750b4b2ee36d5383b0fea007a3a'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'f06ba630cda5e67287124a432f632750b4b2ee36d5383b0fea007a3a.bin'. (No media file with id 'f06ba630cda5e67287124a432f632750b4b2ee36d5383b0fea007a3a')
+2026-06-22 17:38:17.464 MediaFileHandler: Missing file dcd9b5a35ccb59b7afce4efaa5c5ea5d9d22698c183868c34f0f27c7.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'dcd9b5a35ccb59b7afce4efaa5c5ea5d9d22698c183868c34f0f27c7'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'dcd9b5a35ccb59b7afce4efaa5c5ea5d9d22698c183868c34f0f27c7.bin'. (No media file with id 'dcd9b5a35ccb59b7afce4efaa5c5ea5d9d22698c183868c34f0f27c7')
+2026-06-22 17:38:17.514 MediaFileHandler: Missing file 75867423e394c6a4f95be531bfab23d737a1833369060dae36da6958.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '75867423e394c6a4f95be531bfab23d737a1833369060dae36da6958'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '75867423e394c6a4f95be531bfab23d737a1833369060dae36da6958.bin'. (No media file with id '75867423e394c6a4f95be531bfab23d737a1833369060dae36da6958')
+2026-06-22 18:27:41.075 MediaFileHandler: Missing file 7896d293e80e390f7a99b67d2d8380459b295067a4b6bc6af2171168.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '7896d293e80e390f7a99b67d2d8380459b295067a4b6bc6af2171168'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '7896d293e80e390f7a99b67d2d8380459b295067a4b6bc6af2171168.bin'. (No media file with id '7896d293e80e390f7a99b67d2d8380459b295067a4b6bc6af2171168')
+2026-06-22 18:27:41.075 MediaFileHandler: Missing file 1b0f5d4fd2318a9e0eb91eacdd2182644c7429bb3d5534e584193f02.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '1b0f5d4fd2318a9e0eb91eacdd2182644c7429bb3d5534e584193f02'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '1b0f5d4fd2318a9e0eb91eacdd2182644c7429bb3d5534e584193f02.bin'. (No media file with id '1b0f5d4fd2318a9e0eb91eacdd2182644c7429bb3d5534e584193f02')
+2026-06-22 18:27:41.242 MediaFileHandler: Missing file 7896d293e80e390f7a99b67d2d8380459b295067a4b6bc6af2171168.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '7896d293e80e390f7a99b67d2d8380459b295067a4b6bc6af2171168'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '7896d293e80e390f7a99b67d2d8380459b295067a4b6bc6af2171168.bin'. (No media file with id '7896d293e80e390f7a99b67d2d8380459b295067a4b6bc6af2171168')
+2026-06-22 18:27:55.462 MediaFileHandler: Missing file 1b0f5d4fd2318a9e0eb91eacdd2182644c7429bb3d5534e584193f02.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '1b0f5d4fd2318a9e0eb91eacdd2182644c7429bb3d5534e584193f02'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '1b0f5d4fd2318a9e0eb91eacdd2182644c7429bb3d5534e584193f02.bin'. (No media file with id '1b0f5d4fd2318a9e0eb91eacdd2182644c7429bb3d5534e584193f02')
+2026-06-22 20:18:24.469 MediaFileHandler: Missing file d92f5e3644167e3d2233626c95c8081cce8328250dbe0c6130e622c2.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'd92f5e3644167e3d2233626c95c8081cce8328250dbe0c6130e622c2'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'd92f5e3644167e3d2233626c95c8081cce8328250dbe0c6130e622c2.bin'. (No media file with id 'd92f5e3644167e3d2233626c95c8081cce8328250dbe0c6130e622c2')
+2026-06-22 20:18:24.495 MediaFileHandler: Missing file 22142b477bd1512b0172616fc593f1aeb9b4cbe0ef363409fd0ab9c2.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '22142b477bd1512b0172616fc593f1aeb9b4cbe0ef363409fd0ab9c2'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '22142b477bd1512b0172616fc593f1aeb9b4cbe0ef363409fd0ab9c2.bin'. (No media file with id '22142b477bd1512b0172616fc593f1aeb9b4cbe0ef363409fd0ab9c2')
+2026-06-22 20:18:24.777 MediaFileHandler: Missing file d92f5e3644167e3d2233626c95c8081cce8328250dbe0c6130e622c2.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'd92f5e3644167e3d2233626c95c8081cce8328250dbe0c6130e622c2'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'd92f5e3644167e3d2233626c95c8081cce8328250dbe0c6130e622c2.bin'. (No media file with id 'd92f5e3644167e3d2233626c95c8081cce8328250dbe0c6130e622c2')
+2026-06-22 20:18:40.418 MediaFileHandler: Missing file 22142b477bd1512b0172616fc593f1aeb9b4cbe0ef363409fd0ab9c2.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: '22142b477bd1512b0172616fc593f1aeb9b4cbe0ef363409fd0ab9c2'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename '22142b477bd1512b0172616fc593f1aeb9b4cbe0ef363409fd0ab9c2.bin'. (No media file with id '22142b477bd1512b0172616fc593f1aeb9b4cbe0ef363409fd0ab9c2')
+2026-06-23 07:39:38.413 MediaFileHandler: Missing file c8d586660f14598960109c467a4324f1802c7c37b61f3b54e24f4b25.bin
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 152, in get_file
+    return self._files_by_id[file_id]
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'c8d586660f14598960109c467a4324f1802c7c37b61f3b54e24f4b25'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/web/server/media_file_handler.py", line 95, in validate_absolute_path
+    self._storage.get_file(absolute_path)
+  File "/home/surveillance-ia/projet-IA-videosurveillance/venv/lib/python3.12/site-packages/streamlit/runtime/memory_media_file_storage.py", line 154, in get_file
+    raise MediaFileStorageError(
+streamlit.runtime.media_file_storage.MediaFileStorageError: Bad filename 'c8d586660f14598960109c467a4324f1802c7c37b61f3b54e24f4b25.bin'. (No media file with id 'c8d586660f14598960109c467a4324f1802c7c37b61f3b54e24f4b25')
+2026-06-23 08:35:09.076 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:35:20.523 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:35:24.526 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:35:24.602 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:35:24.623 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:35:24.635 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:35:24.635 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:35:24.636 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:35:24.636 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:35:24.637 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:35:36.638 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:38:52.680 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:39:02.692 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:39:06.224 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:39:06.314 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:39:06.336 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:39:06.347 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:39:06.347 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:39:06.348 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:39:06.348 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:39:06.349 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:39:10.639 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:51:06.933 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:51:11.739 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:51:15.042 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:51:15.113 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:51:15.135 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:51:15.146 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:51:15.147 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:51:15.147 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:51:15.148 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:51:15.148 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:59:44.573 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:59:50.427 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:59:53.229 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:59:53.347 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:59:53.366 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:59:53.377 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:59:53.378 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:59:53.378 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:59:53.379 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 08:59:53.379 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+2026-06-23 09:00:16.895 Please replace `st.components.v1.html` with `st.iframe`.
+
+`st.components.v1.html` will be removed after 2026-06-01.
+  Stopping...

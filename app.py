@@ -1,3 +1,5 @@
+#========INTERFACE STREAMLIT (la vue)==========
+
 import streamlit as st  # Interface web Streamlit
 import json  # Lecture / écriture JSON (alertes)
 import os  # Gestion fichiers système
@@ -784,6 +786,27 @@ def gestion_suspicions_fragment():
         st.markdown("---")
         st.markdown("<div style='color:white;font-size:0.85rem;opacity:0.7;'>✅ Aucune suspicion active</div>", unsafe_allow_html=True)
 
+    # ── Bouton Son ── 
+    st.markdown("---")
+    try:
+        sound_resp = requests.get("http://192.168.0.97:5000/sound/status", timeout=1)
+        sound_on = sound_resp.json().get("enabled", True)
+    except Exception:
+        sound_on = None
+
+    if sound_on is None:
+        st.markdown("<div style='color:white;font-size:0.85rem;opacity:0.5;'>🔇 Son indisponible</div>", unsafe_allow_html=True)
+    else:
+        label = "🔊 Son ON" if sound_on else "🔇 Son OFF"
+        st.markdown(f"<div style='color:white;font-size:0.85rem;margin-bottom:6px;'>{label}</div>", unsafe_allow_html=True)
+        if st.button("Basculer le son", key="toggle_sound_btn", use_container_width=True):
+            try:
+                requests.post("http://192.168.0.97:5000/sound/toggle", timeout=1)
+                # Force la relecture depuis Flask au prochain cycle
+                st.session_state.sound_status_ts = 0  # ← expire le cache immédiatement
+                st.rerun(scope="fragment")
+            except Exception:
+                st.warning("Serveur injoignable")
 
 with st.sidebar:
     gestion_suspicions_fragment()

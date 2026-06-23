@@ -1,26 +1,27 @@
-import os
+#=========LOGIQUE DU CODE (le cerveau)============
+
+import os  # Gestion des variables d'environnement et des chemins de fichiers (dossiers, existence de fichiers, stats disque)
 
 # ==========================================
 # CONFIGURATION GPU
 # ==========================================
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-os.environ["YOLO_VERBOSE"] = "False"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"   # Force PyTorch et YOLO à n'utiliser que le GPU 0 (la carte NVIDIA du Z2)
+os.environ["YOLO_VERBOSE"] = "False"        # Désactive les logs verbeux d'Ultralytics à chaque inférence (évite de polluer la console)
 
-
-from ultralytics import YOLO
-import cv2
-import math
-import json
-import signal
-import numpy as np
-import subprocess
-from datetime import datetime
-import time
-import torch
-from collections import deque
-import queue
-from flask import Flask, Response, request, jsonify
-import threading
+from ultralytics import YOLO   # Framework de détection d'objets — charge et exécute les modèles radar et spécialiste (.pt)
+import cv2                     # OpenCV — lecture/écriture d'images, dessin des bounding boxes, encodage JPEG pour le flux MJPEG
+import math                    # Fonctions mathématiques (hypot pour les distances pixel, ceil pour la purge disque)
+import json                    # Sérialisation/désérialisation JSON — lecture et écriture des fichiers alerts.jsonl et logs.jsonl
+import signal                  # Capture du signal SIGINT (Ctrl+C) pour déclencher l'arrêt propre des enregistrements FFmpeg
+import numpy as np             # Tableaux numériques — conversion des frames brutes FFmpeg en matrices image, génération des sons pygame
+import subprocess              # Lancement des processus FFmpeg en sous-processus (lecture RTSP et encodage des clips d'alerte)
+from datetime import datetime  # Horodatage des alertes, logs et noms de fichiers de clips
+import time                    # Timestamps flottants (time.time()) pour mesurer les durées (elapsed, cooldown, timeouts)
+import torch                   # PyTorch — backend GPU pour les inférences YOLO, vérification CUDA, optimisation cudnn
+from collections import deque  # File circulaire — pré-buffer vidéo (BEFORE_ALERT_SECS frames), historique positions et mains
+import queue                   # Queues thread-safe — communication entre les threads caméra, GPU et les workers (result_queues, _sound_q)
+from flask import Flask, Response, request, jsonify  # Serveur web léger — expose les flux MJPEG, les endpoints /alerts /logs /suspicions /sound
+import threading               # Threads Python — un thread par caméra (reader + worker), thread GPU centralisé, thread son, watchdog FFmpeg
 
 
 
@@ -624,7 +625,11 @@ def sound_status():
     with sound_lock:
         state = sound_enabled
     return jsonify({"enabled": state})
-
+    
+@app.route("/sound/toggle", methods=["POST"])
+def sound_toggle():
+    state = toggle_sound()
+    return jsonify({"enabled": state})
 
 
 def start_server():
@@ -1847,7 +1852,7 @@ class CameraWorker:
 
             # ── Récupération résultats GPU ──
             try:
-                gpu_result = result_queues[self.cam_id].get(timeout=0.15)
+                gpu_result = result_queues[self.cam_id].get(timeout=0.20)
                         
                 if isinstance(gpu_result, tuple) and len(gpu_result) == 2:
                     persons_data, synced_frame = gpu_result
@@ -2265,7 +2270,7 @@ class CameraWorker:
 
                 data["frames_gone"] = data.get("frames_gone", 0) + 1
 
-                if data["frames_gone"] < 4:
+                if data["frames_gone"] < 12:
                     continue
 
                 if data["frames_near_bag"] < SAC_PROXIMITY_FRAMES_MIN:

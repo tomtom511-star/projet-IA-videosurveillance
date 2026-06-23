@@ -11,12 +11,12 @@ Détecter uniquement les personnes sur le flux grand angle pour définir les zon
 
 ## 🗂️ Roboflow :
 
-Upload des images "grand angle" de ta caméra.
+J'upload des images "grand angle" de ma caméra.
 
 Annotation : tout annoter sur le dataset général (article, mains, sacs, et personnes).
 
 Génération du dataset :  
-Augmentation : Pour simuler les conditions réelles, ajoute les filtres :
+Augmentation : Pour simuler les conditions réelles, on ajoute les filtres :
 
 - Noise (Bruit) : Simule le grain des caméras de nuit (+3%)
 - Blur (Flou) : Simule les mouvements rapides (1.5px)

@@ -1,3 +1,6 @@
+#=======Code pour séparer les images annotées 80% train 20% valid==========
+
+
 import os
 import random
 import shutil

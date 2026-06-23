@@ -15,6 +15,8 @@ ATTENTION : bien changer la ligne 14 par le bon chemin de la vidéo
 
 On lance dans le terminal : `python3 frame.py`
 
+Ou alors on prend directement des captures manuelles directement sur l'interface si on voit des frames intéressantes ! 
+
 ---
 
 ## 🧠 ÉTAPE 2 : Mise à jour du Dataset Global (Radar)
@@ -47,7 +49,7 @@ Pour tester que cela fonctionne on lance le script verif.py (ATTENTION: changer 
 `python3 verif.py`
 Cela va nous donner une image annotée dans le fichier global du projet, vérifier que c'est bien annoter (classes valides)
 
-Ensuite va dans le dossier du modèle spécialiste:
+Ensuite on va dans le dossier du modèle spécialiste:
 `cd Dataset_Specialiste_vX`
 
 Puis on crée les dossiers pour séparer les données (valid et train):

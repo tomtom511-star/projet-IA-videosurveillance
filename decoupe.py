@@ -1,3 +1,5 @@
+#========Code pour découper des crops autour des personne spour créer le dataset spécialist qui hérite du global=============
+
 import cv2
 import os
 from pathlib import Path
