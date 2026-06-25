@@ -387,6 +387,23 @@ from collections import deque as _deque
 
 log_buffer      = _deque(maxlen=2000)
 log_buffer_lock = threading.Lock()
+
+# ── SSE clients ──
+_sse_clients      = []
+_sse_clients_lock = threading.Lock()
+
+def _push_sse_event(data: dict):
+    msg = f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+    with _sse_clients_lock:
+        dead = []
+        for q in _sse_clients:
+            try:
+                q.put_nowait(msg)
+            except Exception:
+                dead.append(q)
+        for q in dead:
+            _sse_clients.remove(q)
+
 # RAM + disque en temps réel
 LOGS_DISK_FILE     = "logs.jsonl"
 LOGS_MAX_LINES     = 50_000
@@ -434,6 +451,8 @@ def _log(cam_id: str, level: str, message: str):
         with open(LOGS_DISK_FILE, "a") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
         _rotate_logs_if_needed()
+    if level in ("ALERT", "INFO"):
+        _push_sse_event({"type": "log", "entry": entry})
     if DEBUG_LOGS:
         print(f"[{cam_id}] [{level}] {message}")
 
@@ -631,6 +650,44 @@ def sound_toggle():
     state = toggle_sound()
     return jsonify({"enabled": state})
 
+@app.route("/stream")
+def sse_stream():
+    import queue as _q
+    def generate():
+        q = _q.Queue(maxsize=50)
+        with _sse_clients_lock:
+            _sse_clients.append(q)
+        try:
+            # État initial
+            try:
+                with open(ALERT_FILE, "r") as f:
+                    pending = sum(
+                        1 for line in f
+                        if line.strip() and
+                        json.loads(line).get("label") not in ("VP", "FP")
+                    )
+            except Exception:
+                pending = 0
+            yield f"data: {json.dumps({'type':'init','pending_alerts':pending})}\n\n"
+            while True:
+                try:
+                    msg = q.get(timeout=25)
+                    yield msg
+                except _q.Empty:
+                    yield "data: {\"type\":\"heartbeat\"}\n\n"
+        except GeneratorExit:
+            with _sse_clients_lock:
+                try:
+                    _sse_clients.remove(q)
+                except ValueError:
+                    pass
+
+    return Response(
+        generate(),
+        mimetype="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"}
+    )
+
 
 def start_server():
     """
@@ -714,6 +771,7 @@ def append_alert_jsonl(alert_dict: dict):
     with alerts_file_lock:
         with open(ALERT_FILE, "a") as f:
             f.write(json.dumps(alert_dict, ensure_ascii=False) + "\n")
+            _push_sse_event({"type": "new_alert", "alert": alert_dict})
 
 
 # ==========================================
@@ -799,7 +857,9 @@ def purge_old_clips():
     """
     cutoff = time.time() - (CLIP_RETENTION_DAYS * 86400)
     total_deleted = total_freed = 0
-    for folder in [alert_vid_dir, raw_dir]:
+    archive_dir     = os.path.join("alert_clips", "archives")
+    archive_raw_dir = os.path.join("alert_clips", "archives", "raw")
+    for folder in [alert_vid_dir, raw_dir, archive_dir, archive_raw_dir]:
         if not os.path.isdir(folder):
             continue
         for filename in os.listdir(folder):
@@ -936,11 +996,21 @@ def gpu_batch_worker():
 
         cycle_count += 1
         total_cycle = time.time() - cycle_start
-        if cycle_count % 50 == 0:
-            _log("GPU", "DEBUG",
-                 f"Batch={len(batch)}/{len(CAMERAS)} | Collecte={collect_duration*1000:.0f}ms | "
-                 f"Radar={radar_time*1000:.0f}ms | Spec={spec_time*1000:.0f}ms ({len(all_crops)} crops) | "
-                 f"Total={total_cycle*1000:.0f}ms")
+
+
+        #======================
+        #    LOG GPU
+        #======================
+
+        #if cycle_count % 50 == 0:
+            #_log("GPU", "DEBUG",
+                #f"[Cycle GPU #{cycle_count}] "
+                #f"Caméras dans le batch : {len(batch)}/{len(CAMERAS)} | "
+                #f"Collecte des frames : {collect_duration*1000:.0f} ms | "
+                #f"Détection personnes (modèle Radar) : {radar_time*1000:.0f} ms | "
+                #f"Détection objets/mains/sacs (modèle Spécialiste) : {spec_time*1000:.0f} ms "
+                #f"sur {len(all_crops)} zones découpées | "
+                #f"Durée totale du cycle GPU : {total_cycle*1000:.0f} ms")
 
         for i, cam_id in enumerate(cam_ids):
             persons = radar_data.get(cam_id, [])
@@ -1032,7 +1102,7 @@ class FFmpegReader:
                     if stop_watchdog.is_set():
                         break
                     if time.time() - last_frame_time[0] > 5:
-                        _log(self.cam_id, "ERROR", "Watchdog : aucune frame depuis 5s")
+                        _log(self.cam_id, "ERROR", "Caméra ne répond plus depuis 5s — reconnexion forcée")
                         self.is_reconnecting = True
                         self.reconnect_event.set()
                         try:
@@ -1059,7 +1129,7 @@ class FFmpegReader:
                         continue
                     raw_bytes = read_exactly(self._process.stdout, self.frame_size)
                     if raw_bytes is None:
-                        _log(self.cam_id, "ERROR", "Flux interrompu — pipe fermé")
+                        _log(self.cam_id, "ERROR", "Flux vidéo interrompu — reconnexion en cours...")
                         self.reconnect_event.set()
                         break
                     last_frame_time[0]   = time.time()
@@ -1081,7 +1151,7 @@ class FFmpegReader:
                     pass
 
             if not self._stop_event.is_set():
-                _log(self.cam_id, "INFO", "Reconnexion RTSP dans 3s...")
+                _log(self.cam_id, "INFO", "Caméra déconnectée — nouvelle tentative dans 3s...")
                 time.sleep(3)
         print(f"[{self.cam_id}] FFmpegReader arrêté.")
 
@@ -1474,7 +1544,7 @@ class CameraWorker:
                         if bbox is not None and self.article_visual_signature.get(a_id):
                             if not self._is_same_article_visual(a_id, frame, bbox):
                                 _log(self.cam_id, "DEBUG",
-                                    f"[PASS2] Article {a_id} refusé : signature visuelle différente")
+                                    f"[SUIVI] Article #{a_id} — objet visuellement différent, pas de rattachement de suivi")
                                 continue  # visuellement différent → on ne rattache pas
                         extended_dist = dist
                         best_id       = a_id
@@ -1676,10 +1746,6 @@ class CameraWorker:
         (ils passent directement en alerte si confirmés).
         Les autres types (FLÂNERIE) sont publiés et expireront après SUSPICION_TTL.
         """
-        if type_vol in ("CORPS", "SAC"):
-            self._suspicion_logged[article_id] = True
-            play_sound("suspicion")
-            return
         with suspicions_lock:
             active_suspicions[self.cam_id] = {
                 "time":       datetime.now().strftime("%H:%M:%S"),
@@ -1687,10 +1753,7 @@ class CameraWorker:
                 "type":       type_vol,
                 "expires_at": time.time() + SUSPICION_TTL,
             }
-        # ── Son joué UNE SEULE FOIS : on vérifie le flag avant ──
         if not self._suspicion_logged.get(article_id, False):
-            if type_vol != "FLÂNERIE":
-                _log(self.cam_id, "ALERT", f"SUSPICION article {article_id} : VOL {type_vol} (score={score:.2f})")
             play_sound("suspicion")
         self._suspicion_logged[article_id] = True
 
@@ -1772,7 +1835,7 @@ class CameraWorker:
         self.hands_history.clear()
         self._suspicion_logged.clear()
         self._clear_suspicion()
-        _log(self.cam_id, "INFO", "Reset tracking après reconnexion RTSP")
+        _log(self.cam_id, "INFO", "Reconnexion réussie — remise à zéro du suivi")
 
     # ======================================================================
     # NETTOYAGE
@@ -2039,7 +2102,7 @@ class CameraWorker:
                     stable_articles_pos.append((a_center, a_id, a_conf))
                 else:
                     if DEBUG_LOGS and self.frames_processed % 30 == 0:
-                        _log(self.cam_id, "DEBUG", f"[FILTRE FANTÔME] Article {a_id} ignoré (instable)")
+                        _log(self.cam_id, "DEBUG", f"[FILTRE] Article #{a_id} — détection trop brève, probable faux positif YOLO")
 
             # On remplace la liste brute par la liste stabilisée
             articles_pos = stable_articles_pos
@@ -2056,7 +2119,7 @@ class CameraWorker:
                 self.last_known_scores[a_id]   = a_conf
                 cv2.putText(annotated_frame, f"ID:{a_id}",
                             (a_center[0] - 10, a_center[1] - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 1)
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 255), 2)
 
             trigger_alert        = False
             vol_type             = ""
@@ -2108,7 +2171,7 @@ class CameraWorker:
 
                         if article_held_by_detection and article_held_by_streak and not self._was_hand_near_article(a_center, p_id=p_id):
                             if DEBUG_LOGS:
-                                _log(self.cam_id, "DEBUG", f"[FILTRE ATTRIBUTION] Article {a_id} bloqué pour p_id={p_id} : pas de main proche")
+                                _log(self.cam_id, "DEBUG", f"[FILTRE] Article #{a_id} tenu mais aucune main détectée au contact — pas de suspicion")
 
                         is_held = (
                             article_held_by_detection
@@ -2122,7 +2185,7 @@ class CameraWorker:
                             mean_conf = sum(conf_history) / len(conf_history) if conf_history else 0.0
                             if mean_conf < HOLD_CONF_MIN:
                                 if DEBUG_LOGS and self.frames_processed % 30 == 0:
-                                    _log(self.cam_id, "DEBUG", f"[FILTRE A] Article {a_id} conf moy={mean_conf:.2f} < {HOLD_CONF_MIN}")
+                                    _log(self.cam_id, "DEBUG", f"[FILTRE] Article #{a_id} — confiance YOLO trop faible ({mean_conf:.0%}), ignoré")
                                 continue
 
                             current_active.append((a_id, a_center, a_conf))
@@ -2186,16 +2249,22 @@ class CameraWorker:
                     absent    = self.article_absence_frames.get(a_id, 0)
                     conf_hist = self.article_conf_history.get(a_id, deque())
                     mean_conf = sum(conf_hist) / len(conf_hist) if conf_hist else 0.0
-                    _log(self.cam_id, "DEBUG",
-                        f"Article {a_id} | Streak={streak}/{HOLD_STREAK_THRESHOLD} | "
-                        f"Consec={consec}/{ARTICLE_DETECTED_HOLD_THRESHOLD} | "
-                        f"Hold={hold_dur} | ConfMoy={mean_conf:.2f} | Absent={absent}/{MIN_DISAPPEARANCE_FRAMES}")
+                    if absent >= MIN_DISAPPEARANCE_FRAMES:
+                        _log(self.cam_id, "DEBUG",
+                            f"Article #{a_id} : disparu depuis {absent} images — sous surveillance active")
+                    elif hold_dur >= 12:
+                        _log(self.cam_id, "DEBUG",
+                            f"Article #{a_id} : tenu par une personne depuis {hold_dur} images (confiance: {mean_conf:.0%})")
+                    elif mean_conf >= HOLD_CONF_MIN:
+                        _log(self.cam_id, "DEBUG",
+                            f"Article #{a_id} : article en main détecté (confiance: {mean_conf:.0%}) — en attente de confirmation ({hold_dur}/12 frames)")
                 for a_id, data in self.suspect_disappearance.items():
                     elapsed   = current_time - data["start_time"]
                     hold_snap = self.hold_durations_snapshot.get(a_id, data["hold_frames"])
                     _log(self.cam_id, "DEBUG",
-                        f"[SUSPICION] Article {a_id} | elapsed={elapsed:.1f}s/{DISAPPEARANCE_TIMEOUT}s | "
-                        f"hold_snap={hold_snap} | last_score={data['last_score']:.2f} | p_id={data['p_id']}")
+                        f"SUSPICION CORPS — article #{a_id} caché depuis {elapsed:.0f}s "
+                        f"(alerte dans {max(0, DISAPPEARANCE_TIMEOUT - elapsed):.0f}s si pas de réapparition, "
+                        f"tenu {hold_snap} images)")
 
             # ══════════════════════════════════════════════════════════════
             # SCÉNARIO 2 : VOL DANS LE SAC
@@ -2258,7 +2327,7 @@ class CameraWorker:
                         continue
                 if current_time - data["start_time"] > data["frames_near_bag"] / self.fps + SAC_DISAPPEARANCE_TIMEOUT:
                     if DEBUG_LOGS:
-                        _log(self.cam_id, "DEBUG", f"[SAC] Timeout rapprochement article {a_id} → reset")
+                        _log(self.cam_id, "DEBUG", f"[FILTRE SAC] Article #{a_id} — rapprochement trop long sans disparition, suivi annulé")
                     del self.article_near_bag[a_id]
 
             # Phase 2 : article disparu → alerte SAC
@@ -2282,13 +2351,13 @@ class CameraWorker:
                 last_pos = self.last_known_articles.get(a_id)
                 if last_pos and not self._was_hand_near_article(last_pos, p_id=data["p_id"]):
                     if DEBUG_LOGS:
-                        _log(self.cam_id, "DEBUG", f"[SAC] Article {a_id} disparu sans contact de main → ignoré")
+                        _log(self.cam_id, "DEBUG", f"[FILTRE SAC] Article #{a_id} disparu sans contact de main préalable — pas de suspicion")
                     del self.article_near_bag[a_id]
                     continue
 
                 if self.object_hold_counter.get(f"article_{a_id}", 0) == 0:
                     if DEBUG_LOGS:
-                        _log(self.cam_id, "DEBUG", f"[SAC] Article {a_id} jamais tenu → ignoré")
+                        _log(self.cam_id, "DEBUG", f"[FILTRE SAC] Article #{a_id} — jamais tenu par une personne, ignoré")
                     del self.article_near_bag[a_id]
                     continue
 
@@ -2321,7 +2390,7 @@ class CameraWorker:
                     reapp = self.suspect_disappearance[a_id].get("reappearance_frames", 0) + 1
                     self.suspect_disappearance[a_id]["reappearance_frames"] = reapp
                     if reapp >= REAPPEARANCE_FRAMES_MIN:
-                        _log(self.cam_id, "INFO", f"Réapparition article {a_id} confirmée ({reapp}f) → suspicion annulée")
+                        _log(self.cam_id, "INFO", f"Article #{a_id} réapparu normalement — suspicion levée, aucun vol détecté")
                         del self.suspect_disappearance[a_id]
                         self.article_visual_signature.pop(a_id, None)
                         self.article_absence_frames[a_id] = 0
@@ -2344,8 +2413,7 @@ class CameraWorker:
                         if new_bbox is None:
                             continue
                         if self._is_same_article_visual(a_id, detection_frame, new_bbox):
-                            _log(self.cam_id, "INFO",
-                                f"[FIX H] Article {a_id} réapparu sous ID {new_a_id} → suspicion annulée")
+                            _log(self.cam_id, "INFO", f"Article #{a_id} repositionné — suspicion levée, aucun vol détecté")
                             self.hold_durations[new_a_id]          = self.hold_durations.get(a_id, 0)
                             self.article_alert_time[new_a_id]      = self.article_alert_time.get(a_id, 0)
                             self.article_visual_signature[new_a_id] = self.article_visual_signature.get(a_id, {})
@@ -2373,9 +2441,7 @@ class CameraWorker:
                         if new_id_age > frames_absent + 6:
                             continue
                         if self._is_same_article_visual(a_id, detection_frame, new_bbox):
-                            _log(self.cam_id, "INFO",
-                                f"[FIX B] Article {a_id} réapparu sous ID {new_a_id} "
-                                f"(tracker expiré) → suspicion annulée")
+                            _log(self.cam_id, "INFO", f"Article #{a_id} retrouvé — suspicion levée, aucun vol détecté")
                             self.hold_durations[new_a_id]           = self.hold_durations.get(a_id, 0)
                             self.article_alert_time[new_a_id]       = self.article_alert_time.get(a_id, 0)
                             self.article_visual_signature[new_a_id] = self.article_visual_signature.get(a_id, {})
@@ -2434,7 +2500,7 @@ class CameraWorker:
                             if dist_to_center > 0.7:
                                 if DEBUG_LOGS:
                                     _log(self.cam_id, "DEBUG",
-                                        f"[CORPS] Article {a_id} trop excentré (dist={dist_to_center:.2f}) → bras tendu ignoré")
+                                        f"[FILTRE CORPS] Article #{a_id} en bordure de personne — probablement porté à bout de bras, ignoré")
                                 continue
                             is_suspect_zone   = True
                             local_target_p_id = p_id
@@ -2446,7 +2512,7 @@ class CameraWorker:
                 # Filtre main APRÈS avoir trouvé la personne — maintenant p_id est connu
                 if not self._was_hand_near_article(last_pos, p_id=local_target_p_id):
                     if DEBUG_LOGS and self.frames_processed % 60 == 0:
-                        _log(self.cam_id, "DEBUG", f"[CORPS] Article {a_id} disparu sans main → ignoré")
+                        _log(self.cam_id, "DEBUG", f"[FILTRE CORPS] Article #{a_id} disparu sans contact de main préalable — pas de suspicion")
                     continue
 
 
@@ -2482,9 +2548,7 @@ class CameraWorker:
                             if self._is_same_article_visual(a_id, detection_frame, new_bbox):
                                 article_reappeared_as_same = True
                                 if DEBUG_LOGS:
-                                    _log(self.cam_id, "DEBUG",
-                                        f"[FIX P3] Article {a_id} → pivot détecté, "
-                                        f"même objet sous ID {new_a_id} (age={new_id_age}f) → pas de suspicion")
+                                    _log(self.cam_id, "DEBUG", f"[SUIVI] Article #{a_id} — simple pivotement de l'objet, pas de suspicion")
                                 break
 
                 if (is_suspect_zone
@@ -2519,7 +2583,7 @@ class CameraWorker:
                 )
                 if person_gone_at_creation:
                     _log(self.cam_id, "DEBUG",
-                        f"[CORPS] Article {a_id} annulé : personne {target_p_id} partie avec l'article")
+                        f"[FILTRE CORPS] Article #{a_id} : suspect et article sortis ensemble de la zone — surveillance terminée")
                     del self.suspect_disappearance[a_id]
                     self.hold_durations_snapshot[a_id] = 0
                     self._clear_suspicion(a_id)
@@ -2539,21 +2603,6 @@ class CameraWorker:
                         personne_partie = False
                         self.suspect_disappearance[a_id]["start_time"] = current_time  # reset timer
 
-                if (4.0 <= elapsed < DISAPPEARANCE_TIMEOUT
-                        and not self._suspicion_logged.get(a_id, False)
-                        and data["hold_frames"] > 12
-                        and time.time() - self.last_alert_time > ALERT_COOLDOWN):
-                    loitering_bonus = 0.25 if (
-                        target_p_id is not None
-                        and target_p_id in self.person_tracking
-                        and current_time - self.person_tracking[target_p_id]["first_seen"] > LOITERING_THRESHOLD
-                    ) else 0.0
-                    # [v9] Score basé sur conf YOLO + hold_duration
-                    hold_snapshot   = self.hold_durations_snapshot.get(a_id, data["hold_frames"])
-                    base_score      = float(0.4 * data["last_score"] + 0.6 * min(1.0, hold_snapshot / 60.0))
-                    suspicion_score = min(1.0, base_score + loitering_bonus)
-                    self._notify_suspicion(a_id, "CORPS", suspicion_score)
-
                 if elapsed >= DISAPPEARANCE_TIMEOUT or personne_partie:
                     last_alert_this_article = self.article_alert_time.get(a_id, 0)
                     if time.time() - last_alert_this_article > ALERT_COOLDOWN:
@@ -2570,14 +2619,12 @@ class CameraWorker:
                             if alert_score < ALERT_SCORE_MIN:
                                 if DEBUG_LOGS:
                                     _log(self.cam_id, "DEBUG",
-                                        f"[FILTRE D] CORPS article {a_id} bloqué : score={alert_score:.2f} < {ALERT_SCORE_MIN}")
-                                if not self._suspicion_logged.get(a_id, False):
-                                    self._notify_suspicion(a_id, "CORPS", alert_score)
+                                        f"[FILTRE CORPS] Article #{a_id} — confiance trop basse pour déclencher une alerte ({alert_score:.0%})")
                             else:
                                 # [v12 FIX I] Anti-doublon visuel
                                 if self._is_duplicate_alert(a_id, clean_frame, current_time):
                                     _log(self.cam_id, "INFO",
-                                        f"[FIX I] CORPS article {a_id} bloqué : doublon visuel")
+                                        f"[FILTRE CORPS] Article #{a_id} — doublon d'une alerte récente, ignoré")
                                     if a_id in self.suspect_disappearance:
                                         del self.suspect_disappearance[a_id]
                                     self.hold_durations[a_id] = 0
@@ -2598,7 +2645,7 @@ class CameraWorker:
                                         "timestamp": current_time,
                                     })
                                     if personne_partie and elapsed < DISAPPEARANCE_TIMEOUT:
-                                        _log(self.cam_id, "ALERT", f"ALERTE ANTICIPÉE : Suspect {target_p_id} sorti avec {a_id}")
+                                        _log(self.cam_id, "ALERT", f"🚨 ALERTE VOL CORPS — suspect sorti de la zone avec l'article (confiance: {alert_score:.0%})")
 
                     if a_id in self.suspect_disappearance:
                         del self.suspect_disappearance[a_id]
@@ -2611,7 +2658,7 @@ class CameraWorker:
             # ══════════════════════════════════════════════════════════════
             if trigger_alert:
                 self.zoom_target_id = target_p_id
-                _log(self.cam_id, "ALERT", f"ALERTE : VOL {vol_type} (score={alert_score:.2f})")
+                _log(self.cam_id, "ALERT", f"🚨 ALERTE VOL {vol_type} — (confiance IA: {alert_score:.0%})")
                 play_sound("alert")
                 self._clear_suspicion()
 

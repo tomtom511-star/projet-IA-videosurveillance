@@ -4,10 +4,12 @@ import streamlit as st  # Interface web Streamlit
 import json  # Lecture / écriture JSON (alertes)
 import os  # Gestion fichiers système
 from datetime import datetime, timedelta  # Gestion des heures
+from collections import deque
 import time
 import requests
 import streamlit.components.v1 as components  # Pour injecter le récepteur postMessage dans la page principale
-from streamlit_autorefresh import st_autorefresh # AUTO-REFRESH TOUTES LES 5 SECONDES (méthode propre)
+
+ARCHIVE_RETENTION_DAYS = 30 
 
 # IDENTIFIANTS ADMIN (À PROTÉGER EN PRODUCTION)
 
@@ -94,6 +96,18 @@ def destroy_session():
         st.session_state.server_sessions.pop(token_hash, None)
     st.session_state.pop("_auth_token", None)
     _delete_session_cookie()
+
+def load_stats():
+    if not os.path.exists("stats.jsonl"):
+        return []
+    stats = []
+    with open("stats.jsonl", "r") as f:
+        for line in f:
+            try:
+                stats.append(json.loads(line.strip()))
+            except:
+                pass
+    return stats
 
 # CONFIGURATION PAGE STREAMLIT
 
@@ -228,6 +242,18 @@ st.markdown("""
     div[data-testid="stButton"] > button p {
         color: inherit !important;
         font-weight: bold !important;
+    }
+    [data-testid="stMetricValue"] {
+        color: #0066b2 !important;
+        font-size: 1.8rem !important;
+    }
+    [data-testid="stMetricLabel"] {
+        color: #333 !important;
+        font-weight: normal !important;
+        font-size: 0.88rem !important;
+    }
+    [data-testid="stMetricDelta"] {
+        font-size: 0.82rem !important;
     }
 
 </style>
@@ -509,6 +535,71 @@ window.addEventListener('message', function(e) {
         ALL_CAMS = e.data.cams;
     }
 });
+
+// ══════════════════════════════════════════════════
+// SSE — connexion unique, mises à jour temps réel
+// ══════════════════════════════════════════════════
+(function() {
+    const evtSource = new EventSource("http://192.168.0.97:5000/stream");
+    const doc = window.parent.document;
+
+    evtSource.onmessage = function(e) {
+        try {
+            const data = JSON.parse(e.data);
+            if (data.type === "heartbeat") return;
+
+            // Mise à jour compteur alertes en attente
+            if (data.type === "init" || data.type === "new_alert") {
+                const metrics = doc.querySelectorAll('[data-testid="stMetricValue"]');
+                metrics.forEach(function(m) {
+                    const label = m.closest('[data-testid="stMetric"]')
+                                   ?.querySelector('[data-testid="stMetricLabel"]')
+                                   ?.innerText || "";
+                    if (label.includes("Alerte")) {
+                        if (data.type === "new_alert") {
+                            const current = parseInt(m.innerText) || 0;
+                            m.innerText = current + 1;
+                            m.style.color = "#FF0000";
+                            setTimeout(function() { m.style.color = ""; }, 3000);
+                        } else if (data.pending_alerts !== undefined) {
+                            m.innerText = data.pending_alerts;
+                        }
+                    }
+                });
+
+                // Clignotement titre onglet
+                if (data.type === "new_alert") {
+                    const original = doc.title;
+                    let blink = 0;
+                    const iv = setInterval(function() {
+                        doc.title = blink % 2 === 0 ? "🚨 NOUVELLE ALERTE !" : original;
+                        blink++;
+                        if (blink > 8) { clearInterval(iv); doc.title = original; }
+                    }, 600);
+                }
+            }
+
+            // Bannière flash sur alerte critique
+            if (data.type === "log" && data.entry && data.entry.level === "ALERT") {
+                const banner = doc.createElement("div");
+                banner.style.cssText = [
+                    "position:fixed", "top:20px", "right:20px",
+                    "background:#FF0000", "color:white",
+                    "padding:12px 20px", "border-radius:10px",
+                    "font-weight:bold", "font-size:1rem",
+                    "z-index:99999", "box-shadow:0 4px 15px rgba(0,0,0,0.4)"
+                ].join(";");
+                banner.innerText = "🚨 " + data.entry.cam + " — " + data.entry.msg;
+                doc.body.appendChild(banner);
+                setTimeout(function() { banner.remove(); }, 6000);
+            }
+        } catch(err) {}
+    };
+
+    evtSource.onerror = function() {};
+})();
+
+
 // Initialisation immédiate : crée l'overlay dès le chargement
 // pour que le listener clavier soit prêt avant même le premier clic
 ensureOverlay();
@@ -562,68 +653,51 @@ def load_suspicions():
 
 
 # SUPPRESSION D'ALERTE
-
 def delete_alert(index_to_remove, video_path, raw_path=None):
-    """Supprime alerte + vidéos associées (IA et RAW)"""
+    # Suppression des fichiers vidéo
+    for path in [video_path, raw_path]:
+        if path and os.path.exists(path):
+            try:
+                os.remove(path)
+            except:
+                pass
 
-    # Suppression de la vidéo IA
-    if video_path and os.path.exists(video_path):  
-        try:
-            os.remove(video_path)  
-        except:
-            pass  
-
-    # Suppression de la vidéo RAW sans IA si elle existe
-    if raw_path and os.path.exists(raw_path):
-        try:
-            os.remove(raw_path)
-        except:
-            pass
-
-    alerts = load_alerts()  # Recharge toutes alertes
-
-    if 0 <= index_to_remove < len(alerts):  # Vérifie index valide
-        alerts.pop(index_to_remove)  # Supprime alerte
-
-        with open("alerts.jsonl", "w") as f:  # Réécrit JSONL (1 ligne par alerte)
+    # Suppression de la ligne dans le JSONL
+    alerts = load_alerts()
+    if 0 <= index_to_remove < len(alerts):
+        alert_supprimee = alerts.pop(index_to_remove)
+        with open("alerts.jsonl", "w") as f:
             for alert in alerts:
                 f.write(json.dumps(alert, ensure_ascii=False) + "\n")
 
-    st.rerun()  # Recharge interface
+        # Incrément compteur FP (append rapide, pas de réécriture)
+        with open("stats.jsonl", "a") as f:
+            f.write(json.dumps({
+                "type": "FP",
+                "cam":  alert_supprimee.get("cam", "?"),
+                "vol_type": alert_supprimee.get("type", "?"),
+                "date": datetime.now().strftime("%Y-%m-%d"),
+                "time": datetime.now().strftime("%H:%M:%S"),
+            }, ensure_ascii=False) + "\n")
 
-def _classify_alert(index_to_classify, video_path, raw_path, label: str):
+    st.rerun(scope="fragment")
+
+def _archive_alert(index_to_archive, video_path, raw_path):
     """
-    Classe une alerte en Vrai Positif (VP) ou Faux Positif (FP).
-
-    COMPORTEMENT TOGGLE :
-    - Si l'alerte est déjà dans le dossier `label`, on ne fait rien de plus.
-    - Si elle était dans l'autre dossier (ex: FP → VP), on déplace les vidéos
-      depuis l'ancien dossier vers le nouveau.
-    - La vidéo reste visible dans l'interface (on met juste à jour le chemin).
-    - Le choix est mémorisé dans alerts.jsonl (champ "label").
-
-    Paramètres:
-        index_to_classify : index dans load_alerts()
-        video_path        : chemin actuel de la vidéo IA
-        raw_path          : chemin actuel de la vidéo RAW
-        label             : "VP" ou "FP" (cible)
+    VP confirmé : déplace les vidéos dans alert_clips/archives/
+    et marque l'alerte label=VP dans le JSONL.
+    L'alerte disparaît de l'interface (filtrée à l'affichage sur label).
     """
     import shutil
 
-    dest_dir_ia  = os.path.join("alert_clips", label)           # VP/  ou FP/
-    dest_dir_raw = os.path.join("alert_clips", label, "raw")    # VP/raw/  ou FP/raw/
+    dest_dir_ia  = os.path.join("alert_clips", "archives")
+    dest_dir_raw = os.path.join("alert_clips", "archives", "raw")
     os.makedirs(dest_dir_ia,  exist_ok=True)
     os.makedirs(dest_dir_raw, exist_ok=True)
 
     def _move(src, dest_dir):
-        """
-        Déplace le fichier src vers dest_dir.
-        Si le fichier est déjà dans dest_dir, rien à faire.
-        Retourne le nouveau chemin (ou l'ancien si échec/absent).
-        """
         if not src or not os.path.exists(src):
             return src
-        # Déjà dans le bon dossier → pas besoin de déplacer
         if os.path.dirname(os.path.abspath(src)) == os.path.abspath(dest_dir):
             return src
         dest = os.path.join(dest_dir, os.path.basename(src))
@@ -631,17 +705,16 @@ def _classify_alert(index_to_classify, video_path, raw_path, label: str):
             shutil.move(src, dest)
             return dest
         except Exception:
-            return src  # En cas d'erreur on conserve l'ancien chemin
+            return src
 
-    new_video_path = _move(video_path, dest_dir_ia)   # vidéo IA → VP/ ou FP/
-    new_raw_path   = _move(raw_path,   dest_dir_raw)  # vidéo RAW → VP/raw/ ou FP/raw/
+    new_video_path = _move(video_path, dest_dir_ia)
+    new_raw_path   = _move(raw_path,   dest_dir_raw)
 
-    # Mise à jour du JSONL : nouveaux chemins + label VP ou FP
     alerts = load_alerts()
-    if 0 <= index_to_classify < len(alerts):
-        alerts[index_to_classify]["label"]      = label
-        alerts[index_to_classify]["video_clip"] = new_video_path
-        alerts[index_to_classify]["video_raw"]  = new_raw_path
+    if 0 <= index_to_archive < len(alerts):
+        alerts[index_to_archive]["label"]      = "VP"
+        alerts[index_to_archive]["video_clip"] = new_video_path
+        alerts[index_to_archive]["video_raw"]  = new_raw_path
 
         with open("alerts.jsonl", "w") as f:
             for a in alerts:
@@ -702,12 +775,10 @@ alerts = load_alerts()  # Liste des alertes
 
 @st.fragment
 def gestion_suspicions_fragment():
-    # --- 1. LE REFRESH LOCAL ---
-    # On définit le refresh à l'intérieur : il ne fera "vibrer" que ce bloc
-    st_autorefresh(interval=5000, key="fragment_refresh")
     fresh_alerts = load_alerts()
-    alerts_count = len(load_alerts())
-    st.metric("Alertes", alerts_count)
+    all_alerts = load_alerts()
+    alerts_count = sum(1 for a in all_alerts if a.get("label") not in ("VP", "FP"))
+    st.metric("Alertes en attente", alerts_count)
 
     # --- 2. RÉCUPÉRATION DES DONNÉES ---
     # On appelle ta fonction (assure-toi qu'elle retourne bien le dict des suspicions)
@@ -814,11 +885,44 @@ with st.sidebar:
 @st.fragment
 def alertes_fragment():
 
-    st_autorefresh(interval=5000, key="alertes_refresh")
-
     alerts = load_alerts()
 
-    st.subheader("🚨 Historique des alertes")
+    col_r, col_i = st.columns([1, 5])
+    with col_r:
+        if st.button("🔄 Rafraîchir", key="manual_refresh"):
+            st.rerun(scope="fragment")
+    with col_i:
+        st.caption("Rafraîchissez manuellement pour voir les nouvelles alertes.")
+    
+    stats       = load_stats()
+    all_alerts  = load_alerts()
+
+    fp_total = sum(1 for s in stats if s.get("type") == "FP")
+    fp_corps = sum(1 for s in stats if s.get("type") == "FP" and s.get("vol_type") == "CORPS")
+    fp_sac   = sum(1 for s in stats if s.get("type") == "FP" and s.get("vol_type") == "SAC")
+
+    vp_total = sum(1 for a in all_alerts if a.get("label") == "VP")
+    vp_corps = sum(1 for a in all_alerts if a.get("label") == "VP" and a.get("type") == "CORPS")
+    vp_sac   = sum(1 for a in all_alerts if a.get("label") == "VP" and a.get("type") == "SAC")
+
+    total_classes  = vp_total + fp_total
+    precision_pct  = int(vp_total / total_classes * 100) if total_classes > 0 else 0
+    delta_prec     = f"{precision_pct - 50:+d}% vs hasard" if total_classes > 0 else None
+
+    st.markdown("#### 📊 Statistiques de détection")
+
+    col_vp1, col_vp2, col_vp3 = st.columns(3)
+    col_vp1.metric("✅ VP total (vols confirmés)", vp_total)
+    col_vp2.metric("✅ VP CORPS", vp_corps)
+    col_vp3.metric("✅ VP SAC", vp_sac)
+
+    col_fp1, col_fp2, col_fp3, col_prec = st.columns(4)
+    col_fp1.metric("❌ FP total (fausses alertes)", fp_total, delta=f"-{fp_total}" if fp_total else None, delta_color="inverse")
+    col_fp2.metric("❌ FP CORPS", fp_corps)
+    col_fp3.metric("❌ FP SAC", fp_sac)
+    col_prec.metric("🎯 Précision du système", f"{precision_pct}%", delta=delta_prec)
+
+    st.markdown("---")
 
     if not alerts:  # Si aucune alerte
         st.info("Aucune alerte")  # Message info
@@ -888,7 +992,8 @@ def alertes_fragment():
                     continue
             except:
                 pass
-
+        if alert.get("label") in ("VP", "FP"):
+            continue
         filtered.append(alert)
 
     st.write(f"**{len(filtered)} alertes**")  # compteur
@@ -969,82 +1074,32 @@ def alertes_fragment():
                     st.warning("Flux vidéo indisponible sur le disque")
 
             with col_actions:
-                st.markdown('<div style="margin-top: 15px;"></div>', unsafe_allow_html=True)
+                st.markdown('<div style="margin-top: 0px;"></div>', unsafe_allow_html=True)
 
-                # Bouton toggle vue IA / vue naturelle (inchangé)
+                # Bouton toggle vue IA / vue naturelle
                 btn_text = "📹 Voir la vue naturelle" if not is_raw_view else "🧠 Voir la vue intelligente"
                 if st.button(btn_text, key=f"btn_toggle_{i}", use_container_width=True):
                     st.session_state[toggle_key] = not is_raw_view
                     st.rerun()
 
-                # ==============================================================
-                # BOUTONS FP / VP — Toggle mémorisé
-                #
-                # Le label courant est lu depuis alerts.jsonl (champ "label").
-                # Le bouton actif est affiché en surligné (gras + bordure).
-                # Cliquer sur l'autre label déplace les vidéos + met à jour le JSONL.
-                # Cliquer sur le label déjà actif ne fait rien (idempotent).
-                # L'alerte reste visible dans l'interface dans tous les cas.
-                # ==============================================================
-                current_label = alert.get("label", None)  # "VP", "FP", ou None
-
-                # Style des boutons : actif = fond coloré, inactif = transparent
-                # On construit le style inline pour chaque bouton selon l'état courant
-                st.markdown("**Classifier :**")
-
+                st.markdown("**Décision :**")
                 col_vp, col_fp = st.columns(2)
 
                 with col_vp:
-                    vp_active = current_label == "VP"
-                    if vp_active:
-                        # Bouton actif : rendu en HTML vert, pas cliquable
-                        st.markdown(
-                            """<button style="
-                                width:100%;
-                                background-color:#1a7a1a;
-                                color:white;
-                                border:2px solid #1a7a1a;
-                                border-radius:8px;
-                                padding:8px;
-                                font-weight:bold;
-                                font-size:0.95rem;
-                                cursor:default;
-                            ">✅ VP ◀ Actif</button>""",
-                            unsafe_allow_html=True
-                        )
-                    else:
-                        if st.button("✅ VP", key=f"vp_{i}",
-                                     use_container_width=True,
-                                     help="Vrai Positif — vol réel confirmé"):
-                            _classify_alert(original_index, vid_clip, vid_raw, "VP")
+                    if st.button(
+                        "✅ VP — Archiver",
+                        key=f"vp_{i}",
+                        use_container_width=True,
+                        help="Vol confirmé — archive la vidéo et retire l'alerte"):
+                        _archive_alert(original_index, vid_clip, vid_raw)
 
                 with col_fp:
-                    fp_active = current_label == "FP"
-                    if fp_active:
-                        # Bouton actif : rendu en HTML rouge, pas cliquable
-                        st.markdown(
-                            """<button style="
-                                width:100%;
-                                background-color:#CC0000;
-                                color:white;
-                                border:2px solid #CC0000;
-                                border-radius:8px;
-                                padding:8px;
-                                font-weight:bold;
-                                font-size:0.95rem;
-                                cursor:default;
-                            ">❌ FP ◀ Actif</button>""",
-                            unsafe_allow_html=True
-                        )
-                    else:
-                        if st.button("❌ FP", key=f"fp_{i}",
-                                     use_container_width=True,
-                                     help="Faux Positif — fausse alerte"):
-                            _classify_alert(original_index, vid_clip, vid_raw, "FP")
-
-                # Suppression simple (sans classification)
-                if st.button("🗑️ Supprimer", key=f"del_{i}", use_container_width=True):
-                    delete_alert(original_index, vid_clip, vid_raw)
+                    if st.button(
+                        "❌ FP — Supprimer",
+                        key=f"fp_{i}",
+                        use_container_width=True,
+                        help="Fausse alerte — supprime définitivement"):
+                        delete_alert(original_index, vid_clip, vid_raw)
 
                 # Téléchargement (inchangé)
                 if active_video_path and os.path.exists(active_video_path):
@@ -1057,6 +1112,72 @@ def alertes_fragment():
                             key=f"dl_{i}",
                             use_container_width=True
                         )
+                st.markdown('<hr style="margin:6px 0;border-color:#ddd;">', unsafe_allow_html=True)
+                st.markdown('<p style="margin:4px 0 2px 0;font-weight:bold;">📋 Ce qu\'a vu l\'IA :</p>', unsafe_allow_html=True)
+
+                LOGS_FILE = "logs.jsonl"
+                alert_cam_id   = alert.get("cam", "")
+                alert_time_str = alert.get("time", "")
+                alert_date_log = alert.get("date", "")
+                associated_logs = []
+
+                if alert_time_str and alert_date_log and os.path.exists(LOGS_FILE):
+                    try:
+                        alert_dt     = datetime.strptime(f"{alert_date_log} {alert_time_str}", "%Y-%m-%d %H:%M:%S")
+                        window_start = alert_dt - timedelta(seconds=20)  # couvre le pré-buffer
+                        window_end   = alert_dt + timedelta(seconds=12)  # couvre le post-alerte
+
+                        with open(LOGS_FILE, "r") as lf:
+                            for line in lf:
+                                try:
+                                    log = json.loads(line.strip())
+                                    if log.get("cam") != alert_cam_id:
+                                        continue
+                                    if log.get("level") not in ("ALERT", "INFO", "DEBUG"):  # on cache DEBUG/ERROR pour l'agent
+                                        continue
+                                    if log.get("date", "") != alert_date_log:
+                                        continue
+                                    log_dt = datetime.strptime(
+                                        f"{log.get('date','')} {log.get('ts','')}",
+                                        "%Y-%m-%d %H:%M:%S"
+                                    )
+                                    if window_start <= log_dt <= window_end:
+                                        associated_logs.append(log)
+                                except Exception:
+                                    pass
+                    except Exception:
+                        pass
+
+                if associated_logs:
+                    level_style = {
+                        "ALERT": ("🚨", "#FF0000", "white"),
+                        "INFO":  ("ℹ️",  "#0066b2", "white"),
+                        "DEBUG": ("🔍", "#444444", "#cccccc"),
+                    }
+                    rows = ""
+                    for log in associated_logs:
+                        icon, bg, fg = level_style.get(log.get("level", "INFO"), ("ℹ️", "#888", "white"))
+                        ts  = log.get("ts", "")
+                        msg = (log.get("msg", "")
+                            .replace("&", "&amp;")
+                            .replace("<", "&lt;")
+                            .replace(">", "&gt;"))
+                        rows += (
+                            f'<div style="border-bottom:1px solid #eee;padding:6px 8px;">'
+                            f'<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">'
+                            f'<span style="background:{bg};color:{fg};border-radius:4px;'
+                            f'padding:1px 6px;font-size:0.72rem;font-weight:bold;">{icon} {log.get("level")}</span>'
+                            f'<span style="color:#999;font-size:0.72rem;">{ts}</span></div>'
+                            f'<div style="color:#222;font-size:0.78rem;line-height:1.35;">{msg}</div>'
+                            f'</div>'
+                        )
+                    html_logs = (
+                        '<div style="max-height:280px;overflow-y:auto;border:2px solid #0066b2;'
+                        'border-radius:8px;background:white;">' + rows + '</div>'
+                    )
+                    st.markdown(html_logs, unsafe_allow_html=True)
+                else:
+                    st.caption("Aucun log IA sur cette période.")
 
 # SIDEBAR MENU
 
@@ -1073,7 +1194,7 @@ st.sidebar.title("📊 Menu")  # Titre sidebar
 # ==============================================================
 
 
-page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES", "📋 LOGS", "📘 GUIDE D'AMÉLIORATION"])  # Navigation
+page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES", "🗂️ ARCHIVES VP", "📋 LOGS", "📘 GUIDE D'AMÉLIORATION"])  # Navigation
 
 # DÉCONNEXION
 if st.sidebar.button("🚪 Déconnexion"):
@@ -1642,7 +1763,124 @@ if page == "📺 LIVE":
 # PAGE ALERTES
 
 elif page == "🚨 ALERTES":
+    st.markdown(
+        '<div class="header"><h1>🚨 Historique des alertes</h1></div>',
+        unsafe_allow_html=True
+    )
     alertes_fragment()
+
+
+elif page == "🗂️ ARCHIVES VP":
+    st.markdown(
+        '<div class="header"><h1>🗂️ Archives — Vols Confirmés (VP)</h1></div>',
+        unsafe_allow_html=True
+    )
+
+    st.info(f"🔒 RGPD : Les clips archivés sont automatiquement supprimés après {ARCHIVE_RETENTION_DAYS} jours.")
+
+    @st.fragment
+    def archives_fragment():
+        col_r, _ = st.columns([1, 5])
+        with col_r:
+            if st.button("🔄 Rafraîchir", key="refresh_archives"):
+                st.rerun(scope="fragment")
+
+        all_alerts = load_alerts()
+        archives = [a for a in all_alerts if a.get("label") == "VP"]
+
+        if not archives:
+            st.success("✅ Aucune archive VP pour le moment.")
+            return
+
+        # Filtres
+        col_cam, col_type, col_date = st.columns([2, 2, 2])
+        cams_arch = sorted(set(a.get("cam", "?") for a in archives))
+        cams_arch.insert(0, "Toutes")
+
+        with col_cam:
+            cam_f = st.selectbox("📷 Caméra", cams_arch, key="arch_cam")
+        with col_type:
+            type_f = st.selectbox("Type", ["Tous", "CORPS", "SAC"], key="arch_type")
+        with col_date:
+            date_f = st.date_input("📅 Jour", value=None, key="arch_date")
+
+        filtered = []
+        for a in archives:
+            if cam_f != "Toutes" and a.get("cam") != cam_f:
+                continue
+            if type_f != "Tous" and a.get("type") != type_f:
+                continue
+            if date_f and a.get("date", "") != date_f.strftime("%Y-%m-%d"):
+                continue
+            filtered.append(a)
+
+        st.write(f"**{len(filtered)} archive(s) VP**")
+
+        for i, alert in enumerate(reversed(filtered)):
+            original_index = all_alerts.index(alert)
+            score_pct = int(alert.get("score", 0) * 100)
+            vid_clip  = alert.get("video_clip", "")
+            vid_raw   = alert.get("video_raw",  "")
+            date_str  = alert.get("date", "Date inconnue")
+
+            st.markdown(f"""
+                <div style="background:#1a7a1a;color:white;padding:10px 15px;
+                border-radius:10px 10px 0 0;font-weight:bold;
+                display:flex;justify-content:space-between;align-items:center;">
+                    <span>✅ VOL CONFIRMÉ — {alert.get('type','?')}</span>
+                    <span style="background:rgba(255,255,255,0.2);padding:2px 10px;border-radius:12px;">
+                        📷 {alert.get('cam','?')}
+                    </span>
+                    <span>📅 {date_str} — 🕒 {alert.get('time','?')}</span>
+                    <span style="background:rgba(255,255,255,0.2);padding:2px 10px;border-radius:12px;">
+                        Confiance : {score_pct}%
+                    </span>
+                </div>
+            """, unsafe_allow_html=True)
+
+            with st.container():
+                col_vid, col_act = st.columns([3, 1])
+
+                toggle_key = f"arch_toggle_{i}"
+                if toggle_key not in st.session_state:
+                    st.session_state[toggle_key] = False
+                is_raw = st.session_state[toggle_key]
+                active_path = vid_raw if (is_raw and vid_raw and os.path.exists(vid_raw)) else vid_clip
+
+                with col_vid:
+                    if active_path and os.path.exists(active_path):
+                        st.video(active_path)
+                    else:
+                        st.warning("⚠️ Clip supprimé (purge RGPD ou fichier manquant)")
+
+                with col_act:
+                    btn_text = "📹 Vue naturelle" if not is_raw else "🧠 Vue intelligente"
+                    if st.button(btn_text, key=f"arch_tog_{i}", use_container_width=True):
+                        st.session_state[toggle_key] = not is_raw
+                        st.rerun()
+
+                    if active_path and os.path.exists(active_path):
+                        with open(active_path, "rb") as f:
+                            suffix = "RAW" if is_raw else "IA"
+                            st.download_button(
+                                "📥 Télécharger",
+                                f,
+                                file_name=f"VP_{suffix}_{alert.get('time','').replace(':','')}.mp4",
+                                key=f"arch_dl_{i}",
+                                use_container_width=True
+                            )
+
+                    st.markdown("---")
+                    if st.button("🗑️ Supprimer définitivement",
+                                 key=f"arch_del_{i}",
+                                 use_container_width=True,
+                                 help="Supprime le clip et l'entrée de l'historique"):
+                        delete_alert(original_index, vid_clip, vid_raw)
+
+            st.markdown("<div style='margin-bottom:20px'></div>", unsafe_allow_html=True)
+
+    archives_fragment()
+
 
 elif page == "📋 LOGS":
 
@@ -1653,7 +1891,13 @@ elif page == "📋 LOGS":
 
     @st.fragment
     def logs_fragment():
-        st_autorefresh(interval=5000, key="logs_refresh")
+
+        col_r, col_i = st.columns([1, 5])
+        with col_r:
+            if st.button("🔄 Rafraîchir les logs", key="manual_refresh_logs"):
+                st.rerun(scope="fragment")
+        with col_i:
+            st.caption("Cliquez pour charger les derniers logs.")
 
         # ── Filtres ────────────────────────────────────────────────────────
         col_cam, col_level, col_date, col_time, col_n = st.columns([2, 2, 2, 2, 1])
@@ -1710,18 +1954,15 @@ elif page == "📋 LOGS":
 
 
         # ── Persistance locale des logs ───────────────────────────────────
-        # On fusionne les logs Flask (RAM) avec l'historique disque (logs.jsonl)
         LOGS_FILE = "logs.jsonl"
 
         def save_logs_to_disk(new_logs):
-            """Ajoute les nouveaux logs (non déjà présents) dans logs.jsonl"""
             existing = set()
             if os.path.exists(LOGS_FILE):
                 with open(LOGS_FILE, "r") as f:
                     for line in f:
                         try:
                             entry = json.loads(line)
-                            # Clé d'unicité : date + heure + cam + msg
                             existing.add((entry.get("date",""), entry.get("ts",""), entry.get("cam",""), entry.get("msg","")))
                         except:
                             pass
@@ -1733,26 +1974,28 @@ elif page == "📋 LOGS":
                         existing.add(key)
 
         def load_all_logs():
-            """Charge tous les logs historiques depuis le disque"""
+            """Lit TOUT le fichier — le tri/limite se fait APRÈS les filtres."""
             if not os.path.exists(LOGS_FILE):
                 return []
             result = []
             with open(LOGS_FILE, "r") as f:
                 for line in f:
-                    try:
-                        result.append(json.loads(line.strip()))
-                    except:
-                        pass
+                    line = line.strip()
+                    if line:
+                        try:
+                            result.append(json.loads(line))
+                        except Exception:
+                            pass
             return result
 
-        # Sauvegarde des logs frais sur disque
+        # 1. Sauvegarde les logs Flask (RAM) sur disque
         if logs:
             save_logs_to_disk(logs)
 
-        # Chargement de TOUT l'historique pour l'affichage
+        # 2. Recharge TOUT le fichier
         logs = load_all_logs()
 
-        # Re-appliquer les filtres cam et niveau sur l'historique complet
+        # 3. Applique TOUS les filtres d'abord
         if selected_cam != "ALL":
             logs = [l for l in logs if l.get("cam") == selected_cam]
         if selected_level != "ALL":
@@ -1761,7 +2004,8 @@ elif page == "📋 LOGS":
             date_str = date_filter.strftime("%Y-%m-%d")
             logs = [l for l in logs if l.get("date", "") == date_str]
 
-
+        # 4. SEULEMENT ICI on applique le nb max → les N derniers parmi les résultats filtrés
+        logs = logs[-max_logs:]
 
         # ── Filtrage temporel ──────────────────────────────────────────────
         now_time = datetime.now()
@@ -1804,6 +2048,7 @@ elif page == "📋 LOGS":
                 except Exception:
                     filtered_logs.append(log)
             logs = filtered_logs
+            logs = logs[-max_logs:]
 
         # ── Résumé ────────────────────────────────────────────────────────
         nb_alert = sum(1 for l in logs if l.get("level") == "ALERT")
