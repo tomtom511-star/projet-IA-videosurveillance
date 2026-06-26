@@ -52519,3 +52519,93 @@
 {"ts": "11:06:18", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #41 : disparu depuis 29 images — sous surveillance active"}
 {"ts": "11:06:22", "date": "2026-06-26", "cam": "CAM_22", "level": "DEBUG", "msg": "Article #15 : article en main détecté (confiance: 35%) — en attente de confirmation (0/12 frames)"}
 {"ts": "11:06:35", "date": "2026-06-26", "cam": "CAM_49", "level": "DEBUG", "msg": "Article #16 : article en main détecté (confiance: 34%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:06:54", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #42 : disparu depuis 215 images — sous surveillance active"}
+{"ts": "11:07:20", "date": "2026-06-26", "cam": "CAM_49", "level": "DEBUG", "msg": "Article #15 : article en main détecté (confiance: 40%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:07:30", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "FFmpeg : [h264 @ 0x5b5caa91d280] error while decoding MB 2 32, bytestream -27"}
+{"ts": "11:07:35", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "FFmpeg : [in#0/rtsp @ 0x592ffd3a8e00] Error during demuxing: Connection timed out"}
+{"ts": "11:07:35", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "FFmpeg : [in#0/rtsp @ 0x5b5caa898e00] Error during demuxing: Connection timed out"}
+{"ts": "11:07:35", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:07:35", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:07:35", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:07:35", "date": "2026-06-26", "cam": "CAM_21", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:07:35", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:07:35", "date": "2026-06-26", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:07:43", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Caméra ne répond plus depuis 5s — reconnexion forcée"}
+{"ts": "11:07:43", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "Caméra ne répond plus depuis 5s — reconnexion forcée"}
+{"ts": "11:07:43", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:07:43", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:07:43", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:07:43", "date": "2026-06-26", "cam": "CAM_21", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:07:43", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:07:43", "date": "2026-06-26", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:08:01", "date": "2026-06-26", "cam": "CAM_23", "level": "DEBUG", "msg": "GPU miss: 361/4200 frames (8.6%)"}
+{"ts": "11:08:02", "date": "2026-06-26", "cam": "CAM_46", "level": "DEBUG", "msg": "GPU miss: 359/4200 frames (8.5%)"}
+{"ts": "11:08:03", "date": "2026-06-26", "cam": "CAM_45", "level": "DEBUG", "msg": "GPU miss: 341/4200 frames (8.1%)"}
+{"ts": "11:08:14", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #52 : article en main détecté (confiance: 70%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:08:14", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #50 : article en main détecté (confiance: 61%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:08:31", "date": "2026-06-26", "cam": "CAM_46", "level": "DEBUG", "msg": "[FILTRE] Article #24 — détection trop brève, probable faux positif YOLO"}
+{"ts": "11:08:31", "date": "2026-06-26", "cam": "CAM_46", "level": "DEBUG", "msg": "Article #23 : article en main détecté (confiance: 49%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:08:36", "date": "2026-06-26", "cam": "CAM_45", "level": "DEBUG", "msg": "GPU miss: 365/4400 frames (8.3%)"}
+{"ts": "11:08:52", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #58 : article en main détecté (confiance: 54%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:08:56", "date": "2026-06-26", "cam": "CAM_45", "level": "DEBUG", "msg": "Article #45 : article en main détecté (confiance: 35%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:09:00", "date": "2026-06-26", "cam": "CAM_45", "level": "DEBUG", "msg": "Article #45 : article en main détecté (confiance: 34%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:09:08", "date": "2026-06-26", "cam": "CAM_45", "level": "DEBUG", "msg": "Article #45 : article en main détecté (confiance: 30%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:09:34", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #61 : article en main détecté (confiance: 57%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:09:34", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #62 : article en main détecté (confiance: 53%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:09:34", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #60 : article en main détecté (confiance: 54%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:09:48", "date": "2026-06-26", "cam": "CAM_45", "level": "DEBUG", "msg": "Article #49 : article en main détecté (confiance: 39%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:10:31", "date": "2026-06-26", "cam": "CAM_49", "level": "DEBUG", "msg": "GPU miss: 433/5200 frames (8.3%)"}
+{"ts": "11:10:31", "date": "2026-06-26", "cam": "CAM_23", "level": "DEBUG", "msg": "GPU miss: 432/5200 frames (8.3%)"}
+{"ts": "11:11:01", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "[FILTRE] Article #75 — détection trop brève, probable faux positif YOLO"}
+{"ts": "11:11:48", "date": "2026-06-26", "cam": "CAM_22", "level": "DEBUG", "msg": "Article #22 : article en main détecté (confiance: 39%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:12:04", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #79 : disparu depuis 93 images — sous surveillance active"}
+{"ts": "11:12:21", "date": "2026-06-26", "cam": "CAM_46", "level": "DEBUG", "msg": "[FILTRE] Article #33 — détection trop brève, probable faux positif YOLO"}
+{"ts": "11:12:28", "date": "2026-06-26", "cam": "CAM_45", "level": "DEBUG", "msg": "Article #64 : article en main détecté (confiance: 27%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:12:34", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "FFmpeg : [in#0/rtsp @ 0x60aac7fffe00] Error during demuxing: Connection timed out"}
+{"ts": "11:12:34", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:12:34", "date": "2026-06-26", "cam": "CAM_21", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:12:34", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "FFmpeg : [in#0/rtsp @ 0x61963733be00] Error during demuxing: Connection timed out"}
+{"ts": "11:12:34", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:12:34", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:12:35", "date": "2026-06-26", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:12:35", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:12:42", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "Caméra ne répond plus depuis 5s — reconnexion forcée"}
+{"ts": "11:12:42", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:12:42", "date": "2026-06-26", "cam": "CAM_21", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:12:42", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Caméra ne répond plus depuis 5s — reconnexion forcée"}
+{"ts": "11:12:42", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:12:42", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:12:43", "date": "2026-06-26", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:12:43", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:12:50", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "Caméra ne répond plus depuis 5s — reconnexion forcée"}
+{"ts": "11:12:50", "date": "2026-06-26", "cam": "CAM_21", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:12:50", "date": "2026-06-26", "cam": "CAM_21", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:12:50", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Caméra ne répond plus depuis 5s — reconnexion forcée"}
+{"ts": "11:12:50", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:12:50", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:12:51", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:12:51", "date": "2026-06-26", "cam": "CAM_21", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:12:58", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Caméra ne répond plus depuis 5s — reconnexion forcée"}
+{"ts": "11:12:58", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:12:58", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:12:59", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:13:06", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Caméra ne répond plus depuis 5s — reconnexion forcée"}
+{"ts": "11:13:06", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:13:06", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:13:07", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:13:09", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "[FILTRE] Article #88 — détection trop brève, probable faux positif YOLO"}
+{"ts": "11:13:14", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #86 : article en main détecté (confiance: 53%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:13:15", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Caméra ne répond plus depuis 5s — reconnexion forcée"}
+{"ts": "11:13:15", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:13:15", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:13:15", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:13:19", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #87 : article en main détecté (confiance: 65%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:13:19", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #91 : article en main détecté (confiance: 45%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:13:19", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #89 : article en main détecté (confiance: 48%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:13:23", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Caméra ne répond plus depuis 5s — reconnexion forcée"}
+{"ts": "11:13:23", "date": "2026-06-26", "cam": "CAM_22", "level": "ERROR", "msg": "Flux vidéo interrompu — reconnexion en cours..."}
+{"ts": "11:13:23", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Caméra déconnectée — nouvelle tentative dans 3s..."}
+{"ts": "11:13:23", "date": "2026-06-26", "cam": "CAM_22", "level": "INFO", "msg": "Reconnexion réussie — remise à zéro du suivi"}
+{"ts": "11:13:24", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #85 : article en main détecté (confiance: 62%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:13:36", "date": "2026-06-26", "cam": "CAM_45", "level": "DEBUG", "msg": "Article #67 : article en main détecté (confiance: 42%) — en attente de confirmation (0/12 frames)"}
+{"ts": "11:14:27", "date": "2026-06-26", "cam": "CAM_21", "level": "DEBUG", "msg": "Article #93 : article en main détecté (confiance: 66%) — en attente de confirmation (0/12 frames)"}
