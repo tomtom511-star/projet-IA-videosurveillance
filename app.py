@@ -9,6 +9,9 @@ import time
 import requests
 import streamlit.components.v1 as components  # Pour injecter le récepteur postMessage dans la page principale
 
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 ARCHIVE_RETENTION_DAYS = 30 
 
 # IDENTIFIANTS ADMIN (À PROTÉGER EN PRODUCTION)
@@ -254,6 +257,15 @@ st.markdown("""
     }
     [data-testid="stMetricDelta"] {
         font-size: 0.82rem !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stMetricValue"] {
+        color: white !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stMetricLabel"] {
+        color: rgba(255,255,255,0.85) !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stMetricDelta"] {
+        color: rgba(255,255,255,0.7) !important;
     }
 
 </style>
@@ -536,17 +548,107 @@ window.addEventListener('message', function(e) {
     }
 });
 
+
+// ══════════════════════════════════════════════════
+// AUDIO CLIENT — Sons synthétisés dans le navigateur
+// Reproduit exactement les sons pygame du serveur
+// via Web Audio API. L'AudioContext est débloqué au
+// premier clic de l'utilisateur (politique autoplay).
+// ══════════════════════════════════════════════════
+try {
+    const parentDoc = window.parent.document;
+    if (!parentDoc._playTonesInjected) {
+        parentDoc._playTonesInjected = true;
+
+        // Contexte audio dans le parent
+        let _audioCtxParent = null;
+        function _ensureAudioParent() {
+            if (!_audioCtxParent) {
+                _audioCtxParent = new (window.parent.AudioContext || window.parent.webkitAudioContext)();
+            }
+            if (_audioCtxParent.state === 'suspended') _audioCtxParent.resume();
+            return _audioCtxParent;
+        }
+
+        // Débloque au premier geste dans le parent
+        ['click','pointerdown','keydown','touchstart'].forEach(function(evt) {
+            parentDoc.addEventListener(evt, function() {
+                if (!_audioCtxParent) {
+                    _audioCtxParent = new (window.parent.AudioContext || window.parent.webkitAudioContext)();
+                }
+                if (_audioCtxParent.state === 'suspended') {
+                    _audioCtxParent.resume().then(function() {
+                        console.log('[AUDIO] AudioContext débloqué, état:', _audioCtxParent.state);
+                    });
+                }
+            }, { once: false, passive: true });
+        });
+
+        const _soundCooldown = { alert: 0, suspicion: 0 };
+        const _soundCooldownMs = { alert: 500, suspicion: 2000 };
+
+        parentDoc._playClientSound = function(kind) {
+            const now = Date.now();
+            if (now - _soundCooldown[kind] < _soundCooldownMs[kind]) return;
+            _soundCooldown[kind] = now;
+            const ctx = _ensureAudioParent();
+            if (!ctx) return;
+            const tones = kind === 'alert' ? [
+                { freq: 1046, dur: 0.12, start: 0.00 },
+                { freq: 880,  dur: 0.12, start: 0.16 },
+                { freq: 698,  dur: 0.25, start: 0.32 },
+            ] : [
+                { freq: 1800, dur: 0.012, start: 0.000 },
+                { freq: 2200, dur: 0.080, start: 0.020 },
+                { freq: 1800, dur: 0.040, start: 0.115 },
+            ];
+            const vol = kind === 'alert' ? 0.9 : 0.55;
+            function doPlay() {
+                tones.forEach(function(t) {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.value = t.freq;
+                    const s = ctx.currentTime + t.start;
+                    gain.gain.setValueAtTime(0, s);
+                    gain.gain.linearRampToValueAtTime(vol, s + 0.005);
+                    gain.gain.linearRampToValueAtTime(0, s + t.dur - 0.01);
+                    osc.start(s);
+                    osc.stop(s + t.dur + 0.02);
+                });
+            }
+            console.log("[AUDIO] état ctx au moment du son:", ctx.state, "| kind:", kind);
+            if (ctx.state === 'running') { doPlay(); }
+            else { ctx.resume().then(doPlay).catch(function(){}); }
+        };
+    }
+} catch(e) {}
+
+
+
 // ══════════════════════════════════════════════════
 // SSE — connexion unique, mises à jour temps réel
 // ══════════════════════════════════════════════════
 (function() {
-    const evtSource = new EventSource("http://192.168.0.97:5000/stream");
+    const evtSource = new EventSource("https://192.168.0.97:5000/stream");
     const doc = window.parent.document;
 
     evtSource.onmessage = function(e) {
         try {
             const data = JSON.parse(e.data);
             if (data.type === "heartbeat") return;
+
+            // Son client : déclenché par le serveur via SSE, joué dans le navigateur
+            if (data.type === "sound") {
+                console.log("[SSE-SON] reçu:", data.kind, "| fonction dispo:", typeof window.parent.document._playClientSound);
+                try { window.parent.document._playClientSound(data.kind); } catch(e) { console.error("[SSE-SON] erreur:", e); }
+                return;
+            }
+
+            if (data.type === 'suspicion_update' || data.type === 'suspicion_clear') {
+                return; // affichage géré côté Python via /suspicions, on garde juste le son
+            }
 
             // Mise à jour compteur alertes en attente
             if (data.type === "init" || data.type === "new_alert") {
@@ -644,7 +746,7 @@ def load_suspicions():
     Retourne un dict { cam_id → {time, score, type} } ou {} si serveur injoignable.
     """
     try:
-        response = requests.get("http://192.168.0.97:5000/suspicions", timeout=2)
+        response = requests.get("https://192.168.0.97:5000/suspicions", timeout=2, verify=False)
         if response.status_code == 200:
             return response.json()
     except Exception:
@@ -775,6 +877,11 @@ alerts = load_alerts()  # Liste des alertes
 
 @st.fragment
 def gestion_suspicions_fragment():
+
+    # ── Auto-refresh léger toutes les 5s (fragment uniquement, pas la page entière) ──
+    from streamlit_autorefresh import st_autorefresh
+    st_autorefresh(interval=5000, limit=None, key="susp_autorefresh")
+
     fresh_alerts = load_alerts()
     all_alerts = load_alerts()
     alerts_count = sum(1 for a in all_alerts if a.get("label") not in ("VP", "FP"))
@@ -811,25 +918,25 @@ def gestion_suspicions_fragment():
             flat_cams = []
             for z, clist in {
                 "🍾 Alcool": [
-                    {"id": "CAM_21", "name": "🥃​ Rayon alcool fort", "url": "/video/CAM_21"},
-                    {"id": "CAM_22", "name": "🍷 Vins", "url": "/video/CAM_22"},
-                    {"id": "CAM_23", "name": "🥂 Champagnes", "url": "/video/CAM_23"},
+                    {"id": "CAM_21", "name": "🥃​ Rayon alcool fort", "url": "https://192.168.0.97:5000/video/CAM_21"},
+                    {"id": "CAM_22", "name": "🍷 Vins", "url": "https://192.168.0.97:5000/video/CAM_22"},
+                    {"id": "CAM_23", "name": "🥂 Champagnes", "url": "https://192.168.0.97:5000/video/CAM_23"},
                 ],
                 "🌍 Espace culturel": [
-                    {"id": "CAM_45", "name": "👀​ Vue Globale", "url": "/video/CAM_45"},
-                    {"id": "CAM_46", "name": "📠​ Electronique/divertissement", "url": "/video/CAM_46"},
-                    {"id": "CAM_47", "name": "🎧​ Audio", "url": "/video/CAM_47"},
-                    {"id": "CAM_49", "name": "🎮​ Jeux Vidéos", "url": "/video/CAM_49"},
+                    {"id": "CAM_45", "name": "👀​ Vue Globale", "url": "https://192.168.0.97:5000/video/CAM_45"},
+                    {"id": "CAM_46", "name": "📠​ Electronique/divertissement", "url": "https://192.168.0.97:5000/video/CAM_46"},
+                    {"id": "CAM_47", "name": "🎧​ Audio", "url": "https://192.168.0.97:5000/video/CAM_47"},
+                    {"id": "CAM_49", "name": "🎮​ Jeux Vidéos", "url": "https://192.168.0.97:5000/video/CAM_49"},
                 ],
                 "🏪 Galerie": [
-                    {"id": "CAM_07", "name": "Fleuriste", "url": "http://192.168.0.97:5006/video"},
-                    {"id": "CAM_08", "name": "Bijoux", "url": "http://192.168.0.97:5007/video"},
-                    {"id": "CAM_09", "name": "Adopt", "url": "http://192.168.0.97:5008/video"},
+                    {"id": "CAM_07", "name": "Fleuriste", "url": "https://192.168.0.97:5000/video"},
+                    {"id": "CAM_08", "name": "Bijoux", "url": "https://192.168.0.97:5000/video"},
+                    {"id": "CAM_09", "name": "Adopt", "url": "https://192.168.0.97:5000/video"},
                 ],
                 "🚪 Zones sécurisées": [
-                    {"id": "CAM_10", "name": "Sortie secours", "url": "http://192.168.0.97:5009/video"},
-                    {"id": "CAM_11", "name": "Réserve", "url": "http://192.168.0.97:5010/video"},
-                    {"id": "CAM_12", "name": "Personnel", "url": "http://192.168.0.97:5011/video"},
+                    {"id": "CAM_10", "name": "Sortie secours", "url": "https://192.168.0.97:5000/video"},
+                    {"id": "CAM_11", "name": "Réserve", "url": "https://192.168.0.97:5000/video"},
+                    {"id": "CAM_12", "name": "Personnel", "url": "https://192.168.0.97:5000/video"},
                 ]
             }.items():
                 for c in clist:
@@ -860,7 +967,7 @@ def gestion_suspicions_fragment():
     # ── Bouton Son ── 
     st.markdown("---")
     try:
-        sound_resp = requests.get("http://192.168.0.97:5000/sound/status", timeout=1)
+        sound_resp = requests.get("https://192.168.0.97:5000/sound/status", timeout=1, verify=False)
         sound_on = sound_resp.json().get("enabled", True)
     except Exception:
         sound_on = None
@@ -872,7 +979,7 @@ def gestion_suspicions_fragment():
         st.markdown(f"<div style='color:white;font-size:0.85rem;margin-bottom:6px;'>{label}</div>", unsafe_allow_html=True)
         if st.button("Basculer le son", key="toggle_sound_btn", use_container_width=True):
             try:
-                requests.post("http://192.168.0.97:5000/sound/toggle", timeout=1)
+                requests.post("https://192.168.0.97:5000/sound/toggle", timeout=1, verify=False)
                 # Force la relecture depuis Flask au prochain cycle
                 st.session_state.sound_status_ts = 0  # ← expire le cache immédiatement
                 st.rerun(scope="fragment")
@@ -1090,7 +1197,7 @@ def alertes_fragment():
                         "✅ VP — Archiver",
                         key=f"vp_{i}",
                         use_container_width=True,
-                        help="Vol confirmé — archive la vidéo et retire l'alerte"):
+                        help="Scénario cohérent et/ou simple erreur de détection — archive la vidéo et retire l'alerte"):
                         _archive_alert(original_index, vid_clip, vid_raw)
 
                 with col_fp:
@@ -1098,7 +1205,7 @@ def alertes_fragment():
                         "❌ FP — Supprimer",
                         key=f"fp_{i}",
                         use_container_width=True,
-                        help="Fausse alerte — supprime définitivement"):
+                        help="Fausse alerte, le modèle a fait une erreur de logique— supprime définitivement"):
                         delete_alert(original_index, vid_clip, vid_raw)
 
                 # Téléchargement (inchangé)
@@ -1689,7 +1796,10 @@ document.getElementById('cap').addEventListener('click', takeSnapshot);
 # 📺 PAGE LIVE (MULTI CAMÉRAS PRO)
 
 if page == "📺 LIVE":
-    st.subheader("🎥 Surveillance en direct")
+    st.markdown(
+        '<div class="header"><h1>🎥 Surveillance en direct</h1></div>',
+        unsafe_allow_html=True
+    )
     col_refresh, col_info = st.columns([1, 4])
     with col_refresh:
         if st.button("🔄 Actualiser"):
@@ -1700,25 +1810,25 @@ if page == "📺 LIVE":
     # 📍 DÉFINITION DES CAMÉRAS PAR ZONES
     cameras = {
         "🍾 Alcool": [
-            {"id": "CAM_21", "name": "🥃​ Rayon alcool fort", "url": "/video/CAM_21"},
-            {"id": "CAM_22", "name": "🍷 Vins", "url": "/video/CAM_22"},
-            {"id": "CAM_23", "name": "🥂 Champagnes", "url": "/video/CAM_23"},
+            {"id": "CAM_21", "name": "🥃​ Rayon alcool fort", "url": "https://192.168.0.97:5000/video/CAM_21"},
+            {"id": "CAM_22", "name": "🍷 Vins", "url": "https://192.168.0.97:5000/video/CAM_22"},
+            {"id": "CAM_23", "name": "🥂 Champagnes", "url": "https://192.168.0.97:5000/video/CAM_23"},
         ],
         "🌍 Espace culturel": [
-            {"id": "CAM_45", "name": "👀​ Vue Globale", "url": "/video/CAM_45"},
-            {"id": "CAM_46", "name": "📠​ Electronique/divertissement", "url": "/video/CAM_46"},
-            {"id": "CAM_47", "name": "🎧​ Audio", "url": "/video/CAM_47"},
-            {"id": "CAM_49", "name": "🎮​ Jeux Vidéos", "url": "/video/CAM_49"},
+            {"id": "CAM_45", "name": "👀​ Vue Globale", "url": "https://192.168.0.97:5000/video/CAM_45"},
+            {"id": "CAM_46", "name": "📠​ Electronique/divertissement", "url": "https://192.168.0.97:5000/video/CAM_46"},
+            {"id": "CAM_47", "name": "🎧​ Audio", "url": "https://192.168.0.97:5000/video/CAM_47"},
+            {"id": "CAM_49", "name": "🎮​ Jeux Vidéos", "url": "https://192.168.0.97:5000/video/CAM_49"},
         ],
         "🏪 Galerie": [
-            {"id": "CAM_07", "name": "Fleuriste", "url": "http://192.168.0.97:5006/video"},
-            {"id": "CAM_08", "name": "Bijoux", "url": "http://192.168.0.97:5007/video"},
-            {"id": "CAM_09", "name": "Adopt", "url": "http://192.168.0.97:5008/video"},
+            {"id": "CAM_07", "name": "Fleuriste", "url": "https://192.168.0.97:5000/video"},
+            {"id": "CAM_08", "name": "Bijoux", "url": "https://192.168.0.97:5000/video"},
+            {"id": "CAM_09", "name": "Adopt", "url": "https://192.168.0.97:5000/video"},
         ],
         "🚪 Zones sécurisées": [
-            {"id": "CAM_10", "name": "Sortie secours", "url": "http://192.168.0.97:5009/video"},
-            {"id": "CAM_11", "name": "Réserve", "url": "http://192.168.0.97:5010/video"},
-            {"id": "CAM_12", "name": "Personnel", "url": "http://192.168.0.97:5011/video"},
+            {"id": "CAM_10", "name": "Sortie secours", "url": "https://192.168.0.97:5000/video"},
+            {"id": "CAM_11", "name": "Réserve", "url": "https://192.168.0.97:5000/video"},
+            {"id": "CAM_12", "name": "Personnel", "url": "https://192.168.0.97:5000/video"},
         ]
     }
 
@@ -1946,7 +2056,7 @@ elif page == "📋 LOGS":
                 params["cam"] = selected_cam
             if selected_level != "ALL":
                 params["level"] = selected_level
-            resp = requests.get("http://192.168.0.97:5000/logs", params=params, timeout=2)
+            resp = requests.get("https://192.168.0.97:5000/logs", params=params, timeout=2, verify=False)
             logs = resp.json() if resp.status_code == 200 else []
         except Exception:
             logs = []

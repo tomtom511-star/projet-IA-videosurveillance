@@ -1,5 +1,23 @@
 # 🔒 Système de Détection de Vol — Principe de fonctionnement
 
+
+## Table des matières
+
+- [Architecture](#architecture)
+- [Accès à l'interface](#accès-à-linterface)
+- [Accès au Dataset](#accès-au-dataset)
+- [Commandes de diagnostic](#commandes-de-diagnostic-via-ssh)
+- [Commandes de contrôle des services](#commandes-de-contrôle-des-services)
+- [Endpoints Flask utiles](#endpoints-flask-utiles-moteur-de-détection)
+- [Fichiers importants à modifier](#fichiers-importants-à-modifier)
+- [Caméras surveillées](#caméras-surveillées)
+- [Contrôle du son](#contrôle-du-son)
+- [Dossiers de données](#dossiers-de-données)
+- [Changer le mot de passe](#changer-le-mot-de-passe)
+- [Problèmes fréquents](#problèmes-fréquents)
+
+
+
 ## Architecture
 
 Le système repose sur deux services qui tournent **automatiquement au démarrage** de la machine `surveillance-ia` (HP Z2 Tower G4), gérés par systemd :
@@ -146,29 +164,6 @@ Puis redémarrer le service :
 sudo systemctl restart surveillance-detection
 ```
 
-### CAS : changement de caméras
-Interface web. Si les IPs des caméras changent, mettre à jour le dictionnaire `cameras` dans la section `PAGE LIVE` :
-```python
-cameras = {
-    "🍾 Alcool": [
-        {"id": "CAM_21", "name": "...", "url": "/video/CAM_21"},
-        ...
-    ],
-    ...
-}
-```
-
-Mais aussi dans le dictionnaire CAMERAS tout en haut de `detect_obj.py` 
-```python
-    {
-        "cam_id":   "CAM_21",
-        "rtsp_url": "...",
-        "width":    704,
-        "height":   576,
-        "fps":      12,
-    },
-```
-
 
 
 ### Fichiers systemd — Configuration des services
@@ -197,6 +192,30 @@ sudo systemctl restart surveillance-streamlit   # ou surveillance-detection
 | CAM_49 | 10.21.9.49 | Jeux vidéo |
 
 Flux vidéo direct : `http://192.168.0.97:5000/video/CAM_21` (remplacer CAM_21 par l'ID voulu)
+
+
+### CAS : changement de caméras
+Interface web. Si les IPs des caméras changent, mettre à jour le dictionnaire `cameras` dans la section `PAGE LIVE` :
+```python
+cameras = {
+    "🍾 Alcool": [
+        {"id": "CAM_21", "name": "...", "url": "/video/CAM_21"},
+        ...
+    ],
+    ...
+}
+```
+
+Mais aussi dans le dictionnaire CAMERAS tout en haut de `detect_obj.py` 
+```python
+    {
+        "cam_id":   "CAM_21",
+        "rtsp_url": "...",
+        "width":    704,
+        "height":   576,
+        "fps":      12,
+    },
+```
 
 ---
 
@@ -227,6 +246,24 @@ curl -X POST http://192.168.0.97:5000/sound/toggle
 | `logs.jsonl` | Historique des logs système |
 
 ---
+
+## Changer le mot de passe
+
+Les identifiants sont définis en clair dans `app.py`, vers la ligne 20 :
+
+```python
+ADMIN_USER = "admin"
+ADMIN_PASSWORD = "admin"
+```
+
+Modifie ces deux valeurs, puis redémarre le service :
+
+```bash
+sudo systemctl restart surveillance-streamlit
+```
+
+> ⚠️ Ces identifiants sont stockés en clair dans le code source. Ne pas utiliser un mot de passe sensible réutilisé ailleurs.
+
 
 ## Problèmes fréquents
 

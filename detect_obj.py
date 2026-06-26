@@ -279,6 +279,13 @@ frame_lock = threading.RLock()
 # ==========================================
 app = Flask(__name__)
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return response
+
 
 def generate_stream(cam_id: str):
     """
@@ -403,6 +410,8 @@ def _push_sse_event(data: dict):
                 dead.append(q)
         for q in dead:
             _sse_clients.remove(q)
+        if data.get("type") == "sound":
+            print(f"[SSE] Envoi son '{data.get('kind')}' à {len(_sse_clients)} client(s) connecté(s)")
 
 # RAM + disque en temps réel
 LOGS_DISK_FILE     = "logs.jsonl"
@@ -484,148 +493,18 @@ def get_logs():
 # ==========================================
 # SYSTÈME SONORE (corrigé v12)
 # ==========================================
-import pygame as _pygame
-import queue as _sound_queue_module
+# import pygame as _pygame
 
 sound_enabled = True
 sound_lock    = threading.Lock()
 
-# Queue dédiée — le son est joué dans UN thread unique
-# évite les crashs PulseAudio depuis les threads worker GPU/caméra
-_sound_q    = _sound_queue_module.Queue(maxsize=8)
-_PYGAME_OK  = False
-_sounds     = {}   # lazy-init : créés au premier appel
-
-
-def _init_pygame_audio():
-    """
-    Initialise pygame.mixer en stéréo (channels=2 obligatoire pour
-    que sndarray.make_sound() fonctionne correctement avec numpy).
-    Appelé une seule fois depuis le thread son dédié.
-    """
-    global _PYGAME_OK
-    try:
-        _pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=512)
-        _PYGAME_OK = True
-        _log("SYSTEM", "INFO", "pygame.mixer initialisé (stéréo 44100Hz)")
-    except Exception as e:
-        _log("SYSTEM", "ERROR", f"Son désactivé (pygame non dispo) : {e}")
-        _PYGAME_OK = False
-
-
-def _make_sound(freqs_durations: list, volume: float = 1.0):
-    """
-    Génère un son composite à partir d'une liste (fréquence_hz, durée_ms).
-    Retourne un objet pygame.Sound ou None.
-
-    CORRECTIF CLÉ : le tableau numpy doit être shape (N, 2) — stéréo —
-    et dtype int16. Avec channels=1 (ancienne config), make_sound()
-    acceptait le tableau mais produisait un son vide ou corrompu.
-    """
-    if not _PYGAME_OK:
-        return None
-    import numpy as np
-    sample_rate = 44100
-    segments    = []
-    for freq, dur_ms in freqs_durations:
-        n_samples = int(sample_rate * dur_ms / 1000)
-        if freq == 0:
-            mono = np.zeros(n_samples, dtype=np.float32)
-        else:
-            t       = np.linspace(0, dur_ms / 1000, n_samples, endpoint=False)
-            mono    = np.sin(2 * np.pi * freq * t).astype(np.float32)
-            attack  = min(int(sample_rate * 0.005), n_samples // 4)
-            release = min(int(sample_rate * 0.030), n_samples // 4)
-            mono[:attack]   *= np.linspace(0, 1, attack)
-            mono[-release:] *= np.linspace(1, 0, release)
-        segments.append(mono)
-
-    mono_full = np.concatenate(segments) * volume
-    # Stéréo obligatoire : shape (N, 2), dtype int16
-    stereo    = np.column_stack([mono_full, mono_full])
-    wave_16   = (stereo * 32767).astype(np.int16)
-    # make_sound attend un tableau C-contigu
-    wave_16   = np.ascontiguousarray(wave_16)
-    try:
-        return _pygame.sndarray.make_sound(wave_16)
-    except Exception as e:
-        _log("SYSTEM", "ERROR", f"make_sound() échoué : {e}")
-        return None
-
-
-def _ensure_sounds():
-    """
-    Initialisation lazy des sons — appelée depuis le thread son dédié,
-    après que pygame.mixer soit prêt. Évite la création au top-level
-    où le device audio peut ne pas être accessible.
-    """
-    if _sounds:
-        return
-    alert_sound = _make_sound([
-        (1046, 120), (0, 40),
-        (880,  120), (0, 40),
-        (698,  250),
-    ], volume=0.9)
-    suspicion_sound = _make_sound([
-        (1800, 12), (0, 8), (2200, 80), (0, 15), (1800, 40),
-], volume=0.55)
-    _sounds["alert"]     = alert_sound
-    _sounds["suspicion"] = suspicion_sound
-    if alert_sound and suspicion_sound:
-        _log("SYSTEM", "INFO", "Sons synthétisés OK (alert + suspicion)")
-    else:
-        _log("SYSTEM", "ERROR", "Échec synthèse sons — vérifie PulseAudio/ALSA")
-
-
-def _sound_worker():
-    """
-    Thread daemon dédié à la lecture audio.
-
-    POURQUOI UN THREAD DÉDIÉ :
-    Sur Linux, PulseAudio/ALSA peut rejeter les appels play() depuis des
-    threads sans contexte audio propre (workers GPU, workers caméra).
-    Ce thread unique initialise pygame depuis son propre contexte,
-    puis consomme la queue _sound_q indéfiniment.
-
-    Lazy-init ici (pas au top-level) pour que pygame soit initialisé
-    APRÈS que l'OS ait fini de démarrer les services audio.
-    """
-    _init_pygame_audio()
-    if _PYGAME_OK:
-        _ensure_sounds()
-    while True:
-        try:
-            kind = _sound_q.get(timeout=1.0)
-        except _sound_queue_module.Empty:
-            continue
-        if not _PYGAME_OK:
-            continue
-        with sound_lock:
-            enabled = sound_enabled
-        if not enabled:
-            continue
-        sound = _sounds.get(kind)
-        if sound is not None:
-            try:
-                sound.play()
-            except Exception as e:
-                _log("SYSTEM", "ERROR", f"sound.play() échoué : {e}")
-
-
 def play_sound(kind: str):
-    """
-    Empile une demande de son dans la queue — non bloquant, thread-safe.
-    kind : "alert" | "suspicion"
-    Si la queue est pleine (8 sons en attente), on ignore silencieusement.
-    """
     with sound_lock:
         enabled = sound_enabled
     if not enabled:
         return
-    try:
-        _sound_q.put_nowait(kind)
-    except _sound_queue_module.Full:
-        pass
+    # Le son est joué côté navigateur client via SSE — pas sur le serveur
+    _push_sse_event({"type": "sound", "kind": kind})
 
 
 def toggle_sound() -> bool:
@@ -688,19 +567,31 @@ def sse_stream():
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"}
     )
 
-
+# Dans start_server()
 def start_server():
     """
     Lance le serveur Flask sur toutes les interfaces réseau (0.0.0.0:5000)
     dans un thread daemon séparé.
-    Les logs werkzeug sont réduits au niveau ERROR pour ne pas polluer
-    la console avec les requêtes HTTP normales.
     """
+
     import logging
     log = logging.getLogger('werkzeug')
     log.setLevel(logging.ERROR)
-    app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False, threaded=True)
-
+    # Génère un cert auto-signé au premier lancement
+    import ssl, os
+    cert_file = "cert.pem"
+    key_file  = "key.pem"
+    if not os.path.exists(cert_file):
+        os.system(
+            "openssl req -x509 -newkey rsa:2048 -keyout key.pem "
+            "-out cert.pem -days 365 -nodes "
+            "-subj '/CN=192.168.0.97'"
+        )
+    app.run(
+        host="0.0.0.0", port=5000,
+        debug=False, use_reloader=False, threaded=True,
+        ssl_context=(cert_file, key_file)
+    )
 
 # ==========================================
 # FONCTIONS UTILITAIRES
@@ -1235,6 +1126,7 @@ class CameraWorker:
 
         self.recent_alert_signatures:   list = []   # [v12 FIX I]
         self._suspicion_logged:         dict = {}
+        self._last_no_hand_log: dict = {}   # { a_id → timestamp dernier log "pas de main" }
 
         # ── Alertes ──
         self.last_alert_time    = 0
@@ -1738,14 +1630,6 @@ class CameraWorker:
     # SUSPICION
     # ======================================================================
     def _notify_suspicion(self, article_id: int, type_vol: str, score: float):
-        """
-        Enregistre une suspicion active dans le dictionnaire global
-        active_suspicions (visible via GET /suspicions).
-        
-        Les types CORPS et SAC sont loggés mais pas publiés dans /suspicions
-        (ils passent directement en alerte si confirmés).
-        Les autres types (FLÂNERIE) sont publiés et expireront après SUSPICION_TTL.
-        """
         with suspicions_lock:
             active_suspicions[self.cam_id] = {
                 "time":       datetime.now().strftime("%H:%M:%S"),
@@ -1753,24 +1637,31 @@ class CameraWorker:
                 "type":       type_vol,
                 "expires_at": time.time() + SUSPICION_TTL,
             }
-        if not self._suspicion_logged.get(article_id, False):
+        is_new = not self._suspicion_logged.get(article_id, False)
+        if is_new:
             play_sound("suspicion")
+            _push_sse_event({
+                "type":   "suspicion_update",
+                "cam_id": self.cam_id,
+                "data":   {
+                    "time":  datetime.now().strftime("%H:%M:%S"),
+                    "score": round(score, 2),
+                    "type":  type_vol,
+                },
+            })
         self._suspicion_logged[article_id] = True
 
 
     def _clear_suspicion(self, article_id: int = None):
-        """
-        Supprime la suspicion active pour cette caméra du dictionnaire global.
-        Si article_id est fourni, supprime aussi le flag _suspicion_logged
-        pour cet article spécifique.
-        """
+        had = self.cam_id in active_suspicions
         with suspicions_lock:
             active_suspicions.pop(self.cam_id, None)
         if article_id is not None:
             self._suspicion_logged.pop(article_id, None)
         else:
             self._suspicion_logged.clear()
-
+        if had:
+            _push_sse_event({"type": "suspicion_clear", "cam_id": self.cam_id})
 
     # ======================================================================
     # ZOOM TRACKING
@@ -2048,7 +1939,7 @@ class CameraWorker:
                 self.active_person_tracks.pop(pid, None)
                 self._suspicion_logged.pop(-(pid + 1), None)
 
-            # ── Nettoyage articles [v11 FIX G — complet] ──
+            # ── Nettoyage articles 
             active_ids  = set(self.active_article_tracks.keys())
             suspect_ids = set(self.suspect_disappearance.keys())
             for a_id in list(self.last_known_articles.keys()):
@@ -2072,6 +1963,7 @@ class CameraWorker:
                     self.article_visual_signature.pop(a_id, None)
                     self.article_holder.pop(a_id, None)  
                     self.article_last_bbox.pop(a_id, None)
+                    self._last_no_hand_log.pop(a_id, None)
 
             # ==========================================================
             # 🛡️ NOUVEAU FILTRE ANTI-FANTÔMES (STABILITÉ)
@@ -2171,7 +2063,10 @@ class CameraWorker:
 
                         if article_held_by_detection and article_held_by_streak and not self._was_hand_near_article(a_center, p_id=p_id):
                             if DEBUG_LOGS:
-                                _log(self.cam_id, "DEBUG", f"[FILTRE] Article #{a_id} tenu mais aucune main détectée au contact — pas de suspicion")
+                                now_log = time.time()
+                                if now_log - self._last_no_hand_log.get(a_id, 0) >= 2.0:
+                                    self._last_no_hand_log[a_id] = now_log
+                                    _log(self.cam_id, "DEBUG", f"[FILTRE] Article #{a_id} tenu mais aucune main détectée au contact — pas de suspicion")
 
                         is_held = (
                             article_held_by_detection
@@ -2855,8 +2750,9 @@ if __name__ == "__main__":
 
     threading.Thread(target=gpu_batch_worker, daemon=True, name="gpu_batch_worker").start()
     print("🖥️  Thread GPU centralisé démarré")
-    threading.Thread(target=_sound_worker, daemon=True, name="sound_worker").start()
-    print("🔊 Thread son démarré")
+    # Son désactivé côté serveur — émis exclusivement via SSE côté navigateur client
+    # threading.Thread(target=_sound_worker, daemon=True, name="sound_worker").start()
+    print("🔊 Son : émission SSE vers client uniquement")
 
     threading.Thread(target=purge_worker, daemon=True, name="purge_worker").start()
     threading.Thread(target=keyboard_listener, daemon=True, name="keyboard_listener").start()
@@ -2868,7 +2764,7 @@ if __name__ == "__main__":
         worker = CameraWorker(**cam_cfg)
         all_workers.append(worker)
         threading.Thread(target=worker.run, args=(reader,), daemon=True, name=f"{cam_id}_worker").start()
-        print(f"✅ {cam_id} démarré → http://192.168.0.97:5000/video/{cam_id}")
+        print(f"✅ {cam_id} démarré → https://192.168.0.97:5000/video/{cam_id}")
 
     print("\n🔒 Système actif — v12 (fusion v9+v11)")
     print("   Alertes    → GET /alerts?last=50")
