@@ -29,59 +29,28 @@ DEBUG_LOGS = True
 
 
 # ==========================================
-# CONFIGURATION DES CAMÉRAS
+# CONFIGURATION DES CAMÉRAS (chargée depuis cameras.json)
 # ==========================================
-CAMERAS = [
-    {
-        "cam_id":   "CAM_21",
-        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.21:554/cam/realmonitor?channel=1&subtype=1",
-        "width":    704,
-        "height":   576,
-        "fps":      12,
-    },
-    {
-        "cam_id":   "CAM_22",
-        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.22:554/cam/realmonitor?channel=1&subtype=1",
-        "width":    704,
-        "height":   576,
-        "fps":      12,
-    },
-    {
-        "cam_id":   "CAM_23",
-        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.23:554/cam/realmonitor?channel=1&subtype=1",
-        "width":    704,
-        "height":   576,
-        "fps":      12,
-    },
-    {
-        "cam_id":   "CAM_45",
-        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.45:554/cam/realmonitor?channel=1&subtype=1",
-        "width":    704,
-        "height":   576,
-        "fps":      12,
-    },
-    {
-        "cam_id":   "CAM_46",
-        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.46:554/cam/realmonitor?channel=1&subtype=1",
-        "width":    704,
-        "height":   576,
-        "fps":      12,
-    },
-    {
-        "cam_id":   "CAM_47",
-        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.47:554/cam/realmonitor?channel=1&subtype=1",
-        "width":    704,
-        "height":   576,
-        "fps":      12,
-    },
-    {
-        "cam_id":   "CAM_49",
-        "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.49:554/cam/realmonitor?channel=1&subtype=1",
-        "width":    704,
-        "height":   576,
-        "fps":      12,
-    },
-]
+import json as _json_cam
+
+_CAMERAS_FILE = "cameras.json"
+
+def _load_cameras_config():
+    with open(_CAMERAS_FILE, "r") as f:
+        raw = _json_cam.load(f)
+    # On ne garde que les champs utiles à detect_obj
+    return [
+        {
+            "cam_id":   c["cam_id"],
+            "rtsp_url": c["rtsp_url"],
+            "width":    c.get("width", 704),
+            "height":   c.get("height", 576),
+            "fps":      c.get("fps", 12),
+        }
+        for c in raw
+    ]
+
+CAMERAS = _load_cameras_config()
 
 
 # ==========================================

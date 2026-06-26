@@ -28,6 +28,22 @@ if "server_sessions" not in st.session_state:
 SESSION_COOKIE_NAME = "leclerc_session"
 SESSION_MAX_AGE     = 28800  # 8h max
 
+
+CAMERAS_FILE = "cameras.json"
+
+def load_cameras_config():
+    """Charge la config caméras depuis cameras.json."""
+    if not os.path.exists(CAMERAS_FILE):
+        return []
+    with open(CAMERAS_FILE, "r") as f:
+        return json.load(f)
+
+def save_cameras_config(cameras: list):
+    """Sauvegarde la config caméras dans cameras.json."""
+    with open(CAMERAS_FILE, "w") as f:
+        json.dump(cameras, f, ensure_ascii=False, indent=2)
+
+
 def _get_token_from_cookie() -> str | None:
     try:
         cookie_header = st.context.headers.get("Cookie", "")
@@ -915,32 +931,15 @@ def gestion_suspicions_fragment():
         if suspicions_visibles:
             st.markdown("""<style>@keyframes pulse-red {0%,100% {box-shadow: 0 0 0 0 rgba(204,0,0,0.5);} 50% {box-shadow: 0 0 0 8px rgba(204,0,0,0);}}</style>""", unsafe_allow_html=True)
             
+            raw_cams_susp = load_cameras_config()
             flat_cams = []
-            for z, clist in {
-                "🍾 Alcool": [
-                    {"id": "CAM_21", "name": "🥃​ Rayon alcool fort", "url": "https://192.168.0.97:5000/video/CAM_21"},
-                    {"id": "CAM_22", "name": "🍷 Vins", "url": "https://192.168.0.97:5000/video/CAM_22"},
-                    {"id": "CAM_23", "name": "🥂 Champagnes", "url": "https://192.168.0.97:5000/video/CAM_23"},
-                ],
-                "🌍 Espace culturel": [
-                    {"id": "CAM_45", "name": "👀​ Vue Globale", "url": "https://192.168.0.97:5000/video/CAM_45"},
-                    {"id": "CAM_46", "name": "📠​ Electronique/divertissement", "url": "https://192.168.0.97:5000/video/CAM_46"},
-                    {"id": "CAM_47", "name": "🎧​ Audio", "url": "https://192.168.0.97:5000/video/CAM_47"},
-                    {"id": "CAM_49", "name": "🎮​ Jeux Vidéos", "url": "https://192.168.0.97:5000/video/CAM_49"},
-                ],
-                "🏪 Galerie": [
-                    {"id": "CAM_07", "name": "Fleuriste", "url": "https://192.168.0.97:5000/video"},
-                    {"id": "CAM_08", "name": "Bijoux", "url": "https://192.168.0.97:5000/video"},
-                    {"id": "CAM_09", "name": "Adopt", "url": "https://192.168.0.97:5000/video"},
-                ],
-                "🚪 Zones sécurisées": [
-                    {"id": "CAM_10", "name": "Sortie secours", "url": "https://192.168.0.97:5000/video"},
-                    {"id": "CAM_11", "name": "Réserve", "url": "https://192.168.0.97:5000/video"},
-                    {"id": "CAM_12", "name": "Personnel", "url": "https://192.168.0.97:5000/video"},
-                ]
-            }.items():
-                for c in clist:
-                    cc = dict(c); cc["zone"] = z; flat_cams.append(cc)
+            for c in raw_cams_susp:
+                flat_cams.append({
+                    "id":   c["cam_id"],
+                    "name": c["name"],
+                    "url":  f"https://192.168.0.97:5000/video/{c['cam_id']}",
+                    "zone": c.get("zone", "📷 Autres"),
+                })
             flat_cams_json = json.dumps(flat_cams)
 
             for cam_id, data in suspicions_visibles.items():
@@ -1301,7 +1300,7 @@ st.sidebar.title("📊 Menu")  # Titre sidebar
 # ==============================================================
 
 
-page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES", "🗂️ ARCHIVES VP", "📋 LOGS", "📘 GUIDE D'AMÉLIORATION"])  # Navigation
+page = st.sidebar.radio("MENU", ["📺 LIVE", "🚨 ALERTES", "🗂️ ARCHIVES VP", "📋 LOGS", "⚙️ CAMÉRAS", "📘 GUIDE D'AMÉLIORATION"])  # Navigation
 
 # DÉCONNEXION
 if st.sidebar.button("🚪 Déconnexion"):
@@ -1807,30 +1806,20 @@ if page == "📺 LIVE":
     with col_info:
         st.info("Note : Les flux s'activent uniquement en mode plein écran (⛶) pour rester sous la limite navigateur.")
 
-    # 📍 DÉFINITION DES CAMÉRAS PAR ZONES
-    cameras = {
-        "🍾 Alcool": [
-            {"id": "CAM_21", "name": "🥃​ Rayon alcool fort", "url": "https://192.168.0.97:5000/video/CAM_21"},
-            {"id": "CAM_22", "name": "🍷 Vins", "url": "https://192.168.0.97:5000/video/CAM_22"},
-            {"id": "CAM_23", "name": "🥂 Champagnes", "url": "https://192.168.0.97:5000/video/CAM_23"},
-        ],
-        "🌍 Espace culturel": [
-            {"id": "CAM_45", "name": "👀​ Vue Globale", "url": "https://192.168.0.97:5000/video/CAM_45"},
-            {"id": "CAM_46", "name": "📠​ Electronique/divertissement", "url": "https://192.168.0.97:5000/video/CAM_46"},
-            {"id": "CAM_47", "name": "🎧​ Audio", "url": "https://192.168.0.97:5000/video/CAM_47"},
-            {"id": "CAM_49", "name": "🎮​ Jeux Vidéos", "url": "https://192.168.0.97:5000/video/CAM_49"},
-        ],
-        "🏪 Galerie": [
-            {"id": "CAM_07", "name": "Fleuriste", "url": "https://192.168.0.97:5000/video"},
-            {"id": "CAM_08", "name": "Bijoux", "url": "https://192.168.0.97:5000/video"},
-            {"id": "CAM_09", "name": "Adopt", "url": "https://192.168.0.97:5000/video"},
-        ],
-        "🚪 Zones sécurisées": [
-            {"id": "CAM_10", "name": "Sortie secours", "url": "https://192.168.0.97:5000/video"},
-            {"id": "CAM_11", "name": "Réserve", "url": "https://192.168.0.97:5000/video"},
-            {"id": "CAM_12", "name": "Personnel", "url": "https://192.168.0.97:5000/video"},
-        ]
-    }
+    # Chargement depuis cameras.json
+    raw_cams = load_cameras_config()
+    
+    # Reconstruction du dict par zone pour render_camera_zone
+    cameras = {}
+    for c in raw_cams:
+        zone = c.get("zone", "📷 Autres")
+        if zone not in cameras:
+            cameras[zone] = []
+        cameras[zone].append({
+            "id":   c["cam_id"],
+            "name": c["name"],
+            "url":  f"https://192.168.0.97:5000/video/{c['cam_id']}",
+        })
 
     # ---------------------------------------------------------
     # Construction de all_cams avec le champ `zone` injecté.
@@ -2238,6 +2227,145 @@ elif page == "📋 LOGS":
         )
 
     logs_fragment()
+
+
+elif page == "⚙️ CAMÉRAS":
+    st.markdown(
+        '<div class="header"><h1>⚙️ Configuration des caméras</h1></div>',
+        unsafe_allow_html=True
+    )
+
+    st.info(
+        "🔧 Modifiez ici les caméras surveillées. "
+        "Après avoir sauvegardé, cliquez sur **Appliquer et redémarrer** "
+        "pour que les changements soient pris en compte par le moteur IA."
+    )
+
+    cameras_cfg = load_cameras_config()
+
+    ZONES_DISPONIBLES = [
+        "🍾 Alcool",
+        "🌍 Espace culturel",
+        "🏪 Galerie",
+        "🚪 Zones sécurisées",
+        "📷 Autres",
+    ]
+
+    # ── Initialisation du state ──
+    if "cam_editor" not in st.session_state:
+        st.session_state.cam_editor = [dict(c) for c in cameras_cfg]
+
+    cams = st.session_state.cam_editor
+
+    st.markdown("### 📋 Caméras configurées")
+
+    # ── Éditeur ligne par ligne ──
+    for i, cam in enumerate(cams):
+        with st.expander(f"📷 {cam.get('name', '?')} — {cam.get('cam_id', '?')} ({cam.get('zone', '?')})", expanded=False):
+
+            col1, col2, col3 = st.columns([1, 2, 1])
+
+            with col1:
+                cam["cam_id"] = st.text_input(
+                    "🆔 Identifiant caméra",
+                    value=cam.get("cam_id", ""),
+                    key=f"cam_id_{i}",
+                    help="Ex: CAM_21 — doit être unique"
+                )
+            with col2:
+                cam["name"] = st.text_input(
+                    "✏️ Nom affiché",
+                    value=cam.get("name", ""),
+                    key=f"cam_name_{i}",
+                    help="Ex: 🍷 Vins — nom visible sur le dashboard"
+                )
+            with col3:
+                cam["zone"] = st.selectbox(
+                    "📍 Zone",
+                    options=ZONES_DISPONIBLES,
+                    index=ZONES_DISPONIBLES.index(cam.get("zone", "📷 Autres"))
+                          if cam.get("zone") in ZONES_DISPONIBLES else 0,
+                    key=f"cam_zone_{i}",
+                )
+
+            st.markdown("**🔗 URL du flux RTSP**")
+            st.caption(
+                "Format : `rtsp://leclerc:LecOli%2545@10.21.9.XX:554/cam/realmonitor?channel=1&subtype=1`  \n"
+                "Remplacez l'IP (ex: 10.21.9.XX) par celle de la nouvelle caméra."
+            )
+            cam["rtsp_url"] = st.text_input(
+                "URL RTSP",
+                value=cam.get("rtsp_url", ""),
+                key=f"cam_rtsp_{i}",
+                label_visibility="collapsed",
+            )
+
+            if st.button(f"🗑️ Supprimer cette caméra", key=f"del_cam_{i}", type="secondary"):
+                cams.pop(i)
+                st.rerun()
+
+    st.markdown("---")
+
+    col_add, col_save, col_restart = st.columns([1, 1, 1])
+
+    with col_add:
+        if st.button("➕ Ajouter une caméra", use_container_width=True):
+            cams.append({
+                "cam_id":   f"CAM_NEW_{len(cams)+1}",
+                "name":     "Nouvelle caméra",
+                "zone":     "📷 Autres",
+                "rtsp_url": "rtsp://login:motdepasse@IP:554/cam/realmonitor?channel=1&subtype=1",
+                "width":    704,
+                "height":   576,
+                "fps":      12,
+            })
+            st.rerun()
+
+    with col_save:
+        if st.button("💾 Sauvegarder", use_container_width=True):
+            # Validation basique
+            ids = [c["cam_id"] for c in cams]
+            if len(ids) != len(set(ids)):
+                st.error("❌ Deux caméras ont le même identifiant — corrigez avant de sauvegarder.")
+            elif any(not c["cam_id"].strip() or not c["rtsp_url"].strip() for c in cams):
+                st.error("❌ L'identifiant et l'URL RTSP ne peuvent pas être vides.")
+            else:
+                save_cameras_config(cams)
+                st.success("✅ Configuration sauvegardée dans cameras.json")
+
+    with col_restart:
+        if st.button("🔄 Appliquer et redémarrer", use_container_width=True):
+            save_cameras_config(cams)
+            try:
+                os.system("sudo systemctl restart surveillance-detection")
+                st.success(
+                    "✅ Sauvegardé. Le moteur IA redémarre avec les nouvelles caméras. "
+                    "Patientez ~5 secondes puis retournez sur la page LIVE."
+                )
+            except Exception as e:
+                st.error(f"❌ Erreur au redémarrage : {e}")
+
+    st.markdown("---")
+    st.markdown("#### ℹ️ Guide de modification")
+    st.markdown("""
+    **Pour changer une caméra existante :**
+    1. Ouvrez son panneau en cliquant dessus
+    2. Modifiez l'IP dans l'URL RTSP — ex: `10.21.9.21` → `10.21.9.55`
+    3. Adaptez le nom et la zone si besoin
+    4. Cliquez **Sauvegarder**, puis **Appliquer et redémarrer**
+
+    **Pour ajouter une caméra :**
+    1. Cliquez **Ajouter une caméra**
+    2. Remplissez tous les champs
+    3. Sauvegardez et redémarrez
+
+    **Format de l'URL RTSP :**
+    rtsp://leclerc:LecOli%2545@10.21.9.XX:554/cam/realmonitor?channel=1&subtype=1
+    Remplacez uniquement `10.21.9.XX` par l'IP de la caméra (visible sur l'étiquette ou dans l'interface réseau du magasin).
+
+    > ⚠️ Le redémarrage du moteur IA prend environ 5 secondes. Pendant ce temps les alertes sont suspendues.
+    """)
+
 
 elif page == "📘 GUIDE D'AMÉLIORATION":
 

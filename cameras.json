@@ -1,0 +1,65 @@
+[
+  {
+    "cam_id": "CAM_21",
+    "name": "🥃 Rayon alcool fort",
+    "zone": "🍾 Alcool",
+    "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.21:554/cam/realmonitor?channel=1&subtype=1",
+    "width": 704,
+    "height": 576,
+    "fps": 12
+  },
+  {
+    "cam_id": "CAM_22",
+    "name": "🍷 Vins",
+    "zone": "🍾 Alcool",
+    "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.22:554/cam/realmonitor?channel=1&subtype=1",
+    "width": 704,
+    "height": 576,
+    "fps": 12
+  },
+  {
+    "cam_id": "CAM_23",
+    "name": "🥂 Champagnes",
+    "zone": "🍾 Alcool",
+    "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.23:554/cam/realmonitor?channel=1&subtype=1",
+    "width": 704,
+    "height": 576,
+    "fps": 12
+  },
+  {
+    "cam_id": "CAM_45",
+    "name": "👀 Vue Globale",
+    "zone": "🌍 Espace culturel",
+    "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.45:554/cam/realmonitor?channel=1&subtype=1",
+    "width": 704,
+    "height": 576,
+    "fps": 12
+  },
+  {
+    "cam_id": "CAM_46",
+    "name": "📠 Electronique/divertissement",
+    "zone": "🌍 Espace culturel",
+    "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.46:554/cam/realmonitor?channel=1&subtype=1",
+    "width": 704,
+    "height": 576,
+    "fps": 12
+  },
+  {
+    "cam_id": "CAM_47",
+    "name": "🎧 Audio",
+    "zone": "🌍 Espace culturel",
+    "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.47:554/cam/realmonitor?channel=1&subtype=1",
+    "width": 704,
+    "height": 576,
+    "fps": 12
+  },
+  {
+    "cam_id": "CAM_49",
+    "name": "🎮​ Jeux Vidéos",
+    "zone": "🌍 Espace culturel",
+    "rtsp_url": "rtsp://leclerc:LecOli%2545@10.21.9.49:554/cam/realmonitor?channel=1&subtype=1",
+    "width": 704,
+    "height": 576,
+    "fps": 12
+  }
+]
